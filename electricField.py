@@ -5,10 +5,10 @@ from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.axes_grid1 import ImageGrid
 import matplotlib as mpl
 
-N = 257
+N = 255
 M = N+2
 Len=2e-5
-file_path = r'D:\bb2019\potential\potential0.txt'
+file_path = r'E:\changmx\bb2019\potential\2020_0820_gaussian_proton\1525\proton_bunch0_slice0_10000_turn0.csv'
 x = np.arange(0,N,1)
 y = np.arange(0,N,1)
 

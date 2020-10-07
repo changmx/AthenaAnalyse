@@ -4,10 +4,10 @@ from mpl_toolkits.axes_grid1 import ImageGrid
 import matplotlib as mpl
 import mpl_toolkits.axisartist.axislines as axislines
 
-N = 257
+N = 255
 M = N+2
-Len=1e-5
-file_path = r'D:\bb2019\potential\potential0.txt'
+Len=5e-6
+file_path = r'E:\changmx\bb2019\potential\2020_0819_gaussian_proton\1556\proton_bunch0_slice0_100000_turn0.csv'
 x = np.arange(0,N,1)
 y = np.arange(0,N,1)
 X,Y = np.meshgrid(x,y)
@@ -23,7 +23,7 @@ plt.rcParams['font.sans-serif']=['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['savefig.dpi'] = 300       #image pixel
 plt.rcParams['figure.dpi'] = 300        #image resolution
-P=np.arange(0,2e6,5e4)#用来指明等高线对应的值为多少时才出现对应图线
+P=np.arange(0,1.3e6,1e4)#用来指明等高线对应的值为多少时才出现对应图线
 fig=plt.figure()#设定图形大小
 CS=plt.contourf(Z,P,linewidth=2,cmap=mpl.cm.jet)#画出等高线填充图，cmap表示颜色的图层。
 cbar = plt.colorbar(CS)

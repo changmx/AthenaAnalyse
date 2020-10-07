@@ -5,9 +5,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import linecache
 from mpl_toolkits.axes_grid1 import ImageGrid
 import matplotlib as mpl
-N = 259
+N = 257
 #file_path = r'D:\bb2019\potential0.txt'
-file_path = r'D:\bb2019\potential\potential0.txt'
+file_path = r'E:\changmx\bb2019\potential\2020_0902_gaussian_electron\1119\electron_bunch0_slice0_20000_turn9.csv'
 x = np.arange(0,N,1)
 y = np.arange(0,N,1)
 x,y = np.meshgrid(x,y)
@@ -25,18 +25,18 @@ for i in range(0,N,1):
         #print(j+1+i*N)
 plt.rcParams['font.sans-serif']=['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
-plt.rcParams['savefig.dpi'] = 300       #image pixel
-plt.rcParams['figure.dpi'] = 300        #image resolution
+# plt.rcParams['savefig.dpi'] = 300       #image pixel
+# plt.rcParams['figure.dpi'] = 300        #image resolution
 fig = plt.figure()
 ax = Axes3D(fig)
 
 # ax.plot_surface(x, y, z,rstride=1,cstride=1,cmap='rainbow')     #print 3d surface plot
 ax.plot_surface(x, y, z,rstride=1,cstride=1,cmap=mpl.cm.jet)     #print 3d surface plot
 #ax.contourf(x,y,z,zdir='z',offset=-2,cmap='rainbow')            #print contour plot/project to the x-y plane
-ax.set_zlim(-1100,-2000)                                             #set the z value range
+# ax.set_zlim(1800,2600)                                             #set the z value range
 plt.title("KV分布三维电势,格点数为$256\\times 256$,格点长度为$0.02mm$")
 plt.xlabel("横向格点")
 plt.ylabel("纵向格点")
 
-plt.savefig(r'D:\bb2019\potential\kv电势3d256格点长度2e-5.png')
+plt.savefig(r'D:\bb2019\potential\kv电势20200902.png')
 plt.show()

@@ -18,25 +18,17 @@ fScale = 1e-13
 figYscale = -13
 
 direction = "45°"
-type = "kv"
+type = "gaussian"
 
 x = []
 y = []
 
 for r_x in np.arange(-(Ngrid / 2) * gridLen, (Ngrid / 2) * gridLen, stride):
     r_y = r_x
-    if (r_x % gridLen) != 0:
-        r = (r_x*r_x+r_y*r_y)**0.5*r_x/abs(r_x)
-        if r < sigma and r >-sigma:
-            E = n * e * r / (2 * pi * epsilon0 * sigma * sigma)
-            F = e * E
-            x.append(r / rmssigma)
-            y.append(F / fScale)
-        else:
-            E = n * e / (2 * pi * epsilon0 * r)
-            F = e * E
-            x.append(r / rmssigma)
-            y.append(F / fScale)
+    r = (r_x*r_x+r_y*r_y)**0.5*r_x/abs(r_x)
+    F = n*e*e/(2*pi*epsilon0*r)*(1-math.exp(-r*r/(2*rmssigma*rmssigma)))
+    x.append(r / rmssigma)
+    y.append(F / fScale)
 
 fig, ax = plt.subplots()
 ax.plot(x, y, label="理论值")
@@ -53,7 +45,7 @@ ax.set(xlabel=figXlable, ylabel=figYlable,
        title=figTitle + '$1\\times 10^{-5}m)$,束束力理论值与模拟值对比')        ############
 ax.grid()
 
-file_path2 = r'E:\changmx\bb2019\electricForce\2020_0818_kv_proton\2042\proton_10000.csv'
+file_path2 = r'E:\changmx\bb2019\electricForce\2020_0818_gaussian_proton\2057\proton_10000.csv'
 X2, Y2 = np.loadtxt(file_path2, delimiter=',', usecols=(0, 1), unpack=True)
 ax.plot(X2 / rmssigma, Y2 / fScale, label="$1\\times 10^{5}$个宏粒子模拟值")
 
