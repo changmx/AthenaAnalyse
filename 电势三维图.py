@@ -5,9 +5,9 @@ from mpl_toolkits.mplot3d import Axes3D
 import linecache
 from mpl_toolkits.axes_grid1 import ImageGrid
 import matplotlib as mpl
-N = 257
+N = 129
 #file_path = r'D:\bb2019\potential0.txt'
-file_path = r'E:\changmx\bb2019\potential\2020_0902_gaussian_electron\1119\electron_bunch0_slice0_20000_turn9.csv'
+file_path = r'E:\changmx\bb2019\potential\2020_1009_gaussian_proton\1818\proton_bunch0_slice0_10000_turn9.csv'
 x = np.arange(0,N,1)
 y = np.arange(0,N,1)
 x,y = np.meshgrid(x,y)
@@ -38,5 +38,5 @@ plt.title("KV分布三维电势,格点数为$256\\times 256$,格点长度为$0.0
 plt.xlabel("横向格点")
 plt.ylabel("纵向格点")
 
-plt.savefig(r'D:\bb2019\potential\kv电势20200902.png')
+# plt.savefig(r'D:\bb2019\potential\kv电势20200902.png')
 plt.show()

@@ -6,29 +6,43 @@ import math
 n = 1.0e11
 e = 1.602176565e-19
 epsilon0 = 8.854187817e-12
-sigma = 2.19e-4
-rmssigma = sigma/2
+beta_x = 0.04
+emit_x = 30e-8
+sigma = math.sqrt(beta_x*emit_x)
 pi = math.pi
 
 Ngrid = 256
-gridLen = 1e-5          ##########################
+gridLenX = 1e-5
+gridLenY = 2e-5
 stride = 1e-6
 
 fScale = 1e-13
 figYscale = -13
 
-direction = "45°"
+direction = "y"
+file_path2 = r'E:\changmx\bb2019\electricForce\2020_1010_gaussian_electron\1536\electron_10000_y.csv'
 type = "gaussian"
 
 x = []
 y = []
 
-for r_x in np.arange(-(Ngrid / 2) * gridLen, (Ngrid / 2) * gridLen, stride):
-    r_y = r_x
-    r = (r_x*r_x+r_y*r_y)**0.5*r_x/abs(r_x)
-    F = n*e*e/(2*pi*epsilon0*r)*(1-math.exp(-r*r/(2*rmssigma*rmssigma)))
-    x.append(r / rmssigma)
-    y.append(F / fScale)
+if direction=="x":
+	for r_x in np.arange(-(Ngrid / 2) * gridLenX, (Ngrid / 2) * gridLenX, stride):
+		r_y = 0
+		r = (r_x*r_x+r_y*r_y)**0.5*r_x/abs(r_x)
+		F = -n*e*e/(2*pi*epsilon0*r)*(1-math.exp(-r*r/(2*sigma*sigma)))
+		x.append(r / sigma)
+		y.append(F / fScale)
+    	
+
+    	
+elif direction=="y":
+	for r_y in np.arange(-(Ngrid / 2) * gridLenY, (Ngrid / 2) * gridLenY, stride):
+		r_x = 0
+		r = (r_x*r_x+r_y*r_y)**0.5*r_y/abs(r_y)
+		F = -n*e*e/(2*pi*epsilon0*r)*(1-math.exp(-r*r/(2*sigma*sigma)))
+		x.append(r / sigma)
+		y.append(F / fScale)
 
 fig, ax = plt.subplots()
 ax.plot(x, y, label="理论值")
@@ -45,13 +59,12 @@ ax.set(xlabel=figXlable, ylabel=figYlable,
        title=figTitle + '$1\\times 10^{-5}m)$,束束力理论值与模拟值对比')        ############
 ax.grid()
 
-file_path2 = r'E:\changmx\bb2019\electricForce\2020_0818_gaussian_proton\2057\proton_10000.csv'
 X2, Y2 = np.loadtxt(file_path2, delimiter=',', usecols=(0, 1), unpack=True)
-ax.plot(X2 / rmssigma, Y2 / fScale, label="$1\\times 10^{5}$个宏粒子模拟值")
+ax.plot(X2 / sigma, Y2 / fScale, label="$1\\times 10^{5}$个宏粒子模拟值")
 
-name = "E:\\changmx\\bb2019\electricForce\\" + type + direction + str(Ngrid) + '长度' + str(gridLen) + "1.png"
+# name = "E:\\changmx\\bb2019\electricForce\\" + type + direction + str(Ngrid) + '长度' + str(gridLen) + "1.png"
 
 ax.legend()
-fig.savefig(name)
+# fig.savefig(name)
 plt.show()
 plt.close()

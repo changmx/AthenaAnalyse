@@ -6,7 +6,7 @@ import mpl_toolkits.axisartist.axislines as axislines
 
 M = 257
 N = int((M-1)/2)
-file_path = r'E:\changmx\bb2019\potential\2020_0902_gaussian_electron\1119\electron_bunch0_slice0_20000_turn9.csv'
+file_path = r'E:\changmx\bb2019\potential\2020_1010_gaussian_proton\1044\proton_bunch0_slice0_10000_turn0.csv'
 x = np.arange(-N,N+1,1)
 y = np.arange(-N,N+1,1)
 X,Y = np.meshgrid(x,y)
@@ -16,7 +16,7 @@ plt.rcParams['font.sans-serif']=['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['savefig.dpi'] = 300       #image pixel
 # plt.rcParams['figure.dpi'] = 300        #image resolution
-P=np.arange(-10000,-6000,100)#用来指明等高线对应的值为多少时才出现对应图线
+P=np.arange(0,5e3,100)#用来指明等高线对应的值为多少时才出现对应图线
 fig=plt.figure()#设定图形大小
 # fig.add_subplot(121)#画第一张图
 # CS=plt.contour(Z,N,linewidth=2,cmap=mpl.cm.jet)#画出等高线图，cmap表示颜色的图层。
