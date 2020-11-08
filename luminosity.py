@@ -1,22 +1,35 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import math
+from crossingAngle import cal_crossing_angle_factor_beta
 
-fig=plt.figure()
-#sigma_s = np.linspace(0.01,0.5,0.01)
+beta_ex = 0.33
+beta_ey = 0.008
+beta_px = 0.33
+beta_py= 0.008
 
-bunch1 = 50
-bunch2 = 50
-freq = 10**6
+emit_ex = 18e-9
+emit_ey = 0.36e-9
+emit_px = 18e-9
+emit_py = 0.36e-9
 
-Nparticle = np.linspace(10**9,10**10,10**9)
+sigma_ez = 0.004
+sigma_pz = 0.004
 
-emittence_x = 0.001
-beta_x = 0.1
-sigma_x = (emittence_x*beta_x)**0.05
+phi = 2*11e-3    # 2*phi is real angles
 
-emittence_y = 0.001
-beta_y = 0.1
-sigma_y = (emittence_y*beta_y)**0.05
-Lum = bunch1 * bunch2 * freq * Nparticle/(4*np.pi*sigma_x *sigma_y)
-plt.plot(Nparticle,Lum)
-plt.show()
+Np = 0.045e10
+Ne = 0.02e10
+# cf = 496.96e6
+cf = 99462
+
+def cal_luminosity(N1,N2,collisionFrenquency,betaX1,betaY1,emitX1,emitY1,betaX2,betaY2,emitX2,emitY2,):
+	sigmaX1 = math.sqrt(betaX1*emitX1)
+	sigmaY1 = math.sqrt(betaY1*emitY1)
+	sigmaX2 = math.sqrt(betaX2*emitX2)
+	sigmaY2 = math.sqrt(betaY2*emitY2)
+	L = N1*N2*collisionFrenquency/(2*math.pi*math.sqrt(sigmaX1**2+sigmaX2**2)*math.sqrt(sigmaY1**2+sigmaY2**2))*1e-4
+	
+	return L
+
+L = cal_luminosity(Ne,Np,cf,beta_ex,beta_ey,emit_ex,emit_ey,beta_px,beta_py,emit_px,emit_py)

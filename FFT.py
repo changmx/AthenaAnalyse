@@ -1,16 +1,14 @@
 import numpy as np
 import numpy.fft as nf
-import matplotlib.pyplot as plt
 
-turn,x,y,xEmit,yEmit,sigmaz,sigmapz = np.loadtxt(r"E:\changmx\bb2019\statistic\2020_0925\0836_electron_bunch0.csv", delimiter=',', skiprows=1, usecols=(0, 1, 2, 3, 4, 5, 6), unpack=True)
-sp_x = nf.fft(x)
-sp_y = nf.fft(y)
-sp_xEmit = nf.fft(xEmit)
-sp_yEmit = nf.fft(yEmit)
-sp_sigmaz = nf.fft(sigmaz)
-sp_sigmapz = nf.fft(sigmapz)
-freq = nf.fftfreq(turn.shape[0])
+def cal_freq_fft(N,T,freq_start,freq_end):
+	freq = np.arange(0,1,1/N)
+	for i in range(freq.shape[0]):
+		freq[i]=freq[i]/T
+	freq_part = freq[range(int(freq_start*T*N),int(freq_end*T*N))]
+	return freq_part
 
-plt.plot(freq,sp_x.real)
-# plt.plot(freq,sp.real,freq,sp.imag)
-plt.show()
+def cal_spctrum_fft(N,T,freq_start,freq_end,sequence):
+	spectrum = np.abs(nf.fft(sequence))
+	spectrum_part = spectrum[range(int(freq_start*T*N),int(freq_end*T*N))]
+	return spectrum_part

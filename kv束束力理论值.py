@@ -41,9 +41,9 @@ for r in np.arange(-(Ngrid / 2) * gridLen, (Ngrid / 2) * gridLen, stride):
         yopposite.append(-F / fScale)
 
 
-fig, ax = plt.subplots()
-ax.plot(x, yequal, label="电性相同")
-ax.plot(x, yopposite, label="电性相反")
+fig, ax = plt.subplots(dpi=600)
+# ax.plot(x, yequal, label="电性相同")
+ax.plot(x, yopposite, label="电性相反",color='lightcoral')
 plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 # plt.rcParams['savefig.dpi'] = 600       #image pixel
@@ -57,7 +57,7 @@ ax.set(xlabel=figXlable, ylabel=figYlable,
 ax.grid()
 plt.xticks(np.arange(-10,11,2))
 ax.legend()
-name = "D:\\bb2019\\beamforce\\kvtheory.png"
+name = "D:\\bb2019\\beamforce\\kvtheory_20201103.png"
 
 fig.savefig(name)
 plt.show()
