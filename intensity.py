@@ -23,11 +23,17 @@ def cal_intensity(Ek,circumference,npPerBunch,nBunch,particle):
 
 if __name__ == '__main__':
 	
-	# KEKB parameter
-	Ek = 3.5e9
-	circumference = 3016.26
-	npPerBunch = 0.53e10
-	nBunch = 5000
+	## KEKB parameter
+	# Ek = 3.5e9
+	# circumference = 3016.26
+	# npPerBunch = 0.53e10
+	# nBunch = 5000
+
+	## eRHIC parameter
+	Ek = 10e9
+	circumference = 3833.845
+	npPerBunch = 3.05e11
+	nBunch = 330
 
 	I = cal_intensity(Ek,circumference,npPerBunch,nBunch,'electron')
 	print("Beam current: %f A" % (I))

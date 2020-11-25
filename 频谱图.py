@@ -125,7 +125,8 @@ circumference = 3016.26
 Nbunch_e = 5000
 Nbunch_p = 5000
 
-fig,axes = plt.subplots(3,3,figsize=(25,15),dpi=300)
+# fig,axes = plt.subplots(3,3,figsize=(25,15),dpi=300)
+fig,axes = plt.subplots(3,3)
 # plt.figure(figsize=(1,1))
 
 turn0,x0,y0 = np.loadtxt(r"E:\changmx\bb2019\statLumiPara\2020_1023\1815_positron_bunch0.csv", delimiter=',', skiprows=1, usecols=(0, 1, 3), unpack=True)

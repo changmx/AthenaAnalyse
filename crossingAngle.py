@@ -14,20 +14,43 @@ def cal_crossing_angle_factor_sigma(sigma,sigmaZ,halfAngle):
 if __name__ == '__main__':
 
 	# KEKB parameter
-	beta_ex = 0.33
-	beta_ey = 0.008
-	beta_px = 0.33
-	beta_py= 0.008
 
-	emit_ex = 1.8e-8
-	emit_ey = 3.6e-10
-	emit_px = 1.8e-8
-	emit_py = 3.6e-10
+	# beta_ex = 0.33
+	# beta_ey = 0.008
+	# beta_px = 0.33
+	# beta_py= 0.008
 
-	sigma_ez = 0.004	# calculate disruption parameter and crossing angle factor
-	sigma_pz = 0.004
+	# emit_ex = 1.8e-8
+	# emit_ey = 3.6e-10
+	# emit_px = 1.8e-8
+	# emit_py = 3.6e-10
 
-	phi = 2*11e-3		# 2*phi is real angle
+	# sigma_ez = 0.004	# calculate disruption parameter and crossing angle factor
+	# sigma_pz = 0.004
+
+	# phi = 2*11e-3		# 2*phi is real angle
+
+	# sigma_ex = math.sqrt(beta_ex*emit_ex)
+	# sigma_ey = math.sqrt(beta_ey*emit_ey)
+	# sigma_px = math.sqrt(beta_px*emit_px)
+	# sigma_py = math.sqrt(beta_py*emit_py)
+
+	# eRHIC parameter
+
+	beta_ex = 0.62
+	beta_ey = 0.073
+	beta_px = 0.94
+	beta_py= 0.042
+
+	emit_ex = 24.4e-9
+	emit_ey = 3.5e-9
+	emit_px = 16e-9
+	emit_py = 6.1e-9
+
+	sigma_ez = 0.01
+	sigma_pz = 0.07
+
+	phi = 2*11e-3    # 2*phi is real angles
 
 	sigma_ex = math.sqrt(beta_ex*emit_ex)
 	sigma_ey = math.sqrt(beta_ey*emit_ey)
