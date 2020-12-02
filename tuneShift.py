@@ -78,3 +78,7 @@ def cal_disruptionParameter(N_opp,Ek,betaX_opp,betaY_opp,emitX_opp,emitY_opp,sig
 	disruption_parameter = sigmaZ_opp/focal_distance
 
 	return disruption_parameter
+
+
+if __name__ == '__main__':
+	print(cal_tuneShift(1.15e11,1.25,0.05,7e12,1.25,0.05,3.75e-9,3.75e-9,'x','proton'))

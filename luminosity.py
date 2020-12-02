@@ -13,28 +13,28 @@ def cal_luminosity(N1,N2,collisionFrenquency,betaX1,betaY1,emitX1,emitY1,betaX2,
 	return L
 
 
-beta_ex = 0.62
-beta_ey = 0.073
-beta_px = 0.94
-beta_py= 0.042
+beta_ex = 0.2
+beta_ey = 0.06
+beta_px = 0.04
+beta_py= 0.02
 
-emit_ex = 24.4e-9
-emit_ey = 3.5e-9
-emit_px = 16e-9
-emit_py = 6.1e-9
+emit_ex = 0.34e-7
+emit_ey = 0.6e-7
+emit_px = 2.0e-7
+emit_py = 1.0e-7
 
-sigma_ez = 0.01
-sigma_pz = 0.07
+sigma_ez = 0.02
+sigma_pz = 0.04
 
 phi = 0*11e-3    # 2*phi is real angles
 
-Np = 1.11e11
-Ne = 3.05e11
+Np = 1.07e+11
+Ne = 3.4e11
 # cf = 496.96e6
 # cf = 99462
 # cf=330*78250
-cf=25e6
+cf=40e6
 
 
 L = cal_luminosity(Ne,Np,cf,beta_ex,beta_ey,emit_ex,emit_ey,beta_px,beta_py,emit_px,emit_py)
-print(L*0.8642)
+print('With hourglass:',L*0.7879)
