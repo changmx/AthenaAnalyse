@@ -16,8 +16,8 @@ def Farey(n):
 
 	return seq
 
-def plot_resonanceDiagram_all(order,col='b'):
-	
+def plot_resonanceDiagram_all(order,col='b',kind='all'):
+
 	fig,ax = plt.subplots()
 	ax.set_ylim(0,1)
 	ax.set_xlim(0,1)
@@ -32,20 +32,22 @@ def plot_resonanceDiagram_all(order,col='b'):
 			a = float(k*p)  # Resonance line a Qx + bQy = c linked to p/q
 			b = float(q-k*p)
 			if a>0:
-				ax.plot(x,c/a-x*b/a,color=col)
-				# print('all',x,c/a-x*b/a)
-				ax.plot(x,c/a+x*b/a,color=col)
-				ax.plot(c/a-x*b/a,x,color=col)
-				ax.plot(c/a+x*b/a,x,color=col)
-				ax.plot(c/a-x*b/a,1-x,color=col)
-				ax.plot(c/a+x*b/a,1-x,color=col)
+				if kind=='all' or kind=='sum':
+					ax.plot(x,c/a-x*b/a,color=col)
+					ax.plot(c/a-x*b/a,x,color=col)
+					ax.plot(c/a+x*b/a,1-x,color=col)
+				if kind=='all' or kind=='diff':
+					ax.plot(x,c/a+x*b/a,color=col)
+					ax.plot(c/a+x*b/a,x,color=col)
+					ax.plot(c/a-x*b/a,1-x,color=col)
+				
 			if q==k and p==1:  # FN elements below 1/k
 				break
 
 	# ax.scatter(0.315,0.3,c='r')
 	plt.show()
 
-def plot_resonanceDiagram_one(ax,order,col,repeatLine,legend):
+def plot_resonanceDiagram_one(ax,order,col,repeatLine,legend,kind='all'):
 	# 绘制某一阶数的共振线
 	FN = Farey(order)
 	# print(FN)
@@ -57,43 +59,46 @@ def plot_resonanceDiagram_one(ax,order,col,repeatLine,legend):
 			a = float(k*p)  # # Resonance line a Qx + bQy = c linked to p/q
 			b = float(q-k*p)
 			if a>0:
-				coord = [[0,1],[c/a-0*b/a,c/a-1*b/a]]	# 两点确定一条直线，确定两个点的横纵坐标
-				# print('one',coord)
-				if coord not in repeatLine:  # 如果这条线的数据在列表中不存在，说明之前没有画过这条线
-					ax.plot(coord[0],coord[1],color=col)
-					repeatLine.append(coord)	# 画之，并添加到列表中，下次不再画这条线
+				if kind=='all' or kind=='sum':
+					coord = [[0,1],[c/a-0*b/a,c/a-1*b/a]]	# 两点确定一条直线，确定两个点的横纵坐标
+					# print('one',coord)
+					if coord not in repeatLine:  # 如果这条线的数据在列表中不存在，说明之前没有画过这条线
+						ax.plot(coord[0],coord[1],color=col)
+						repeatLine.append(coord)	# 画之，并添加到列表中，下次不再画这条线
 
-				coord = [[0,1],[c/a+0*b/a,c/a+1*b/a]]
-				if coord not in repeatLine:
-					ax.plot(coord[0],coord[1],color=col)
-					repeatLine.append(coord)
 
-				coord = [[c/a-0*b/a,c/a-1*b/a],[0,1]]
-				if coord not in repeatLine:
-					ax.plot(coord[0],coord[1],color=col)
-					repeatLine.append(coord)
+					coord = [[c/a-0*b/a,c/a-1*b/a],[0,1]]
+					if coord not in repeatLine:
+						ax.plot(coord[0],coord[1],color=col)
+						repeatLine.append(coord)
 
-				coord = [[c/a+0*b/a,c/a+1*b/a],[0,1]]
-				if coord not in repeatLine:
-					ax.plot(coord[0],coord[1],color=col)
-					repeatLine.append(coord)
+					coord = [[c/a+0*b/a,c/a+1*b/a],[1,0]]
+					if coord not in repeatLine:
+						ax.plot(coord[0],coord[1],color=col)
+						repeatLine.append(coord)
 
-				coord = [[c/a-0*b/a,c/a-1*b/a],[1,0]]
-				if coord not in repeatLine:
-					ax.plot(coord[0],coord[1],color=col)
-					repeatLine.append(coord)
+				if kind=='all' or kind=='diff':
+					coord = [[0,1],[c/a+0*b/a,c/a+1*b/a]]
+					if coord not in repeatLine:
+						ax.plot(coord[0],coord[1],color=col)
+						repeatLine.append(coord)
 
-				coord = [[c/a+0*b/a,c/a+1*b/a],[1,0]]
-				if coord not in repeatLine:
-					ax.plot(coord[0],coord[1],color=col)
-					repeatLine.append(coord)
+					coord = [[c/a+0*b/a,c/a+1*b/a],[0,1]]
+					if coord not in repeatLine:
+						ax.plot(coord[0],coord[1],color=col)
+						repeatLine.append(coord)
+
+					coord = [[c/a-0*b/a,c/a-1*b/a],[1,0]]
+					if coord not in repeatLine:
+						ax.plot(coord[0],coord[1],color=col)
+						repeatLine.append(coord)
 
 			if q==k and p==1:  # FN elements below 1/k
 				break
 	legend.append(Line2D([0], [0], color=col, lw=4, label=str(order)+'-order'))  # 添加这条线的图例
 	
 
-def plot_resonanceDiagram_oneByOne(order,xlim=[0,1],ylim=[0,1]):
+def plot_resonanceDiagram_oneByOne(order,xlim=[0,1],ylim=[0,1],kind='all'):
 
 	fig,ax = plt.subplots()
 	ax.set_xlim(xlim[0],xlim[1])
@@ -105,7 +110,7 @@ def plot_resonanceDiagram_oneByOne(order,xlim=[0,1],ylim=[0,1]):
 	# col = ['b','b','b','b','b','b','b','b','b','b']
 
 	for i in range(1,order+1,1):
-		plot_resonanceDiagram_one(ax,i,col[i-1],repeatLine,legend_elements)
+		plot_resonanceDiagram_one(ax,i,col[i-1],repeatLine,legend_elements,kind)
 
 	ax.scatter(0.315,0.3,marker='x',c='r')
 	ax.scatter(0.58,0.55,marker='x',c='r')
@@ -115,8 +120,8 @@ def plot_resonanceDiagram_oneByOne(order,xlim=[0,1],ylim=[0,1]):
 
 if __name__ == '__main__':
 
-	# plot_resonanceDiagram_all(order=10,col='royalblue')
-	plot_resonanceDiagram_oneByOne(order=5,xlim=[0,1],ylim=[0,1])
-	plot_resonanceDiagram_oneByOne(order=5,xlim=[0.45,0.6],ylim=[0.45,0.6])
+	plot_resonanceDiagram_all(order=9,col='royalblue',kind='sum')
+	plot_resonanceDiagram_oneByOne(order=9,xlim=[0,1],ylim=[0,1],kind='sum')
+	# plot_resonanceDiagram_oneByOne(order=10,xlim=[0.27,0.35],ylim=[0.27,0.35])
 	
 	
