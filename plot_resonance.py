@@ -117,10 +117,26 @@ def plot_resonanceDiagram_oneByOne(order,xlim=[0,1],ylim=[0,1],kind='all'):
 	ax.legend(handles=legend_elements,loc='upper right')
 	plt.show()
 
+def plot_resonanceDiagram_color(order,ax,xlim=[0,1],ylim=[0,1],kind='all'):
+
+	ax.set_xlim(xlim[0],xlim[1])
+	ax.set_ylim(ylim[0],ylim[1])
+	x = [0,1]
+	repeatLine = []  # 保存已经画过的线的列表
+	legend_elements = []  # 保存各个阶数图例的列表
+	col = ['midnightblue','mediumblue','crimson','darkorange','violet','deepskyblue','skyblue','steelblue','lightblue','aliceblue']  # 各个阶数共振线的颜色
+	# col = ['b','b','b','b','b','b','b','b','b','b']
+
+	for i in range(1,order+1,1):
+		plot_resonanceDiagram_one(ax,i,col[i-1],repeatLine,legend_elements,kind)
+
+	# ax.scatter(0.315,0.3,marker='x',c='r')
+	# ax.scatter(0.58,0.55,marker='x',c='r')
+	ax.legend(handles=legend_elements,loc='upper right')
 
 if __name__ == '__main__':
 
-	plot_resonanceDiagram_all(order=9,col='royalblue',kind='sum')
+	plot_resonanceDiagram_all(order=12,col='royalblue',kind='all')
 	plot_resonanceDiagram_oneByOne(order=9,xlim=[0,1],ylim=[0,1],kind='sum')
 	# plot_resonanceDiagram_oneByOne(order=10,xlim=[0.27,0.35],ylim=[0.27,0.35])
 	

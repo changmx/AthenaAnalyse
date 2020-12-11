@@ -21,8 +21,8 @@ beta = math.sqrt(1-(1/gamma_v)**2)
 epsilon = 8.854187817e-12
 sigma = math.sqrt(3.0e-7*0.04)
 pi = 3.1415926535
-d = sigma*6
-y = n*e*e*(1+beta*beta)/(2*pi*epsilon)*(x/(x**2+2.55e-4**2))*(1-np.exp(-(x**2+2.55e-4**2)/(2*sigma*sigma)))
+d = sigma*5
+y = n*e*e*(1+beta*beta)/(2*pi*epsilon)*(x/(x**2))*(1-np.exp(-(x**2)/(2*sigma*sigma)))
 dy = n*e*e*(1+beta*beta)/(2*pi*epsilon)*(-1/((x+d)*(x+d))*(1-np.exp(-(x+d)*(x+d)/(2*sigma*sigma)))+np.exp(-(x+d)*(x+d)/(2*sigma*sigma))/(sigma*sigma))
 dp = -2*n*re/gamma_v*((x+d)/((x+d)**2))*(1-np.exp(-((x+d)**2)/(2*sigma*sigma)))
 
@@ -30,10 +30,10 @@ plt.figure(1)
 plt.xlabel("x")
 plt.ylabel("y")
 # plt.title(r"$F(x) = (1+x)e^{1-x}$")
-# plt.plot(x,y)
+plt.plot(x,y)
 # plt.scatter(y1,py1,s=2,color='r')
 # plt.plot(x,dp)
-plt.plot(x,dy)
+# plt.plot(x,dy)
 # plt.plot(x,dy*0)
 # plt.savefig('beamForce.png',dpi = 300)
 plt.grid()

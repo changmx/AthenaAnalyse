@@ -6,7 +6,7 @@ time = r'\1734'
 kind = '_positron_turn'
 bunch = '_bunch0_50000.csv'
 angle = '11'
-Nturn = 100
+Nturn = 10
 
 direction = 'x'
 
