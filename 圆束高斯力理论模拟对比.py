@@ -3,24 +3,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-n = 1.0e11
+n = 1.25e11
 e = 1.602176565e-19
 epsilon0 = 8.854187817e-12
-beta_x = 0.04
-emit_x = 30e-8
+beta_x = 0.06
+emit_x = 6e-8
 sigma = math.sqrt(beta_x*emit_x)
 pi = math.pi
 
-Ngrid = 256
-gridLenX = 1e-5
-gridLenY = 2e-5
+Ngrid = 128
+gridLenX = 2.5e-5
+gridLenY = 2.5e-5
 stride = 1e-6
 
 fScale = 1e-13
 figYscale = -13
 
-direction = "y"
-file_path2 = r'E:\changmx\bb2019\electricForce\2020_1010_gaussian_electron\1536\electron_10000_y.csv'
+direction = "x"
+file_path2 = r'E:\changmx\bb2021\electricForce\2021_0224_gaussian_proton\1726_20_proton_50000_x.csv' # poisson
+file_path3 = r'E:\changmx\bb2021\electricForce\2021_0224_gaussian_proton\1729_36_proton_50000_x.csv' # fft
 type = "gaussian"
 
 x = []
@@ -29,9 +30,10 @@ y = []
 if direction=="x":
 	for r_x in np.arange(-(Ngrid / 2) * gridLenX, (Ngrid / 2) * gridLenX, stride):
 		r_y = 0
-		r = (r_x*r_x+r_y*r_y)**0.5*r_x/abs(r_x)
-		F = -n*e*e/(2*pi*epsilon0*r)*(1-math.exp(-r*r/(2*sigma*sigma)))
-		x.append(r / sigma)
+		r = np.sqrt(r_y**2+r_x**2)
+		F = -n*e*e/(2*pi*epsilon0)*(r_x/(r*r))*(1-math.exp(-r*r/(2*sigma*sigma)))
+		# print(r,F)
+		x.append(r_x / sigma )
 		y.append(F / fScale)
     	
 
@@ -60,7 +62,9 @@ ax.set(xlabel=figXlable, ylabel=figYlable,
 ax.grid()
 
 X2, Y2 = np.loadtxt(file_path2, delimiter=',', usecols=(0, 1), unpack=True)
-ax.plot(X2 / sigma, Y2 / fScale, label="$1\\times 10^{5}$个宏粒子模拟值")
+ax.plot(X2 / sigma, Y2 / fScale, label="$5\\times 10^{4}$个宏粒子模拟值")
+X3, Y3 = np.loadtxt(file_path3, delimiter=',', usecols=(0, 1), unpack=True)
+ax.plot(X3 / sigma, Y3 / fScale, label="$fft 5\\times 10^{4}$个宏粒子模拟值")
 
 # name = "E:\\changmx\\bb2019\electricForce\\" + type + direction + str(Ngrid) + '长度' + str(gridLen) + "1.png"
 

@@ -3,10 +3,10 @@ from tuneShift import cal_tuneShift
 from tuneShift import cal_YokoyaFactor
 from tuneShift import cal_disruptionParameter
 
-Eke = 8e9
-Ekp = 3.5e9
-Np = 3.3e10
-Ne = 1.4e10
+Eke = 1.89e9
+Ekp = 1.89e9
+Np = 4.85e10
+Ne = 4.85e10
 # cf = 496.96e6
 cf = 99462
 
@@ -19,15 +19,15 @@ rp = 2.8179403262e-15
 pi = 3.141592653589793238
 e = 1.602176634e-19
 
-beta_ex = 0.33
-beta_ey = 0.008
-beta_px = 0.33
-beta_py= 0.008
+beta_ex = 1
+beta_ey = 0.015
+beta_px = 1
+beta_py= 0.015
 
-emit_ex = 18e-9
-emit_ey = 0.36e-9
-emit_px = 18e-9
-emit_py = 0.36e-9
+emit_ex = 144e-9
+emit_ey = 2.2e-9
+emit_px = 144e-9
+emit_py = 2.2e-9
 
 sigma_ez = 0.004	# calculate disruption parameter and crossing angle factor
 sigma_pz = 0.004
