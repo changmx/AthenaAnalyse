@@ -345,3 +345,4 @@ __pycache__/
 # pyinstaller folder
 build/
 dist/
+.vscode/settings.json
