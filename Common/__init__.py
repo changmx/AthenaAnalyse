@@ -1,7 +1,7 @@
 import Common.physicalConstant
 import Common.commonCalculation
 import Common.fft
-import tuneShift
+import Common.tuneShift
 
 const = Common.physicalConstant.const
 energy2betagamma = Common.commonCalculation.energy2betagamma
