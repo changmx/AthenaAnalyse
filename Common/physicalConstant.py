@@ -1,11 +1,24 @@
 class const:
-    'fundamental constants of physics'
-    
+    """
+    Fundamental constants of physics
+    From pdg2020: https://pdg.lbl.gov/2020/reviews/rpp2020-rev-phys-constants.pdf
+    """
+
+    PI = 3.14159265358979323846
+
     LIGHT_SPEED = 299792458
 
     ELEMENTARY_CHARGE = 1.602176634e-19
-    
+
     MASS_PROTON_EV = 938.27208816e6
     MASS_PROTON_KG = 1.67262192369e-27
     MASS_ELECTRON_EV = 0.510998950e6
     MASS_ELECTRON_KG = 9.1093837015e-31
+    MASS_NUCLEON_EV = 931.49410242e6
+    MASS_NUCLEON_KG = 1.66053906660e-27
+    MASS_NEUTRON_EV = 939.56542052e6
+    MASS_NEUTRON_KG = 1.00866491595 * MASS_NUCLEON_KG
+
+    PERMITTIVITY_FREE_SPACE = 8.8541878128e-12  # 真空介电常数
+    PERMEABILITY_FREE_SPACE = 1.00000000055e-7 * 4 * PI  # 真空磁导率
+
