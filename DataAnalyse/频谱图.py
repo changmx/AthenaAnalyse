@@ -1,11 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from tuneShift import cal_tuneShift
-from tuneShift import cal_YokoyaFactor
-from FFT import cal_freq_fft
-from FFT import cal_spctrum_fft
 import numpy.fft as nf
-from intensity import cal_intensity
+import Common as co
 
 def change_x_unit(freq,Q_0,N_opp,betaX,betaY,emitX,emitY,Ek,betaX_opp,betaY_opp,emitX_opp,emitY_opp,direction,particle):
 	xi = cal_tuneShift(N_opp,betaX,betaY,Ek,betaX_opp,betaY_opp,emitX_opp,emitY_opp,direction,particle)
