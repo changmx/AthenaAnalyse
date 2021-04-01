@@ -1,7 +1,10 @@
 import Common.physicalConstant
 import Common.commonCalculation
 
-const = Common.physicalConstant.const
+# class
+Const = Common.physicalConstant.Const
+
+# function
 energy2betagamma = Common.commonCalculation.energy2betagamma
 energy2velocity = Common.commonCalculation.energy2velocity
 intensity = Common.commonCalculation.intensity

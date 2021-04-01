@@ -1,4 +1,4 @@
-class const:
+class Const:
     """
     Fundamental constants of physics
     From pdg2020: https://pdg.lbl.gov/2020/reviews/rpp2020-rev-phys-constants.pdf

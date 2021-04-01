@@ -1,5 +1,5 @@
 import numpy as np
-from Common.physicalConstant import const
+from Common.physicalConstant import Const
 import numpy.fft as nf
 
 
