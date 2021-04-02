@@ -1,4 +1,5 @@
 import Common.commonCalculation as coc
+import sys
 
 
 class Bunch:
@@ -6,7 +7,7 @@ class Bunch:
     bunch parameter
     """
 
-    def __init__(self, name, twissBetaX, twissBetaY, emitX, emitY):
+    def __init__(self, name, twissBetaX, twissBetaY, emitX, emitY, sigmaz=0):
         self.name = name
 
         self.tbetax = twissBetaX
@@ -17,7 +18,7 @@ class Bunch:
 
         self.sigmax = coc.sigma(self.tbetax, self.emitx)
         self.sigmay = coc.sigma(self.tbetay, self.emity)
-        self.sigamz = -1
+        self.sigmaz = sigmaz
 
         self.yokayax = coc.cal_YokoyaFactor(self.sigmax, self.sigmay)[0]
         self.yokayay = coc.cal_YokoyaFactor(self.sigmax, self.sigmay)[1]
@@ -43,8 +44,8 @@ class Beam(Bunch):
     """
 
     def __init__(self, name, twissBetaX, twissBetaY, emitX, emitY,
-                 kinetic_energy_ev, npPerBunch, invariant_mass_ev, classical_radius):
-        super().__init__(name, twissBetaX, twissBetaY, emitX, emitY)
+                 kinetic_energy_ev, invariant_mass_ev, classical_radius, sigmaz=0, npPerBunch=0, nbunch=0, circum=0, freq=0):
+        super().__init__(name, twissBetaX, twissBetaY, emitX, emitY, sigmaz=sigmaz)
 
         self.Ek = kinetic_energy_ev
         self.m0 = invariant_mass_ev
@@ -54,36 +55,77 @@ class Beam(Bunch):
         self.velocity = coc.energy2velocity(self.Ek, self.m0)
 
         self.np = npPerBunch
-        self.nbunch = -1
-        self.intesity = -1
-        self.circum = -1
-        self.freq = -1  # rotational frequency
+        self.nbunch = nbunch
+        self.intesity = 0
+        self.circum = circum
+        self.freq = freq  # rotational frequency
 
     def calTuneShift(self, bunchOpp):
-        self.xix = coc.cal_tuneShift(bunchOpp.np, self.tbetax, self.tbetay,
-                                     self.Ek, bunchOpp.sigamx, bunchOpp.sigmay, self.m0, self.radius)[0]
-        self.xiy = coc.cal_tuneShift(bunchOpp.np, self.tbetax, self.tbetay,
-                                     self.Ek, bunchOpp.sigamx, bunchOpp.sigmay, self.m0, self.radius)[1]
+        try:
+            if bunchOpp.np == 0:
+                raise UnboundLocalError(
+                    'Error: np_opp variable is 0.')
+        except UnboundLocalError as err:
+            print(err)
+            sys.exit(1)
+        else:
+            self.xix = coc.cal_tuneShift(bunchOpp.np, self.tbetax, self.tbetay,
+                                         self.Ek, bunchOpp.sigmax, bunchOpp.sigmay, self.m0, self.radius)[0]
+            self.xiy = coc.cal_tuneShift(bunchOpp.np, self.tbetax, self.tbetay,
+                                         self.Ek, bunchOpp.sigmax, bunchOpp.sigmay, self.m0, self.radius)[1]
 
     def calDisruptionParameter(self, bunchOpp):
-        if bunchOpp.sigamz == -1:
-            print('\nError: sigmaz variable is not initialized!')
+        try:
+            if bunchOpp.np == 0:
+                raise UnboundLocalError(
+                    'Error: np_opp variable is 0.')
+            if bunchOpp.sigmaz == 0:
+                raise UnboundLocalError(
+                    'Error: sigmaz_opp variable is 0.')
+        except UnboundLocalError as err:
+            print(err)
+            sys.exit(1)
         else:
             self.disruptionx = coc.cal_disruptionParameter(
-                bunchOpp.np, self.Ek, bunchOpp.sigamx, bunchOpp.sigmay, bunchOpp.sigamz, self.m0, self.radius)[0]
+                bunchOpp.np, self.Ek, bunchOpp.sigmax, bunchOpp.sigmay, bunchOpp.sigmaz, self.m0, self.radius)[0]
             self.disruptiony = coc.cal_disruptionParameter(
-                bunchOpp.np, self.Ek, bunchOpp.sigamx, bunchOpp.sigmay, bunchOpp.sigamz, self.m0, self.radius)[1]
+                bunchOpp.np, self.Ek, bunchOpp.sigmax, bunchOpp.sigmay, bunchOpp.sigmaz, self.m0, self.radius)[1]
 
     def calIntensity(self):
-        if self.circum == -1:
-            print('\nError: circum variable is not initialized!')
-        elif self.nbunch == -1:
-            print('\nError: nbunch variable is not initialized!')
+        try:
+            if self.circum == 0:
+                raise UnboundLocalError(
+                    'Error: circum variable is 0.')
+            if self.nbunch == 0:
+                raise UnboundLocalError(
+                    'Error: nbunch variable is 0.')
+            if self.np == 0:
+                raise UnboundLocalError(
+                    'Error: np variable is 0.')
+        except UnboundLocalError as err:
+            print(err)
+            sys.exit(1)
         else:
             self.intesity = coc.intensity(
                 self.Ek, self.m0, self.circum, self.np, self.nbunch)
 
+    def calFrequency(self):
+        try:
+            if self.circum == 0:
+                raise UnboundLocalError(
+                    'Error: circum variable is 0.')
+        except UnboundLocalError as err:
+            print(err)
+            sys.exit(1)
+        else:
+            self.freq = self.velocity / self.circum
 
-test1 = Bunch('proton-EicC', 0.2, 0.3, emitX=3e-7, emitY=6e-8)
-test1.getTwissAlpha(0.3, 0.4)
-print(test1.talphax)
+
+if __name__ == '__main__':
+
+    test1 = Beam('proton-test', 0.2, 0.3, 3e-6, 5e-6, 20e9, 938e6, 1e-15)
+    print(test1.yokayax, test1.beta)
+    test2 = Beam('electron-test', 0.4, 0.6, 5e-6, 8e-6,
+                 20e9, 0.511e6, 1e-15, npPerBunch=1)
+    test1.calTuneShift(test2)
+    print(test1.xix)
