@@ -1,5 +1,6 @@
 import Common.commonCalculation as coc
 import sys
+import traceback
 
 
 class Bunch:
@@ -20,8 +21,8 @@ class Bunch:
         self.sigmay = coc.sigma(self.tbetay, self.emity)
         self.sigmaz = sigmaz
 
-        self.yokayax = coc.cal_YokoyaFactor(self.sigmax, self.sigmay)[0]
-        self.yokayay = coc.cal_YokoyaFactor(self.sigmax, self.sigmay)[1]
+        self.yokoyax = coc.cal_YokoyaFactor(self.sigmax, self.sigmay)[0]
+        self.yokoyay = coc.cal_YokoyaFactor(self.sigmax, self.sigmay)[1]
 
     def getTwissAlpha(self, twissAlphaX, twissAlphaY):
         self.talphax = twissAlphaX
@@ -34,6 +35,20 @@ class Bunch:
         self.tgammay = twissGammaY
         self.talphax = (self.tbetax * self.tgammax - 1) ** 0.5
         self.talphay = (self.tbetay * self.tgammay - 1) ** 0.5
+
+    def print(self):
+        print('\nBunch parameter of %s' % self.name)
+        print('%-25s %-15f %-10f' %
+              ('Twiss beta x/y(m):', self.tbetax, self.tbetay))
+        if self.tgammax != 0 or self.tgammay != 0:
+            print('%-25s %-15f %-10f' %
+                  ('Twiss alpha x/y:', self.talphax, self.talphay))
+            print('%-25s %-15f %-10f' %
+                  ('Twiss gamma x/y:', self.tgammax, self.tgammay))
+        print('%-25s %-15e %-10e' %
+              ('Emittence x/y(mrad):', self.emitx, self.emity))
+        print('%-25s %-15f %-10f' %
+              ('Yokoya factor x/y:', self.yokoyax, self.yokoyay))
 
 
 class Beam(Bunch):
@@ -56,17 +71,46 @@ class Beam(Bunch):
 
         self.np = npPerBunch
         self.nbunch = nbunch
-        self.intesity = 0
+        self.intensity = 0
         self.circum = circum
         self.freq = freq  # rotational frequency
+
+        self.xix = 0
+        self.xiy = 0
+        self.disruptionx = 0
+        self.disruptiony = 0
+
+    def print(self):
+        print('\nBeam parameter of %s' % self.name)
+        print('%-25s %-15f %-10f' %
+              ('Twiss beta x/y(m):', self.tbetax, self.tbetay))
+        print('%-25s %-15e %-10e' %
+              ('Emittence x/y(mrad):', self.emitx, self.emity))
+        print('%-25s %-15f %-10f' %
+              ('Yokoya factor x/y:', self.yokoyax, self.yokoyay))
+        print('%-25s %-15f %-10f' %
+              ('Tune shift x/y:', self.xix, self.xiy))
+        print('%-25s %-15f %-10f' %
+              ('Disruption x/y:', self.disruptionx, self.disruptiony))
+        print('Ek: %f Gev, m0: %f Mev' % (self.Ek/1e9, self.m0/1e6))
+        print('beta: %f, gamma: %f' % (self.beta, self.gamma))
+        if self.np != 0:
+            print('NpPerBunch: %.1e' % (self.np))
+        if self.nbunch != 0:
+            print('Nbunch: %f' % (self.nbunch))
+        if self.intensity != 0:
+            print('Intensity: %f A' % (self.intensity))
+        if self.circum != 0:
+            print('Circumference: %f m' % (self.circum))
+        if self.freq != 0:
+            print('Frequency: %f MHz' % (self.freq/1e6))
 
     def calTuneShift(self, bunchOpp):
         try:
             if bunchOpp.np == 0:
-                raise UnboundLocalError(
-                    'Error: np_opp variable is 0.')
-        except UnboundLocalError as err:
-            print(err)
+                raise UnboundLocalError('User error: np_opp variable is 0.')
+        except UnboundLocalError:
+            traceback.print_exc()
             sys.exit(1)
         else:
             self.xix = coc.cal_tuneShift(bunchOpp.np, self.tbetax, self.tbetay,
@@ -77,13 +121,11 @@ class Beam(Bunch):
     def calDisruptionParameter(self, bunchOpp):
         try:
             if bunchOpp.np == 0:
-                raise UnboundLocalError(
-                    'Error: np_opp variable is 0.')
+                raise UnboundLocalError('User error: np_opp variable is 0.')
             if bunchOpp.sigmaz == 0:
-                raise UnboundLocalError(
-                    'Error: sigmaz_opp variable is 0.')
-        except UnboundLocalError as err:
-            print(err)
+                raise UnboundLocalError('User error: sigmaz_opp variable is 0.')
+        except UnboundLocalError:
+            traceback.print_exc()
             sys.exit(1)
         else:
             self.disruptionx = coc.cal_disruptionParameter(
@@ -94,28 +136,24 @@ class Beam(Bunch):
     def calIntensity(self):
         try:
             if self.circum == 0:
-                raise UnboundLocalError(
-                    'Error: circum variable is 0.')
+                raise UnboundLocalError('User error: circum variable is 0.')
             if self.nbunch == 0:
-                raise UnboundLocalError(
-                    'Error: nbunch variable is 0.')
+                raise UnboundLocalError('User error: nbunch variable is 0.')
             if self.np == 0:
-                raise UnboundLocalError(
-                    'Error: np variable is 0.')
-        except UnboundLocalError as err:
-            print(err)
+                raise UnboundLocalError('User error: np variable is 0.')
+        except UnboundLocalError:
+            traceback.print_exc()
             sys.exit(1)
         else:
-            self.intesity = coc.intensity(
+            self.intensity = coc.intensity(
                 self.Ek, self.m0, self.circum, self.np, self.nbunch)
 
     def calFrequency(self):
         try:
             if self.circum == 0:
-                raise UnboundLocalError(
-                    'Error: circum variable is 0.')
-        except UnboundLocalError as err:
-            print(err)
+                raise UnboundLocalError('User error: circum variable is 0.')
+        except UnboundLocalError:
+            traceback.print_exc()
             sys.exit(1)
         else:
             self.freq = self.velocity / self.circum
@@ -123,9 +161,11 @@ class Beam(Bunch):
 
 if __name__ == '__main__':
 
-    test1 = Beam('proton-test', 0.2, 0.3, 3e-6, 5e-6, 20e9, 938e6, 1e-15)
-    print(test1.yokayax, test1.beta)
+    test1 = Beam('proton-test', 0.2, 0.3, 3e-6, 5e-6,
+                 20e9, 938.76767e6, 1e-15, npPerBunch=1)
+    print(test1.yokoyax, test1.beta)
     test2 = Beam('electron-test', 0.4, 0.6, 5e-6, 8e-6,
-                 20e9, 0.511e6, 1e-15, npPerBunch=1)
+                 20e9, 0.511e6, 1e-15)
     test1.calTuneShift(test2)
-    print(test1.xix)
+    test1.freq = 30e6
+    test1.print()
