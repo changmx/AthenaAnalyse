@@ -16,14 +16,14 @@ def energy2velocity(kinetic_energy_ev, invariant_mass_ev):
     "Calculate the velocity from the kinetic energy"
     beta, _ = energy2betagamma(kinetic_energy_ev, invariant_mass_ev)
 
-    return beta * const.LIGHT_SPEED
+    return beta * Const.LIGHT_SPEED
 
 
 def intensity(kinetic_energy_ev, invariant_mass_ev, circumference, npPerBunch,
               nBunch):
     "Calculate beam intensity"
     T = circumference / energy2velocity(kinetic_energy_ev, invariant_mass_ev)
-    I = npPerBunch * nBunch * const.ELEMENTARY_CHARGE / T
+    I = npPerBunch * nBunch * Const.ELEMENTARY_CHARGE / T
 
     return I
 
