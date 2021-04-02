@@ -1,8 +1,11 @@
 import Common.physicalConstant
 import Common.commonCalculation
+import Common.myClass
 
 # class
 Const = Common.physicalConstant.Const
+Bunch = Common.myClass.Bunch
+Beam = Common.myClass.Beam
 
 # function
 energy2betagamma = Common.commonCalculation.energy2betagamma
