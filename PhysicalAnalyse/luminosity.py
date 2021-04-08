@@ -90,8 +90,8 @@ phi = 0*25e-3    # 2*phi is real angles
 
 Ne = 1.7e11
 Np = 1.25e11
-cf = 30e6
+cf = 100e6
 L = cal_luminosity(Ne,Np,cf,beta_ex,beta_ey,emit_ex,emit_ey,beta_px,beta_py,emit_px,emit_py)
-print('With crossing angle: ',L*cal_crossing_angle_factor_beta(beta_ex,emit_ex,sigma_ez,phi))
+print('With crossing angle: ',L*cal_crossing_angle_factor_beta(beta_ex,emit_ex,sigma_ez,beta_px,emit_px,sigma_pz,phi))
 
 print('With hourglass:',L*0.78)
