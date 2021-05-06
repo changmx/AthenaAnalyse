@@ -6,6 +6,7 @@ import Common.myClass
 Const = Common.physicalConstant.Const
 Bunch = Common.myClass.Bunch
 Beam = Common.myClass.Beam
+Ring = Common.myClass.Ring
 
 # function
 energy2betagamma = Common.commonCalculation.energy2betagamma
