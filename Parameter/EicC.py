@@ -43,8 +43,5 @@ electron_EicC = co.Beam('EicC-electron', beta_ex_EicC, beta_ey_EicC,
 proton_EicC.calTuneShift(electron_EicC)
 electron_EicC.calTuneShift(proton_EicC)
 
-proton_EicC.calIntensity()
-electron_EicC.calIntensity()
-
 proton_EicC.print()
 electron_EicC.print()
