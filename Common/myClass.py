@@ -1,6 +1,7 @@
 import Common.commonCalculation as coc
 import sys
 import traceback
+import numpy as np
 
 
 class Bunch:
@@ -68,6 +69,7 @@ class Beam(Bunch):
                  npPerBunch=0,
                  nbunch=0,
                  circum=0,
+                 crossingAngle_half=0,
                  freq=0):
         super().__init__(name,
                          twissBetaX,
@@ -94,6 +96,16 @@ class Beam(Bunch):
         self.disruptionx = 0
         self.disruptiony = 0
 
+        self.crossingAngle_half = crossingAngle_half
+        self.piwinskiAngle = self.sigmaz / self.sigmax * np.tan(
+            self.crossingAngle_half)
+
+        if self.freq == 0 and self.circum != 0:
+            self.freq = self.velocity / self.circum
+
+        self.intensity = coc.intensity(self.Ek, self.m0, self.circum, self.np,
+                                       self.nbunch)
+
     def print(self):
         print('\nBeam parameter of %s' % self.name)
         print('%-25s %-15f %-10f' %
@@ -113,13 +125,11 @@ class Beam(Bunch):
         print('Ek: %f Gev, m0: %f Mev' % (self.Ek / 1e9, self.m0 / 1e6))
         print('Relativistic beta: %f, gamma: %f' % (self.beta, self.gamma))
         print('NpPerBunch: %.1e' % (self.np))
-        print('Nbunch: %f' % (self.nbunch))
-        if self.intensity != 0:
-            print('Intensity: %f A' % (self.intensity))
-        if self.circum != 0:
-            print('Circumference: %f m' % (self.circum))
-        if self.freq != 0:
-            print('Frequency: %f MHz' % (self.freq / 1e6))
+        print('Nbunch: %d' % (self.nbunch))
+        print('Intensity: %f A' % (self.intensity))
+        print('Circumference: %f m' % (self.circum))
+        print('Frequency: %f MHz' % (self.freq / 1e6))
+        print('Piwinski angle: %f' % (self.piwinskiAngle))
 
     def calTuneShift(self, bunchOpp):
         try:
@@ -173,16 +183,6 @@ class Beam(Bunch):
             self.intensity = coc.intensity(self.Ek, self.m0, self.circum,
                                            self.np, self.nbunch)
 
-    def calFrequency(self):
-        try:
-            if self.circum == 0:
-                raise UnboundLocalError('User error: circum variable is 0.')
-        except UnboundLocalError:
-            traceback.print_exc()
-            sys.exit(1)
-        else:
-            self.freq = self.velocity / self.circum
-
 
 class Ring:
     """
@@ -214,8 +214,5 @@ if __name__ == '__main__':
                  938.76767e6,
                  1e-15,
                  npPerBunch=1)
-    print(test1.yokoyax, test1.beta)
-    test2 = Beam('electron-test', 0.4, 0.6, 5e-6, 8e-6, 20e9, 0.511e6, 1e-15)
-    test1.calTuneShift(test2)
-    test1.freq = 30e6
-    test1.print()
+                 
+                 
