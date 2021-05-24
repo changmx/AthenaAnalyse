@@ -2,10 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plot_statistic(name_statistic, path_statistic, path_lumi, save=False):
+def plot_statistic(name_statistic,
+                   path_statistic,
+                   path_lumi,
+                   save=False,
+                   note=''):
     row = 4
-    col = 3
-    fig, ax = plt.subplots(row, col, sharex='all', figsize=(20, 10))
+    col = 4
+    fig, ax = plt.subplots(row, col, figsize=(20, 10))
 
     for path, particle in zip(path_statistic, name_statistic):
         turn, xAverage, sigmax, yAverage, sigmay, xEmit, yEmit, sigmaz, sigmapz, beamloss = np.loadtxt(
@@ -59,7 +63,10 @@ def plot_statistic(name_statistic, path_statistic, path_lumi, save=False):
 
     savename = path_statistic[0].replace('csv', 'png')
     savename = savename.replace(name_statistic[0], 'figure')
-    fig.suptitle(path_statistic[0] + '\n' + path_statistic[1])
+    fig.suptitle(path_statistic[0] + '\n' + path_statistic[1] + '\n' + note)
+
+    plt.subplots_adjust(left=0.045, bottom=0.04, right=0.99, top=0.88)
+    # ax[3, 3].set_visible(False)
     if save:
         plt.savefig(savename)
     plt.show()
@@ -67,10 +74,11 @@ def plot_statistic(name_statistic, path_statistic, path_lumi, save=False):
 
 if __name__ == '__main__':
     plot_statistic(('proton', 'electron'), (
-        r'E:\changmx\bb2021\linux\2021_0506\1e-1p-1slice-nohourglass\1655_39_proton_bunch0.csv',
-        r'E:\changmx\bb2021\linux\2021_0506\1e-1p-1slice-nohourglass\1655_39_electron_bunch0.csv'
-    ), (r'E:\changmx\bb2021\linux\2021_0506\1e-1p-1slice-nohourglass\1655_39_luminosity_electron_10000turns.csv',
-        r'E:\changmx\bb2021\linux\2021_0506\1e-1p-1slice-nohourglass\1655_39_luminosity_proton_10000turns.csv',
-        r'E:\changmx\bb2021\linux\2021_0506\1e-1p-1slice-nohourglass\1655_39_luminosity_suPeriod_10000turns.csv'
+        r'E:\changmx\bb2021\linux\2021_0508\1e-1p-1slice\1740_38_proton_bunch0.csv',
+        r'E:\changmx\bb2021\linux\2021_0508\1e-1p-1slice\1740_38_electron_bunch0.csv'
+    ), (r'E:\changmx\bb2021\linux\2021_0508\1e-1p-1slice\1740_38_luminosity_electron_10000turns.csv',
+        r'E:\changmx\bb2021\linux\2021_0508\1e-1p-1slice\1740_38_luminosity_proton_10000turns.csv',
+        r'E:\changmx\bb2021\linux\2021_0508\1e-1p-1slice\1740_38_luminosity_suPeriod_10000turns.csv'
         ),
-                   save=True)
+                   save=True,
+                   note=r'$(nu_x^e,nu_x^p)=({0},{1})$'.format(0.74, 0.25))
