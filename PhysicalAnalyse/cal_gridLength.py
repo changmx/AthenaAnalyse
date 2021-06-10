@@ -18,8 +18,8 @@ simgay_e = sigma(betay_e, emity_e)
 
 Nx = 512
 Ny = 512
-gridxLen = 2e-5
-gridyLen = 1e-5
+gridxLen = 3e-5
+gridyLen = 1.5e-5
 
 scalex_p = Nx / 2 * gridxLen / simgax_p
 scaley_p = Ny / 2 * gridyLen / simgay_p
