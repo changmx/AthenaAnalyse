@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from Common import cal_freq_fft, myClass
+from Common import cal_freq_fft
 from Common import cal_spctrum_fft
 
 
@@ -62,14 +62,14 @@ def plot_statistic(name_statistic,
         spec_x = cal_spctrum_fft(turn.shape[0], 1, freqx[0], freqx[1],
                                  xAverage)
         ax[0, 3].plot(freq_x, spec_x, label=particle, alpha=0.5)
-        ax[0, 3].set_ylabel('Amplitude')
+        ax[0, 3].set_ylabel('Amplitude x')
         ax[0, 3].set_yscale('log')
 
         freq_y = cal_freq_fft(turn.shape[0], 1, freqy[0], freqy[1])
         spec_y = cal_spctrum_fft(turn.shape[0], 1, freqy[0], freqy[1],
                                  yAverage)
         ax[1, 3].plot(freq_y, spec_y, label=particle, alpha=0.5)
-        ax[1, 3].set_ylabel('Amplitude')
+        ax[1, 3].set_ylabel('Amplitude y')
         ax[1, 3].set_yscale('log')
 
     if multiBunch:
