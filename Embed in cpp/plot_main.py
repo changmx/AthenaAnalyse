@@ -81,63 +81,63 @@ def plot_luminosity_main(home,
 
 
 def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, xlim, ylim):
-    tune = []
+
     order = 10
-    for i in range(para.nbunch):
-        tune.append(
-            Tune(home, yearMonDay, hourMinSec, para.particle, i, para.nux,
-                 para.nuy, xlim, ylim))
 
     for i in range(para.nbunch):
-        tune[i].load()
-        for j in range(len(tune[i].file)):
-            fig_tmp, ax_tmp = plt.subplots(1, figsize=myfigsize)
-            tune[i].plot_scatter(ax_tmp,
-                                 j,
-                                 resonanceOrder=order,
-                                 myalpha=0.5,
-                                 mysize=1)
-            ax_tmp.scatter(para.nux,
-                           para.nuy,
-                           marker='x',
-                           color='black',
-                           zorder=order)
+        tune = Tune(home, yearMonDay, hourMinSec, para.particle, i, para.nux,
+                    para.nuy, xlim, ylim)
+        tune.load()
+        for j in range(len(tune.file)):
+            fig_tmp1, ax_tmp1 = plt.subplots(1, figsize=myfigsize)
+            fig_tmp2, ax_tmp2 = plt.subplots(1, figsize=myfigsize)
+            tune.plot_scatter(ax_tmp1,
+                              j,
+                              resonanceOrder=order,
+                              myalpha=0.5,
+                              mysize=1)
+            ax_tmp1.scatter(para.nux,
+                            para.nuy,
+                            marker='x',
+                            color='black',
+                            zorder=order)
 
-            ax_tmp.set_xlabel(r'$\nu_x$')
-            ax_tmp.set_ylabel(r'$\nu_y$')
+            ax_tmp1.set_xlabel(r'$\nu_x$')
+            ax_tmp1.set_ylabel(r'$\nu_y$')
 
-            ax_tmp.set_title('{0:s} bunch{1:d} turn {2:s}'.format(
-                para.particle, i, tune[i].tune_turn[j]))
-            fig_tmp.suptitle(para.statnote)
+            ax_tmp1.set_title('{0:s} bunch{1:d} turn {2:s}'.format(
+                para.particle, i, tune.tune_turn[j]))
+            fig_tmp1.suptitle(para.statnote)
 
-            tune[i].save_scatter(fig_tmp, j)
+            tune.save_scatter(fig_tmp1, j)
+            plt.close(fig_tmp1)
 
-            ax_tmp.clear()
-            ax_tmp.tick_params(top=False, right=False)
+            # ax_tmp1.clear()
+            # ax_tmp1.tick_params(top=False, right=False)
 
-            tune[i].plot_hexbin(ax_tmp,
-                                j,
-                                resonanceOrder=order,
-                                myalpha=0.3,
-                                mysize=200)
-            ax_tmp.scatter(para.nux,
-                           para.nuy,
-                           marker='x',
-                           color='black',
-                           zorder=order)
+            tune.plot_hexbin(ax_tmp2,
+                             j,
+                             resonanceOrder=order,
+                             myalpha=0.3,
+                             mysize=200)
+            ax_tmp2.scatter(para.nux,
+                            para.nuy,
+                            marker='x',
+                            color='black',
+                            zorder=order)
 
-            ax_tmp.set_xlabel(r'$\nu_x$')
-            ax_tmp.set_ylabel(r'$\nu_y$')
+            ax_tmp2.set_xlabel(r'$\nu_x$')
+            ax_tmp2.set_ylabel(r'$\nu_y$')
 
-            ax_tmp.set_title('{0:s} bunch{1:d} turn {2:s}'.format(
-                para.particle, i, tune[i].tune_turn[j]))
-            fig_tmp.suptitle(para.statnote)
-            ax_tmp.tick_params(top=False, right=False)
+            ax_tmp2.set_title('{0:s} bunch{1:d} turn {2:s}'.format(
+                para.particle, i, tune.tune_turn[j]))
+            fig_tmp2.suptitle(para.statnote)
+            # ax_tmp2.tick_params(top=False, right=False)
 
-            tune[i].save_hexbin(fig_tmp, j)
+            tune.save_hexbin(fig_tmp2, j)
 
-            plt.close(fig_tmp)
-            print('File has been drawn: {0}'.format(tune[i].file[j]))
+            plt.close(fig_tmp2)
+            print('File has been drawn: {0}'.format(tune.file[j]))
 
 
 def main(home, yearMonDay, hourMinSec):
@@ -149,10 +149,10 @@ def main(home, yearMonDay, hourMinSec):
 
     xlim_0 = [0, 1]
     xlim_1 = [0.3, 0.33]
-    xlim_2 = [0.575, 0.615]
+    xlim_2 = [0.575, 0.68]
     ylim_0 = [0, 1]
     ylim_1 = [0.27, 0.34]
-    ylim_2 = [0.545, 0.575]
+    ylim_2 = [0.545, 0.6]
     # beam1.print()
     # beam2.print()
 
@@ -179,8 +179,8 @@ def main(home, yearMonDay, hourMinSec):
 
 if __name__ == '__main__':
     home = 'D:\\bb2021'
-    yearMonDay = '2021_0712-3e5p'
-    hourMinSec = '1836_39'
+    yearMonDay = '2021_0702'
+    hourMinSec = '0857_59'
 
     status = main(home, yearMonDay, hourMinSec)
     print(status)
