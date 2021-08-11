@@ -98,8 +98,8 @@ class Tune:
                     del l_nuY[i - delete_number]
                     delete_number += 1
 
-            self.nuX.append(tmp_nuX)
-            self.nuY.append(tmp_nuY)
+            self.nuX.append(l_nuX)
+            self.nuY.append(l_nuY)
 
     def plot_scatter(self,
                      ax,
