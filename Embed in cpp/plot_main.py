@@ -1,5 +1,6 @@
-from json import load
-import gc
+from multiprocessing import Pool
+import os
+import time
 
 from plot_statistic import *
 from plot_luminosity import *
@@ -80,64 +81,77 @@ def plot_luminosity_main(home,
     plt.close(fig_lumi)
 
 
+def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize, i, xlim, ylim):
+    '''
+    使用多线程同时处理不同束团的tune信息
+
+    之前在tune.load()函数之后使用多线程，即同时处理一个束团的不同phase_turn的数据，发现这样很慢。
+    目前认为原因是在执行tune.load()之后，tune对象里数据量太大，传递这些数据给不同线程太耗时间，导致并行效果很差。
+    因此改为并行处理不同束团，这样在不同线程内部加载数据文件，就可以省去传递数据所耗时间。
+    '''
+    tune = Tune(home, yearMonDay, hourMinSec, para.particle, i, para.nux,
+                para.nuy, xlim, ylim)
+    tune.load()
+    for j in range(len(tune.file)):
+        fig_tmp1, ax_tmp1 = plt.subplots(1, figsize=myfigsize)
+        fig_tmp2, ax_tmp2 = plt.subplots(1, figsize=myfigsize)
+        tune.plot_scatter(ax_tmp1,
+                          j,
+                          resonanceOrder=order,
+                          myalpha=0.5,
+                          mysize=1)
+        ax_tmp1.scatter(para.nux,
+                        para.nuy,
+                        marker='x',
+                        color='black',
+                        zorder=order)
+
+        ax_tmp1.set_xlabel(r'$\nu_x$')
+        ax_tmp1.set_ylabel(r'$\nu_y$')
+
+        ax_tmp1.set_title('{0:s} bunch{1:d} turn {2:s}'.format(
+            para.particle, i, tune.tune_turn[j]))
+        fig_tmp1.suptitle(para.statnote)
+
+        tune.save_scatter(fig_tmp1, j)
+        plt.close(fig_tmp1)
+
+        # ax_tmp1.clear()
+        # ax_tmp1.tick_params(top=False, right=False)
+
+        tune.plot_hexbin(ax_tmp2,
+                         j,
+                         resonanceOrder=order,
+                         myalpha=0.3,
+                         mysize=200)
+        ax_tmp2.scatter(para.nux,
+                        para.nuy,
+                        marker='x',
+                        color='black',
+                        zorder=order)
+
+        ax_tmp2.set_xlabel(r'$\nu_x$')
+        ax_tmp2.set_ylabel(r'$\nu_y$')
+
+        ax_tmp2.set_title('{0:s} bunch{1:d} turn {2:s}'.format(
+            para.particle, i, tune.tune_turn[j]))
+        fig_tmp2.suptitle(para.statnote)
+        # ax_tmp2.tick_params(top=False, right=False)
+
+        tune.save_hexbin(fig_tmp2, j)
+
+        plt.close(fig_tmp2)
+        print('File has been drawn: {0}'.format(tune.file[j]))
+
+
 def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, xlim, ylim):
 
     order = 10
 
+    mypool = Pool(processes=(os.cpu_count() - 1))
     for i in range(para.nbunch):
-        tune = Tune(home, yearMonDay, hourMinSec, para.particle, i, para.nux,
-                    para.nuy, xlim, ylim)
-        tune.load()
-        for j in range(len(tune.file)):
-            fig_tmp1, ax_tmp1 = plt.subplots(1, figsize=myfigsize)
-            fig_tmp2, ax_tmp2 = plt.subplots(1, figsize=myfigsize)
-            tune.plot_scatter(ax_tmp1,
-                              j,
-                              resonanceOrder=order,
-                              myalpha=0.5,
-                              mysize=1)
-            ax_tmp1.scatter(para.nux,
-                            para.nuy,
-                            marker='x',
-                            color='black',
-                            zorder=order)
-
-            ax_tmp1.set_xlabel(r'$\nu_x$')
-            ax_tmp1.set_ylabel(r'$\nu_y$')
-
-            ax_tmp1.set_title('{0:s} bunch{1:d} turn {2:s}'.format(
-                para.particle, i, tune.tune_turn[j]))
-            fig_tmp1.suptitle(para.statnote)
-
-            tune.save_scatter(fig_tmp1, j)
-            plt.close(fig_tmp1)
-
-            # ax_tmp1.clear()
-            # ax_tmp1.tick_params(top=False, right=False)
-
-            tune.plot_hexbin(ax_tmp2,
-                             j,
-                             resonanceOrder=order,
-                             myalpha=0.3,
-                             mysize=200)
-            ax_tmp2.scatter(para.nux,
-                            para.nuy,
-                            marker='x',
-                            color='black',
-                            zorder=order)
-
-            ax_tmp2.set_xlabel(r'$\nu_x$')
-            ax_tmp2.set_ylabel(r'$\nu_y$')
-
-            ax_tmp2.set_title('{0:s} bunch{1:d} turn {2:s}'.format(
-                para.particle, i, tune.tune_turn[j]))
-            fig_tmp2.suptitle(para.statnote)
-            # ax_tmp2.tick_params(top=False, right=False)
-
-            tune.save_hexbin(fig_tmp2, j)
-
-            plt.close(fig_tmp2)
-            print('File has been drawn: {0}'.format(tune.file[j]))
+        mypool.apply_async(plot_tune_oneProcess, (order, home,
+                           yearMonDay, hourMinSec, para, myfigsize, i, xlim, ylim))
 
 
 def main(home, yearMonDay, hourMinSec):
