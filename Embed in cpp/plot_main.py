@@ -152,6 +152,8 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, xlim, ylim):
     for i in range(para.nbunch):
         mypool.apply_async(plot_tune_oneProcess, (order, home,
                            yearMonDay, hourMinSec, para, myfigsize, i, xlim, ylim))
+    mypool.close()
+    mypool.join()
 
 
 def main(home, yearMonDay, hourMinSec):
