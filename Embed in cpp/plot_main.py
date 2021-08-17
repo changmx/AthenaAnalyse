@@ -12,30 +12,79 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
     stat = []
     row = 3
     col = 3
-    fig_stat, ax_stat = plt.subplots(row, col, figsize=myfigsize)
+    row2 = 2
+    col2 = 2
+
+    fig_stat0, ax_stat0 = plt.subplots(row, col, figsize=myfigsize)
+    fig_stat1, ax_stat1 = plt.subplots(row, col, figsize=myfigsize)
+    fig_stat2, ax_stat2 = plt.subplots(row, col, figsize=myfigsize)
+    fig_stat3, ax_stat3 = plt.subplots(row2, col2, figsize=myfigsize)
 
     for i in range(para.nbunch):
-        fig_stat_tmp, ax_stat_tmp = plt.subplots(row, col, figsize=myfigsize)
+
+        fig_stat_tmp0, ax_stat_tmp0 = plt.subplots(row, col, figsize=myfigsize)
+        fig_stat_tmp1, ax_stat_tmp1 = plt.subplots(row, col, figsize=myfigsize)
+        fig_stat_tmp2, ax_stat_tmp2 = plt.subplots(row, col, figsize=myfigsize)
+        fig_stat_tmp3, ax_stat_tmp3 = plt.subplots(
+            row2, col2, figsize=myfigsize)
+
         stat.append(
             Statistic(home, yearMonDay, hourMinSec, para.particle, i, para.nux,
                       para.nuy))
 
         stat[i].load_statistic()
-        stat[i].plot_statistic(ax_stat_tmp, myalpha=1)
-        stat[i].manage_axGrid(ax_stat_tmp)
 
-        fig_stat_tmp.suptitle(para.statnote)
-        stat[i].plot_statistic(ax_stat, myalpha=0.5)
-        stat[i].save_bunchStatistic(fig_stat_tmp)
+        stat[i].plot_statistic_part0(ax_stat_tmp0, myalpha=1)
+        stat[i].plot_statistic_part1(ax_stat_tmp1, myalpha=1)
+        stat[i].plot_statistic_part2(ax_stat_tmp2, myalpha=1)
+        stat[i].plot_statistic_part3(ax_stat_tmp3, myalpha=1)
 
-        plt.close(fig_stat_tmp)
+        stat[i].manage_axGrid(ax_stat_tmp0, row, col)
+        stat[i].manage_axGrid(ax_stat_tmp1, row, col)
+        stat[i].manage_axGrid(ax_stat_tmp2, row, col)
+        stat[i].manage_axGrid(ax_stat_tmp3, row2, col2)
+
+        fig_stat_tmp0.suptitle(para.statnote)
+        fig_stat_tmp1.suptitle(para.statnote)
+        fig_stat_tmp2.suptitle(para.statnote)
+        fig_stat_tmp3.suptitle(para.statnote)
+
+        stat[i].plot_statistic_part0(ax_stat0, myalpha=0.5)
+        stat[i].plot_statistic_part1(ax_stat1, myalpha=0.5)
+        stat[i].plot_statistic_part2(ax_stat2, myalpha=0.5)
+        stat[i].plot_statistic_part3(ax_stat3, myalpha=0.5)
+
+        stat[i].save_bunchStatistic(fig_stat_tmp0, part=0)
+        stat[i].save_bunchStatistic(fig_stat_tmp1, part=1)
+        stat[i].save_bunchStatistic(fig_stat_tmp2, part=2)
+        stat[i].save_bunchStatistic(fig_stat_tmp3, part=3)
+
+        plt.close(fig_stat_tmp0)
+        plt.close(fig_stat_tmp1)
+        plt.close(fig_stat_tmp2)
+        plt.close(fig_stat_tmp3)
+
         print('File has been drawn: {0}'.format(stat[i].stat_file))
 
-    stat[0].manage_axGrid(ax_stat)
-    fig_stat.suptitle(para.statnote)
-    stat[0].save_beamStatistic(fig_stat)
+    stat[0].manage_axGrid(ax_stat0, row, col)
+    stat[0].manage_axGrid(ax_stat1, row, col)
+    stat[0].manage_axGrid(ax_stat2, row, col)
+    stat[0].manage_axGrid(ax_stat3, row2, col2)
 
-    plt.close(fig_stat)
+    fig_stat0.suptitle(para.statnote)
+    fig_stat1.suptitle(para.statnote)
+    fig_stat2.suptitle(para.statnote)
+    fig_stat3.suptitle(para.statnote)
+
+    stat[0].save_beamStatistic(fig_stat0, part=0)
+    stat[0].save_beamStatistic(fig_stat1, part=1)
+    stat[0].save_beamStatistic(fig_stat2, part=2)
+    stat[0].save_beamStatistic(fig_stat3, part=3)
+
+    plt.close(fig_stat0)
+    plt.close(fig_stat1)
+    plt.close(fig_stat2)
+    plt.close(fig_stat3)
 
 
 def plot_luminosity_main(home,
@@ -195,8 +244,8 @@ def main(home, yearMonDay, hourMinSec):
 
 if __name__ == '__main__':
     home = 'D:\\bb2021'
-    yearMonDay = '2021_0702'
-    hourMinSec = '0857_59'
+    yearMonDay = '2021_0817'
+    hourMinSec = '1048_22'
 
     status = main(home, yearMonDay, hourMinSec)
     print(status)
