@@ -142,10 +142,16 @@ def plot_resonanceDiagram_color(order,
     x = [0, 1]
     repeatLine = []  # 保存已经画过的线的列表
     legend_elements = []  # 保存各个阶数图例的列表
+
+    # 各个阶数共振线的颜色
     col = [
-        'midnightblue', 'black', 'gold', 'crimson', 'darkorange', 'mediumblue',
-        'violet', 'deepskyblue', 'darkgreen', 'maroon'
-    ]  # 各个阶数共振线的颜色
+        'midnightblue', 'black', 'tab:orange', 'tab:green', 'tab:red',
+        'tab:purple', 'tab:blue', 'tab:pink', 'tab:gray', 'tab:cyan'
+    ]
+    # col = [
+    #     'midnightblue', 'black', 'gold', 'crimson', 'darkorange', 'mediumblue',
+    #     'violet', 'deepskyblue', 'darkgreen', 'maroon'
+    # ]
     # col = ['b','b','b','b','b','b','b','b','b','b']
 
     for i in range(1, order + 1, 1):
