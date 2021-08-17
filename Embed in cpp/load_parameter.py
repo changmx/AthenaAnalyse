@@ -32,6 +32,8 @@ class Parameter:
             self.superiod = para_list['Number of turns']
             self.betax = para_list['Beta x']
             self.betay = para_list['Beta y']
+            self.alphax = para_list['Alpha x']
+            self.alphay = para_list['Alpha y']
             self.emitx = para_list['Emittence x']
             self.emity = para_list['Emittence y']
             self.Ek = para_list['Kinetic energy']
@@ -51,6 +53,8 @@ class Parameter:
 
         self.sigmax = sigma(self.betax, self.emitx)
         self.sigmay = sigma(self.betay, self.emity)
+        self.gammax = (1 + self.alphax**2) / self.betax
+        self.gammay = (1 + self.alphay**2) / self.betay
         self.gridx_perSigma = self.sigmax / self.gridlenx
         self.gridy_perSigma = self.sigmay / self.gridleny
 
