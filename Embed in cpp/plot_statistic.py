@@ -9,7 +9,6 @@ class Statistic:
     """
     Load and plot bunch statistic data
     """
-
     def __init__(self, home, yearMonDay, hourMinSec, particle, bunchid, nux,
                  nuy):
         self.home = home
@@ -42,16 +41,17 @@ class Statistic:
         self.save_beamStatisticPath = []
 
         for i in range(4):
-            self.save_bunchStatisticPath.append(os.sep.join([
-                self.savePath, self.hourMinSec + '_' + self.particle +
-                "_bunch" + str(self.bunchid) + '_part' + str(i)
-            ]))
+            self.save_bunchStatisticPath.append(
+                os.sep.join([
+                    self.savePath, self.hourMinSec + '_' + self.particle +
+                    "_bunch" + str(self.bunchid) + '_part' + str(i)
+                ]))
 
-            self.save_beamStatisticPath.append(os.sep.join([
-                self.savePath,
-                self.hourMinSec + '_' + self.particle +
-                '_beam_part' + str(i)
-            ]))
+            self.save_beamStatisticPath.append(
+                os.sep.join([
+                    self.savePath, self.hourMinSec + '_' + self.particle +
+                    '_beam_part' + str(i)
+                ]))
 
         self.is_statExist = os.path.exists(self.stat_file)
 
@@ -67,7 +67,13 @@ class Statistic:
                     unpack=True)
             else:
                 self.turn, self.xAverage, self.pxAverage, self.sigmax, self.sigmapx, self.yAverage, self.pyAverage, self.sigmay, self.sigmapy, self.zAverage, self.pzAverage, self.sigmaz, self.sigmapz, self.xEmit, self.yEmit, self.betax, self.betay, self.alphax, self.alphay, self.gammax, self.gammay, self.invariantx, self.invarianty, self.xzAverage, self.xyAverage, self.yzAverage, self.xzDevideSigmaxSigmaZ, self.beamloss, self.lossPercent = np.loadtxt(
-                    self.stat_file, delimiter=',', skiprows=1, usecols=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28), unpack=True)
+                    self.stat_file,
+                    delimiter=',',
+                    skiprows=1,
+                    usecols=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+                             15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+                             27, 28),
+                    unpack=True)
         else:
             print("file doesn't exist: {0}".format(self.stat_file))
 
@@ -79,12 +85,14 @@ class Statistic:
             freqy=(0, 1),
     ):
         if self.is_statExist:
-            if self.particle == 'proton':
-                freqx = (0, 0.5)
-                freqy = (0, 0.5)
-            if self.particle == 'electron':
+            if self.nux > 0.5:
                 freqx = (0.5, 1)
+            else:
+                freqx = (0, 0.5)
+            if self.nuy > 0.5:
                 freqy = (0.5, 1)
+            else:
+                freqy = (0, 0.5)
 
             ax[0, 0].plot(self.turn,
                           self.xAverage,
@@ -163,47 +171,66 @@ class Statistic:
                                               style='sci',
                                               scilimits=(0, 0))
 
-    def plot_statistic_part1(self,
-                             ax,
-                             myalpha,):
+    def plot_statistic_part1(
+        self,
+        ax,
+        myalpha,
+    ):
         if self.version == 'new':
             if self.is_statExist:
-                ax[0, 0].plot(self.turn, self.pxAverage,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[0, 0].plot(self.turn,
+                              self.pxAverage,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[0, 0].set_ylabel(
                     r'$\overline{\mathrm{x^{\prime}}}(\mathrm{rad})$')
 
-                ax[0, 1].plot(self.turn, self.sigmapx,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[0, 1].plot(self.turn,
+                              self.sigmapx,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[0, 1].set_ylabel(r'$\sigma_{x^{\prime}} (\mathrm{rad})$')
 
-                ax[0, 2].plot(self.turn, self.zAverage,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[0, 2].plot(self.turn,
+                              self.zAverage,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[0, 2].set_ylabel(r'$\overline{\mathrm{z}}(\mathrm{m})$')
 
-                ax[1, 0].plot(self.turn, self.pyAverage,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[1, 0].plot(self.turn,
+                              self.pyAverage,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[1, 0].set_ylabel(
                     r'$\overline{\mathrm{y^{\prime}}}(\mathrm{rad})$')
 
-                ax[1, 1].plot(self.turn, self.sigmapy,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[1, 1].plot(self.turn,
+                              self.sigmapy,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[1, 1].set_ylabel(r'$\sigma_{y^{\prime}} (\mathrm{rad})$')
 
-                ax[1, 2].plot(self.turn, self.sigmaz, label=self.bunchLabel,
+                ax[1, 2].plot(self.turn,
+                              self.sigmaz,
+                              label=self.bunchLabel,
                               alpha=myalpha)
                 ax[1, 2].set_ylabel(r'$\sigma_z (\mathrm{m})$')
 
-                ax[2, 0].plot(self.turn, self.pzAverage,
-                              label=self.bunchLabel, alpha=myalpha)
-                ax[2, 0].set_ylabel(
-                    r'$\overline{\mathrm{dp}}$')
+                ax[2, 0].plot(self.turn,
+                              self.pzAverage,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
+                ax[2, 0].set_ylabel(r'$\overline{\mathrm{dp}}$')
 
-                ax[2, 1].plot(self.turn, self.sigmapy,
-                              label=self.bunchLabel, alpha=myalpha)
-                ax[2, 1].set_ylabel(r'$\sigma_{dp}$')
+                ax[2, 1].plot(self.turn,
+                              self.sigmapy,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
+                ax[2, 1].set_ylabel(r'$\delta_p$')
 
-                ax[2, 2].plot(self.turn, self.lossPercent, label=self.bunchLabel,
+                ax[2, 2].plot(self.turn,
+                              self.lossPercent,
+                              label=self.bunchLabel,
                               alpha=myalpha)
                 ax[2, 2].set_ylabel('Percentage of particle loss(%)')
 
@@ -216,41 +243,59 @@ class Statistic:
                                                   style='sci',
                                                   scilimits=(0, 0))
 
-    def plot_statistic_part2(self,
-                             ax,
-                             myalpha,):
+    def plot_statistic_part2(
+        self,
+        ax,
+        myalpha,
+    ):
         if self.version == 'new':
             if self.is_statExist:
-                ax[0, 0].plot(self.turn, self.betax,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[0, 0].plot(self.turn,
+                              self.betax,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[0, 0].set_ylabel(r'$\mathrm{\beta_x}(\mathrm{m})$')
 
-                ax[0, 1].plot(self.turn, self.betay,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[0, 1].plot(self.turn,
+                              self.betay,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[0, 1].set_ylabel(r'$\mathrm{\beta_y}(\mathrm{m})$')
 
-                ax[0, 2].plot(self.turn, self.invariantx,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[0, 2].plot(self.turn,
+                              self.invariantx,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[0, 2].set_ylabel(r'$\mathrm{\gamma_x\beta_x}-{\alpha_x}^2$')
 
-                ax[1, 0].plot(self.turn, self.alphax,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[1, 0].plot(self.turn,
+                              self.alphax,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[1, 0].set_ylabel(r'$\mathrm{\alpha_x}$')
 
-                ax[1, 1].plot(self.turn, self.alphay,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[1, 1].plot(self.turn,
+                              self.alphay,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[1, 1].set_ylabel(r'$\mathrm{\alpha_y}$')
 
-                ax[1, 2].plot(self.turn, self.invarianty,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[1, 2].plot(self.turn,
+                              self.invarianty,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[1, 2].set_ylabel(r'$\mathrm{\gamma_y\beta_y}-{\alpha_y}^2$')
 
-                ax[2, 0].plot(self.turn, self.gammax,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[2, 0].plot(self.turn,
+                              self.gammax,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[2, 0].set_ylabel(r'$\mathrm{\gamma_x}(\mathrm{m^{-1}})$')
 
-                ax[2, 1].plot(self.turn, self.gammay,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[2, 1].plot(self.turn,
+                              self.gammay,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[2, 1].set_ylabel(r'$\mathrm{\gamma_y}(\mathrm{m^{-1}})$')
 
                 ax[2, 2].plot(self.turn,
@@ -268,27 +313,37 @@ class Statistic:
                 #                                   style='sci',
                 #                                   scilimits=(0, 0))
 
-    def plot_statistic_part3(self,
-                             ax,
-                             myalpha,):
+    def plot_statistic_part3(
+        self,
+        ax,
+        myalpha,
+    ):
         if self.version == 'new':
             if self.is_statExist:
-                ax[0, 0].plot(self.turn, self.xzAverage,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[0, 0].plot(self.turn,
+                              self.xzAverage,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[0, 0].set_ylabel(r'$\overline{\mathrm{xz}}(\mathrm{m^2})$')
 
-                ax[0, 1].plot(self.turn, self.xyAverage,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[0, 1].plot(self.turn,
+                              self.xyAverage,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[0, 1].set_ylabel(r'$\overline{\mathrm{xy}}(\mathrm{m^2})$')
 
-                ax[1, 0].plot(self.turn, self.yzAverage,
-                              label=self.bunchLabel, alpha=myalpha)
+                ax[1, 0].plot(self.turn,
+                              self.yzAverage,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
                 ax[1, 0].set_ylabel(r'$\overline{\mathrm{yz}}(\mathrm{m^2})$')
 
-                ax[1, 1].plot(self.turn, self.xzDevideSigmaxSigmaZ,
-                              label=self.bunchLabel, alpha=myalpha)
-                ax[1, 1].set_ylabel(
-                    r'$\overline{\mathrm{xz/\sigma_x\sigma_z}}$')
+                ax[1, 1].plot(self.turn,
+                              self.xzDevideSigmaxSigmaZ,
+                              label=self.bunchLabel,
+                              alpha=myalpha)
+                ax[1,
+                   1].set_ylabel(r'$\overline{\mathrm{xz/\sigma_x\sigma_z}}$')
 
                 for i in range(2):
                     for j in range(2):
