@@ -96,12 +96,18 @@ class Distribution:
             plot_hexbin(fig, ax[2, 1], z, y, mysize, para.sigmaz, para.sigmay,
                         'z', 'y')
 
-            plot_hist(ax[0, 2], x, mybins, self.bunchLabel, 'x', 'counts')
-            plot_hist(ax[0, 3], px, mybins, self.bunchLabel, 'px', 'counts')
-            plot_hist(ax[1, 2], y, mybins, self.bunchLabel, 'y', 'counts')
-            plot_hist(ax[1, 3], py, mybins, self.bunchLabel, 'py', 'counts')
-            plot_hist(ax[2, 2], z, mybins, self.bunchLabel, 'z', 'counts')
-            plot_hist(ax[2, 3], pz, mybins, self.bunchLabel, 'pz', 'counts')
+            plot_hist(ax[0, 2], x, mybins, para.sigmax, self.bunchLabel, 'x',
+                      'counts')
+            plot_hist(ax[0, 3], px, mybins, para.sigmapx, self.bunchLabel,
+                      'px', 'counts')
+            plot_hist(ax[1, 2], y, mybins, para.sigmay, self.bunchLabel, 'y',
+                      'counts')
+            plot_hist(ax[1, 3], py, mybins, para.sigmapy, self.bunchLabel,
+                      'py', 'counts')
+            plot_hist(ax[2, 2], z, mybins, para.sigmaz, self.bunchLabel, 'z',
+                      'counts')
+            plot_hist(ax[2, 3], pz, mybins, para.sigmapz, self.bunchLabel,
+                      'dp', 'counts')
 
             plt.subplots_adjust(left=0.05,
                                 right=0.98,
@@ -109,7 +115,14 @@ class Distribution:
                                 wspace=0.22,
                                 hspace=0.22)
             # plt.show()
-            plt.suptitle(self.bunchLabel + '\nturn' + str(self.dist_turn[i]))
+            self.note = '{0}, turn{1}\n'.format(self.bunchLabel,
+                                                self.dist_turn[i])
+
+            self.note += r'$\sigma_x={0:e}, \sigma_{{x^\prime}}={1:e}, \sigma_y={2:e}, \sigma_{{y^\prime}}={3:e}, \sigma_z={4:e}, \delta_p={5:e}$'.format(
+                para.sigmax, para.sigmapx, para.sigmay, para.sigmapy,
+                para.sigmaz, para.sigmapz)
+
+            plt.suptitle(self.note)
             plt.savefig(self.savePath[i], dpi=300)
             print('File has been drawn: {0}'.format(self.file[i]))
 
@@ -130,11 +143,16 @@ def plot_hexbin(fig, ax, x, y, mysize, xscale, yscale, myxlabel, myylabel):
     # ax.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
 
 
-def plot_hist(ax, x, mybins, mylabel, myxlabel, myylabel):
-    ax.hist(x, bins=mybins)
+def plot_hist(ax, x, mybins, xscale, mylabel, myxlabel, myylabel):
+    scale = 6
+    xmin = -scale * xscale
+    xmax = scale * xscale
+    # n, bins, patches = ax.hist(x, density=True)
+    n, bins, patches = ax.hist(x, density=True, bins=mybins, range=(xmin, xmax))
     # ax.hist(x, bins=mybins, label=mylabel)
     ax.set_xlabel(myxlabel)
     ax.set_ylabel(myylabel)
+    ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
     ax.grid()
     # ax.legend()
 
