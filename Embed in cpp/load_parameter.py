@@ -23,6 +23,7 @@ class Parameter:
         with open(self.filepath, 'r+') as file:
             para_list = json.load(file)
             self.particle = para_list['Beam name']
+            self.charge = para_list['Charge quantity']
             self.Nreal = para_list['Real particle number per bunch']
             self.Nmacro = para_list['Macro particle number per bunch']
             self.nslice = para_list['Number of slices']
@@ -78,6 +79,7 @@ class Parameter:
         self.turn = self.superiod * beam2.nbunch
         beam2.turn = self.superiod * self.nbunch
 
+        self.tuneshift_direction = -1 * np.sign(self.charge * beam2.charge)
         self.xix, self.xiy = cal_tuneShift(beam2.Nreal, self.betax, self.betay,
                                            self.Ek, beam2.sigmax, beam2.sigmay,
                                            self.mass, self.radius)
@@ -86,16 +88,28 @@ class Parameter:
             [self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec])
 
         self.statnote = '{0:s}\n'.format(filename)
-        self.statnote += 'N{0} = {1:.2E}, Nmacro = {2:.2E}, Nturn = {3:d}, Nbunch = {4:d}, Nslice = {5:d}\n'.format(
+        self.statnote += '{0}: N = {1:.2E}, Nmacro = {2:.2E}, Nturn = {3:d}, Nbunch = {4:d}, Nslice = {5:d}\n{6}: N = {7:.2E}, Nmacro = {8:.2E}, Nturn = {9:d}, Nbunch = {10:d}, Nslice = {11:d}\n'.format(
             self.particle, self.Nreal, self.Nmacro, self.turn, self.nbunch,
-            self.nslice)
+            self.nslice, beam2.particle, beam2.Nreal, beam2.Nmacro, beam2.turn,
+            beam2.nbunch, beam2.nslice)
         self.statnote += r'$\nu=({0:.3f},{1:.3f},{2:.3f}), \xi_x={3:.3f}, \xi_y={4:.3f}, Q^\prime_x={5:.1f}, Q^\prime_y={6:.1f}$'.format(
             self.nux, self.nuy, self.nuz, self.xix, self.xiy,
             self.chromaticity_x, self.chromaticity_x)
-        self.statnote += '\n'
-        self.statnote += r'grid size = ({0:d}$\times${1:.1e}, {2:d}$\times${3:.1e}), $\sigma_x$ = {4:.1f}gridx, $\sigma_y$ = {5:.1f}gridy'.format(
+
+        self.statnote_part1 = '{0:s}\n'.format(
+            filename
+        ) + r'$\sigma_x^\prime={0:e}, \sigma_y^\prime={1:e}, \sigma_z={2:f}, \delta_p={3:f}$'.format(
+            self.sigmapx, self.sigmapy, self.sigmaz, self.sigmapz)
+        self.statnote_part1 += '\n'
+        self.statnote_part1 += r'grid size = ({0:d}$\times${1:.1e}, {2:d}$\times${3:.1e}), $\sigma_x$ = {4:.1f}gridx, $\sigma_y$ = {5:.1f}gridy'.format(
             self.gridx, self.gridlenx, self.gridy, self.gridleny,
             self.gridx_perSigma, self.gridy_perSigma)
+
+        self.statnote_part2 = '{0:s}\n'.format(
+            filename
+        ) + r'$\beta_x={0:f}, \beta_y={1:f}, \alpha_x={2:f}, \alpha_y={3:f}, \gamma_x={4:f}, \gamma_y={5:f}$'.format(
+            self.betax, self.betay, self.alphax, self.alphay, self.gammax,
+            self.gammay)
 
         self.luminote = '{0:s}\n'.format(filename)
         self.luminote += 'N{0} = {1:.2E}, N{2} = {3:.2E}\n'.format(
