@@ -1,11 +1,13 @@
 from multiprocessing import Pool
 import os
+from plot_distribution import Distribution
 import time
 
 from plot_statistic import *
 from plot_luminosity import *
 from load_parameter import *
 from plot_tune import *
+from plot_distribution import *
 
 
 def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
@@ -212,6 +214,18 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, xlim, ylim):
     mypool.join()
 
 
+def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize):
+
+    for i in range(para.nbunch):
+        dist = Distribution(home,
+                            yearMonDay,
+                            hourMinSec,
+                            para.particle,
+                            i,
+                            dist='gaussian')
+        dist.load_plot_save(para, myfigsize=myfigsize, mysize=200, mybins=300)
+
+
 def main(home, yearMonDay, hourMinSec):
     beam1 = Parameter(home, yearMonDay, hourMinSec, 'beam1')
     beam2 = Parameter(home, yearMonDay, hourMinSec, 'beam2')
@@ -240,6 +254,10 @@ def main(home, yearMonDay, hourMinSec):
 
     plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
                          my_figsize1)
+
+    plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
+
+    plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
 
     plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2, xlim_1,
                    ylim_1)
