@@ -1,5 +1,6 @@
 import json
 import os
+import numpy as np
 from general import cal_tuneShift
 from general import sigma
 from constant import Const
@@ -43,6 +44,8 @@ class Parameter:
             self.gridleny = para_list['Grid y length']
             self.chromaticity_x = para_list['Chromaticity x']
             self.chromaticity_y = para_list['Chromaticity y']
+            self.sigmaz = para_list['Sigma z']
+            self.sigmapz = para_list['DeltaP']
 
         if self.particle == 'proton':
             self.mass = Const.MASS_PROTON_EV
@@ -55,6 +58,8 @@ class Parameter:
         self.sigmay = sigma(self.betay, self.emity)
         self.gammax = (1 + self.alphax**2) / self.betax
         self.gammay = (1 + self.alphay**2) / self.betay
+        self.sigmapx = np.sqrt(self.emitx * self.gammax)
+        self.sigmapy = np.sqrt(self.emity * self.gammay)
         self.gridx_perSigma = self.sigmax / self.gridlenx
         self.gridy_perSigma = self.sigmay / self.gridleny
 
