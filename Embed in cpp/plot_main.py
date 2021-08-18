@@ -22,6 +22,11 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
     fig_stat2, ax_stat2 = plt.subplots(row, col, figsize=myfigsize)
     fig_stat3, ax_stat3 = plt.subplots(row2, col2, figsize=myfigsize)
 
+    fig_stat0.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
+    fig_stat1.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
+    fig_stat2.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
+    fig_stat3.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
+
     for i in range(para.nbunch):
 
         fig_stat_tmp0, ax_stat_tmp0 = plt.subplots(row, col, figsize=myfigsize)
@@ -30,6 +35,10 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
         fig_stat_tmp3, ax_stat_tmp3 = plt.subplots(row2,
                                                    col2,
                                                    figsize=myfigsize)
+        fig_stat_tmp0.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
+        fig_stat_tmp1.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
+        fig_stat_tmp2.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
+        fig_stat_tmp3.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
 
         stat.append(
             Statistic(home, yearMonDay, hourMinSec, para.particle, i, para.nux,
@@ -40,8 +49,10 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
         stat[i].plot_statistic_part0(ax_stat_tmp0, myalpha=1)
         stat[i].manage_axGrid(ax_stat_tmp0, row, col)
         fig_stat_tmp0.suptitle(para.statnote)
-        stat[i].plot_statistic_part0(ax_stat0, myalpha=0.5)
         stat[i].save_bunchStatistic(fig_stat_tmp0, part=0)
+
+        if para.nbunch > 1:
+            stat[i].plot_statistic_part0(ax_stat0, myalpha=0.5)
 
         if stat[i].version == 'new':
             stat[i].plot_statistic_part1(ax_stat_tmp1, myalpha=1)
@@ -52,17 +63,18 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
             stat[i].manage_axGrid(ax_stat_tmp2, row, col)
             stat[i].manage_axGrid(ax_stat_tmp3, row2, col2)
 
-            fig_stat_tmp1.suptitle(para.statnote)
-            fig_stat_tmp2.suptitle(para.statnote)
+            fig_stat_tmp1.suptitle(para.statnote_part1)
+            fig_stat_tmp2.suptitle(para.statnote_part2)
             fig_stat_tmp3.suptitle(para.statnote)
-
-            stat[i].plot_statistic_part1(ax_stat1, myalpha=0.5)
-            stat[i].plot_statistic_part2(ax_stat2, myalpha=0.5)
-            stat[i].plot_statistic_part3(ax_stat3, myalpha=0.5)
 
             stat[i].save_bunchStatistic(fig_stat_tmp1, part=1)
             stat[i].save_bunchStatistic(fig_stat_tmp2, part=2)
             stat[i].save_bunchStatistic(fig_stat_tmp3, part=3)
+
+            if para.nbunch > 1:
+                stat[i].plot_statistic_part1(ax_stat1, myalpha=0.5)
+                stat[i].plot_statistic_part2(ax_stat2, myalpha=0.5)
+                stat[i].plot_statistic_part3(ax_stat3, myalpha=0.5)
 
         plt.close(fig_stat_tmp0)
         plt.close(fig_stat_tmp1)
@@ -71,22 +83,23 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
 
         print('File has been drawn: {0}'.format(stat[i].stat_file))
 
-    stat[0].manage_axGrid(ax_stat0, row, col)
-    fig_stat0.suptitle(para.statnote)
-    stat[0].save_beamStatistic(fig_stat0, part=0)
+    if para.nbunch > 1:
+        stat[0].manage_axGrid(ax_stat0, row, col)
+        fig_stat0.suptitle(para.statnote)
+        stat[0].save_beamStatistic(fig_stat0, part=0)
 
-    if stat[i].version == 'new':
-        stat[0].manage_axGrid(ax_stat1, row, col)
-        stat[0].manage_axGrid(ax_stat2, row, col)
-        stat[0].manage_axGrid(ax_stat3, row2, col2)
+        if stat[i].version == 'new':
+            stat[0].manage_axGrid(ax_stat1, row, col)
+            stat[0].manage_axGrid(ax_stat2, row, col)
+            stat[0].manage_axGrid(ax_stat3, row2, col2)
 
-        fig_stat1.suptitle(para.statnote)
-        fig_stat2.suptitle(para.statnote)
-        fig_stat3.suptitle(para.statnote)
+            fig_stat1.suptitle(para.statnote)
+            fig_stat2.suptitle(para.statnote)
+            fig_stat3.suptitle(para.statnote)
 
-        stat[0].save_beamStatistic(fig_stat1, part=1)
-        stat[0].save_beamStatistic(fig_stat2, part=2)
-        stat[0].save_beamStatistic(fig_stat3, part=3)
+            stat[0].save_beamStatistic(fig_stat1, part=1)
+            stat[0].save_beamStatistic(fig_stat2, part=2)
+            stat[0].save_beamStatistic(fig_stat3, part=3)
 
     plt.close(fig_stat0)
     plt.close(fig_stat1)
@@ -201,9 +214,37 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
         print('File has been drawn: {0}'.format(tune.file[j]))
 
 
-def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, xlim, ylim):
+def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize):
 
     order = 10
+
+    if para.particle == 'proton':
+        factor = 6
+    elif para.particle == 'electron':
+        factor = 1
+
+    if para.tuneshift_direction > 0:
+        xmin = para.nux - 0.01
+        ymin = para.nuy - 0.01
+        xmax = para.nux + factor * para.xix
+        ymax = para.nuy + factor * para.xiy
+        xmax = float(format(xmax, '.2f'))
+        ymax = float(format(ymax, '.2f'))
+    else:
+        xmax = para.nux - 0.01
+        ymax = para.nuy - 0.01
+        xmin = para.nux + factor * para.xix
+        ymin = para.nuy + factor * para.xiy
+        xmin = float(format(xmin, '.2f'))
+        ymin = float(format(ymin, '.2f'))
+
+    xmin = xmin if xmin >= 0 else 0
+    xmax = xmax if xmax <= 1 else 1
+    ymin = ymin if ymin >= 0 else 0
+    ymax = ymax if ymax <= 1 else 1
+
+    xlim = [xmin, xmax]
+    ylim = [ymin, ymax]
 
     mypool = Pool(processes=(os.cpu_count() - 1))
     for i in range(para.nbunch):
@@ -233,12 +274,6 @@ def main(home, yearMonDay, hourMinSec):
     my_figsize1 = (20, 10)
     my_figsize2 = (15, 10)
 
-    xlim_0 = [0, 1]
-    xlim_1 = [0.3, 0.33]
-    xlim_2 = [0.575, 0.68]
-    ylim_0 = [0, 1]
-    ylim_1 = [0.27, 0.34]
-    ylim_2 = [0.545, 0.6]
     # beam1.print()
     # beam2.print()
 
@@ -259,18 +294,17 @@ def main(home, yearMonDay, hourMinSec):
 
     plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
 
-    plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2, xlim_1,
-                   ylim_1)
-    plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2, xlim_2,
-                   ylim_2)
+    plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2)
+
+    plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2)
 
     return 0
 
 
 if __name__ == '__main__':
     home = 'D:\\bb2021'
-    yearMonDay = '2021_0720'
-    hourMinSec = '1828_46'
+    yearMonDay = '2021_0818'
+    hourMinSec = '1713_54'
 
     status = main(home, yearMonDay, hourMinSec)
     print(status)
