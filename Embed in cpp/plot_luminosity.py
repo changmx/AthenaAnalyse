@@ -34,11 +34,11 @@ class Luminosity:
 
         self.save_lumiPath = os.sep.join([
             self.savePath,
-            self.hourMinSec + '_figure_luminosity_' + self.particle
+            self.hourMinSec + '_luminosity_' + self.particle
         ])
 
         self.save_lumiTogetherPath = os.sep.join(
-            [self.savePath, self.hourMinSec + '_figure_luminosity'])
+            [self.savePath, self.hourMinSec + '_luminosity'])
 
     def load_luminosity(self, skip):
         if self.is_lumiExist:

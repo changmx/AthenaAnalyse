@@ -72,7 +72,7 @@ class Tune:
             if not os.path.exists(savePath):
                 os.makedirs(savePath)
             savePath = os.sep.join([
-                savePath, self.hourMinSec + '_figure_phase_' + self.particle +
+                savePath, self.hourMinSec + '_phase_' + self.particle +
                 "_bunch" + str(self.bunchid) + '_' + self.tune_turn[i]
             ])
             self.savePath_scatter.append(savePath + '_scatter')
