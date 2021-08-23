@@ -219,7 +219,7 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize):
     order = 10
 
     if para.particle == 'proton':
-        factor = 6
+        factor = 8
     elif para.particle == 'electron':
         factor = 1
 
@@ -303,8 +303,8 @@ def main(home, yearMonDay, hourMinSec):
 
 if __name__ == '__main__':
     home = 'D:\\bb2021'
-    yearMonDay = '2021_0818'
-    hourMinSec = '1713_54'
+    yearMonDay = '2021_0821'
+    hourMinSec = '1501_27'
 
     status = main(home, yearMonDay, hourMinSec)
     print(status)
