@@ -48,7 +48,7 @@ class Distribution:
 
             savePath = os.sep.join([
                 self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
-                'figure'
+                'figure_distribution'
             ])
             if not os.path.exists(savePath):
                 os.makedirs(savePath)
@@ -69,7 +69,7 @@ class Distribution:
                                                   unpack=True)
             delete_number = 0
             for j in range(len(tag)):
-                if tag[j] < 0:
+                if tag[j] <= 0:
                     x = np.delete(x, j - delete_number)
                     px = np.delete(px, j - delete_number)
                     y = np.delete(y, j - delete_number)
