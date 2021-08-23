@@ -32,7 +32,7 @@ class Statistic:
 
         self.savePath = os.sep.join([
             self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
-            'figure'
+            'figure_statistic'
         ])
         if not os.path.exists(self.savePath):
             os.makedirs(self.savePath)

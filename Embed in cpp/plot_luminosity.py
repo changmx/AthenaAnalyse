@@ -27,7 +27,7 @@ class Luminosity:
 
         self.savePath = os.sep.join([
             self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
-            'figure'
+            'figure_luminosity'
         ])
         if not os.path.exists(self.savePath):
             os.makedirs(self.savePath)
