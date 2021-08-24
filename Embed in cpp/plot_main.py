@@ -2,6 +2,7 @@ from multiprocessing import Pool
 import os
 from plot_distribution import Distribution
 import time
+import matplotlib as mpl
 
 from plot_statistic import *
 from plot_luminosity import *
@@ -118,10 +119,12 @@ def plot_luminosity_main(home,
     lumi = []
     particle = [para1.particle, para2.particle, particle3]
     skip = [para2.nbunch, para1.nbunch, nbunch3]
+    
     fig_lumi, ax_lumi = plt.subplots(1, 3, figsize=myfigsize, sharey='all')
 
     for i in range(3):
         fig_tmp, ax_tmp = plt.subplots(1, figsize=myfigsize)
+        mpl.rcParams['agg.path.chunksize']=10000
         lumi.append(Luminosity(home, yearMonDay, hourMinSec, particle[i]))
         lumi[i].load_luminosity(skip[i])
         lumi[i].plot_luminosity(ax_tmp, myalpha=1)
@@ -302,9 +305,9 @@ def main(home, yearMonDay, hourMinSec):
 
 
 if __name__ == '__main__':
-    home = 'D:\\bb2021'
-    yearMonDay = '2021_0821'
-    hourMinSec = '1501_27'
+    home = '/home/changmx/bb2021'
+    yearMonDay = '2021_0820'
+    hourMinSec = '1154_34'
 
     status = main(home, yearMonDay, hourMinSec)
     print(status)
