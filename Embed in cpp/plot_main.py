@@ -12,7 +12,6 @@ from plot_distribution import *
 
 
 def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
-    stat = []
     row = 3
     col = 3
     row2 = 2
@@ -41,66 +40,65 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
         fig_stat_tmp2.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
         fig_stat_tmp3.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
 
-        stat.append(
-            Statistic(home, yearMonDay, hourMinSec, para.particle, i, para.nux,
-                      para.nuy))
+        stat = Statistic(home, yearMonDay, hourMinSec, para.particle, i,
+                         para.nux, para.nuy)
 
-        stat[i].load_statistic()
+        stat.load_statistic()
 
-        stat[i].plot_statistic_part0(ax_stat_tmp0, myalpha=1)
-        stat[i].manage_axGrid(ax_stat_tmp0, row, col)
+        stat.plot_statistic_part0(ax_stat_tmp0, myalpha=1)
+        stat.manage_axGrid(ax_stat_tmp0, row, col)
         fig_stat_tmp0.suptitle(para.statnote)
-        stat[i].save_bunchStatistic(fig_stat_tmp0, part=0)
+        stat.save_bunchStatistic(fig_stat_tmp0, part=0)
 
         if para.nbunch > 1:
-            stat[i].plot_statistic_part0(ax_stat0, myalpha=0.5)
+            stat.plot_statistic_part0(ax_stat0, myalpha=0.5)
 
-        if stat[i].version == 'new':
-            stat[i].plot_statistic_part1(ax_stat_tmp1, myalpha=1)
-            stat[i].plot_statistic_part2(ax_stat_tmp2, myalpha=1)
-            stat[i].plot_statistic_part3(ax_stat_tmp3, myalpha=1)
+        if stat.version == 'new':
+            stat.plot_statistic_part1(ax_stat_tmp1, myalpha=1)
+            stat.plot_statistic_part2(ax_stat_tmp2, myalpha=1)
+            stat.plot_statistic_part3(ax_stat_tmp3, myalpha=1)
 
-            stat[i].manage_axGrid(ax_stat_tmp1, row, col)
-            stat[i].manage_axGrid(ax_stat_tmp2, row, col)
-            stat[i].manage_axGrid(ax_stat_tmp3, row2, col2)
+            stat.manage_axGrid(ax_stat_tmp1, row, col)
+            stat.manage_axGrid(ax_stat_tmp2, row, col)
+            stat.manage_axGrid(ax_stat_tmp3, row2, col2)
 
             fig_stat_tmp1.suptitle(para.statnote_part1)
             fig_stat_tmp2.suptitle(para.statnote_part2)
             fig_stat_tmp3.suptitle(para.statnote)
 
-            stat[i].save_bunchStatistic(fig_stat_tmp1, part=1)
-            stat[i].save_bunchStatistic(fig_stat_tmp2, part=2)
-            stat[i].save_bunchStatistic(fig_stat_tmp3, part=3)
+            stat.save_bunchStatistic(fig_stat_tmp1, part=1)
+            stat.save_bunchStatistic(fig_stat_tmp2, part=2)
+            stat.save_bunchStatistic(fig_stat_tmp3, part=3)
 
             if para.nbunch > 1:
-                stat[i].plot_statistic_part1(ax_stat1, myalpha=0.5)
-                stat[i].plot_statistic_part2(ax_stat2, myalpha=0.5)
-                stat[i].plot_statistic_part3(ax_stat3, myalpha=0.5)
+                stat.plot_statistic_part1(ax_stat1, myalpha=0.5)
+                stat.plot_statistic_part2(ax_stat2, myalpha=0.5)
+                stat.plot_statistic_part3(ax_stat3, myalpha=0.5)
 
         plt.close(fig_stat_tmp0)
         plt.close(fig_stat_tmp1)
         plt.close(fig_stat_tmp2)
         plt.close(fig_stat_tmp3)
 
-        print('File has been drawn: {0}'.format(stat[i].stat_file))
+        print('File has been drawn: {0}'.format(stat.stat_file))
 
     if para.nbunch > 1:
-        stat[0].manage_axGrid(ax_stat0, row, col)
+        stat.manage_axGrid(ax_stat0, row, col)
         fig_stat0.suptitle(para.statnote)
-        stat[0].save_beamStatistic(fig_stat0, part=0)
+        stat.save_beamStatistic(fig_stat0, part=0)
 
-        if stat[i].version == 'new':
-            stat[0].manage_axGrid(ax_stat1, row, col)
-            stat[0].manage_axGrid(ax_stat2, row, col)
-            stat[0].manage_axGrid(ax_stat3, row2, col2)
+        if stat.version == 'new':
+            stat.manage_axGrid(ax_stat1, row, col)
+            stat.manage_axGrid(ax_stat2, row, col)
+            stat.manage_axGrid(ax_stat3, row2, col2)
 
             fig_stat1.suptitle(para.statnote)
             fig_stat2.suptitle(para.statnote)
             fig_stat3.suptitle(para.statnote)
 
-            stat[0].save_beamStatistic(fig_stat1, part=1)
-            stat[0].save_beamStatistic(fig_stat2, part=2)
-            stat[0].save_beamStatistic(fig_stat3, part=3)
+            stat.save_beamStatistic(fig_stat1, part=1)
+            stat.save_beamStatistic(fig_stat2, part=2)
+            stat.save_beamStatistic(fig_stat3, part=3)
 
     plt.close(fig_stat0)
     plt.close(fig_stat1)
@@ -119,12 +117,12 @@ def plot_luminosity_main(home,
     lumi = []
     particle = [para1.particle, para2.particle, particle3]
     skip = [para2.nbunch, para1.nbunch, nbunch3]
-    
+
     fig_lumi, ax_lumi = plt.subplots(1, 3, figsize=myfigsize, sharey='all')
 
     for i in range(3):
         fig_tmp, ax_tmp = plt.subplots(1, figsize=myfigsize)
-        mpl.rcParams['agg.path.chunksize']=10000
+        mpl.rcParams['agg.path.chunksize'] = 10000
         lumi.append(Luminosity(home, yearMonDay, hourMinSec, particle[i]))
         lumi[i].load_luminosity(skip[i])
         lumi[i].plot_luminosity(ax_tmp, myalpha=1)
@@ -286,28 +284,28 @@ def main(home, yearMonDay, hourMinSec):
     # print(beam1.statnote)
     # print(beam2.statnote)
 
-    plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
+    # plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
 
-    plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
+    # plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
 
-    plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
-                         my_figsize1)
+    # plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
+    #                      my_figsize1)
 
     plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
 
     plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
 
-    plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2)
+    # plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2)
 
-    plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2)
+    # plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2)
 
     return 0
 
 
 if __name__ == '__main__':
-    home = '/home/changmx/bb2021'
-    yearMonDay = '2021_0820'
-    hourMinSec = '1154_34'
+    home = 'D:\\bb2021'
+    yearMonDay = '2021_0823'
+    hourMinSec = '2141_33'
 
     status = main(home, yearMonDay, hourMinSec)
     print(status)
