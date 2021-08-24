@@ -4,12 +4,12 @@ import numpy as np
 import Common as co
 from cal_centerOfMass_energy import cal_2particle_centerOfMass_energy
 
-Brho = 11.675
+Brho = 86
 L = 809.44
 # L = 1341.58
 quantity = 1
-N_proton = 0
-N_neutron = 0
+N_proton = 1
+N_neutron = 1
 f_colli_input = 100e6
 Nbunch = 270
 
