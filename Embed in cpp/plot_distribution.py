@@ -124,6 +124,7 @@ class Distribution:
 
             plt.suptitle(self.note)
             plt.savefig(self.savePath[i], dpi=300)
+            plt.close(fig)
             print('File has been drawn: {0}'.format(self.file[i]))
 
 
