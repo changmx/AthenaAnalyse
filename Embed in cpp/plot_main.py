@@ -27,6 +27,9 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
     fig_stat2.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
     fig_stat3.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
 
+    stat_forsave = Statistic(home, yearMonDay, hourMinSec, para.particle, 0,
+                             para.nux, para.nuy)
+
     for i in range(para.nbunch):
 
         fig_stat_tmp0, ax_stat_tmp0 = plt.subplots(row, col, figsize=myfigsize)
@@ -83,22 +86,22 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
         print('File has been drawn: {0}'.format(stat.stat_file))
 
     if para.nbunch > 1:
-        stat.manage_axGrid(ax_stat0, row, col)
+        stat_forsave.manage_axGrid(ax_stat0, row, col)
         fig_stat0.suptitle(para.statnote)
-        stat.save_beamStatistic(fig_stat0, part=0)
+        stat_forsave.save_beamStatistic(fig_stat0, part=0)
 
-        if stat.version == 'new':
-            stat.manage_axGrid(ax_stat1, row, col)
-            stat.manage_axGrid(ax_stat2, row, col)
-            stat.manage_axGrid(ax_stat3, row2, col2)
+        if stat_forsave.version == 'new':
+            stat_forsave.manage_axGrid(ax_stat1, row, col)
+            stat_forsave.manage_axGrid(ax_stat2, row, col)
+            stat_forsave.manage_axGrid(ax_stat3, row2, col2)
 
             fig_stat1.suptitle(para.statnote)
             fig_stat2.suptitle(para.statnote)
             fig_stat3.suptitle(para.statnote)
 
-            stat.save_beamStatistic(fig_stat1, part=1)
-            stat.save_beamStatistic(fig_stat2, part=2)
-            stat.save_beamStatistic(fig_stat3, part=3)
+            stat_forsave.save_beamStatistic(fig_stat1, part=1)
+            stat_forsave.save_beamStatistic(fig_stat2, part=2)
+            stat_forsave.save_beamStatistic(fig_stat3, part=3)
 
     plt.close(fig_stat0)
     plt.close(fig_stat1)
@@ -256,16 +259,26 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize):
     mypool.join()
 
 
+def plot_distribution_oneProcess(bunchid, home, yearMonDay, hourMinSec, para,
+                                 myfigsize):
+    dist = Distribution(home,
+                        yearMonDay,
+                        hourMinSec,
+                        para.particle,
+                        bunchid,
+                        dist='gaussian')
+
+    dist.load_plot_save(para, myfigsize=myfigsize, mysize=200, mybins=300)
+
+
 def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize):
 
+    mypool = Pool(processes=(os.cpu_count() - 1))
     for i in range(para.nbunch):
-        dist = Distribution(home,
-                            yearMonDay,
-                            hourMinSec,
-                            para.particle,
-                            i,
-                            dist='gaussian')
-        dist.load_plot_save(para, myfigsize=myfigsize, mysize=200, mybins=300)
+        mypool.apply_async(plot_distribution_oneProcess,
+                           (i, home, yearMonDay, hourMinSec, para, myfigsize))
+    mypool.close()
+    mypool.join()
 
 
 def main(home, yearMonDay, hourMinSec):
@@ -284,16 +297,16 @@ def main(home, yearMonDay, hourMinSec):
     # print(beam1.statnote)
     # print(beam2.statnote)
 
-    # plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
+    plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
 
-    # plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
+    plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
 
     # plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
     #                      my_figsize1)
 
-    plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
+    # plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
 
-    plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
+    # plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
 
     # plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2)
 
