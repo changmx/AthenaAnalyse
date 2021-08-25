@@ -90,8 +90,8 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
             stat.manage_axGrid(ax_stat2, row, col)
             stat.manage_axGrid(ax_stat3, row2, col2)
 
-            fig_stat1.suptitle(para.statnote)
-            fig_stat2.suptitle(para.statnote)
+            fig_stat1.suptitle(para.statnote_part1)
+            fig_stat2.suptitle(para.statnote_part2)
             fig_stat3.suptitle(para.statnote)
 
             stat.save_beamStatistic(fig_stat1, part=1)
