@@ -303,6 +303,7 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize):
 
 
 def main(home, yearMonDay, hourMinSec):
+    startTime = time.time()
     beam1 = Parameter(home, yearMonDay, hourMinSec, 'beam1')
     beam2 = Parameter(home, yearMonDay, hourMinSec, 'beam2')
 
@@ -319,9 +320,9 @@ def main(home, yearMonDay, hourMinSec):
     # print(beam1.statnote)
     # print(beam2.statnote)
 
-    # plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
+    plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
 
-    # plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
+    plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
 
     plot_luminosity_main(home,
                          yearMonDay,
@@ -331,13 +332,18 @@ def main(home, yearMonDay, hourMinSec):
                          my_figsize1,
                          myfontsize=10)
 
-    # plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
+    plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
 
-    # plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
+    plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
 
-    # plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2)
+    plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2)
 
-    # plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2)
+    plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2)
+
+    endtime = time.time()
+    print('start   : ', time.asctime(time.localtime(startTime)))
+    print('end     : ', time.asctime(time.localtime(endtime)))
+    print('running : ', endtime - startTime)
 
     return 0
 
