@@ -8,11 +8,12 @@ class Luminosity:
     """
     Load and plot luminisity data
     """
-    def __init__(self, home, yearMonDay, hourMinSec, particle):
+    def __init__(self, home, yearMonDay, hourMinSec, particle, myfontsize):
         self.home = home
         self.yearMonDay = yearMonDay
         self.hourMinSec = hourMinSec
         self.particle = particle
+        self.fontsize = myfontsize
 
         self.lumi_file = self.hourMinSec + '_luminosity_' + self.particle
         self.lumi_file = os.sep.join([
@@ -32,10 +33,8 @@ class Luminosity:
         if not os.path.exists(self.savePath):
             os.makedirs(self.savePath)
 
-        self.save_lumiPath = os.sep.join([
-            self.savePath,
-            self.hourMinSec + '_luminosity_' + self.particle
-        ])
+        self.save_lumiPath = os.sep.join(
+            [self.savePath, self.hourMinSec + '_luminosity_' + self.particle])
 
         self.save_lumiTogetherPath = os.sep.join(
             [self.savePath, self.hourMinSec + '_luminosity'])

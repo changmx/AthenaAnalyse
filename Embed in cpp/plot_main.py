@@ -129,6 +129,7 @@ def plot_luminosity_main(home,
                          para1,
                          para2,
                          myfigsize,
+                         myfontsize=12,
                          particle3='suPeriod',
                          nbunch3=1):
     lumi = []
@@ -138,26 +139,32 @@ def plot_luminosity_main(home,
     fig_lumi, ax_lumi = plt.subplots(1, 3, figsize=myfigsize, sharey='all')
 
     for i in range(3):
-        fig_tmp, ax_tmp = plt.subplots(1, figsize=myfigsize)
+        fig_tmp, ax_tmp = plt.subplots(1, figsize=(8, 6))
+        fig_tmp.subplots_adjust(left=0.09, right=0.97, top=0.83, bottom=0.08)
         mpl.rcParams['agg.path.chunksize'] = 10000
-        lumi.append(Luminosity(home, yearMonDay, hourMinSec, particle[i]))
+        lumi.append(
+            Luminosity(home, yearMonDay, hourMinSec, particle[i], myfontsize))
         lumi[i].load_luminosity(skip[i])
         lumi[i].plot_luminosity(ax_tmp, myalpha=1)
         lumi[i].plot_luminosity(ax_lumi[i], myalpha=1)
 
-        ax_tmp.set_ylabel(r'Luminosity $(\mathrm{cm}^{-2}\mathrm{s}^{-1})$')
-        ax_tmp.set_xlabel('Turn')
+        plt.rcParams['font.size'] = myfontsize
+        ax_tmp.set_ylabel(r'Luminosity $(\mathrm{cm}^{-2}\mathrm{s}^{-1})$',
+                          fontsize=myfontsize)
+        ax_tmp.set_xlabel('Turn', fontsize=myfontsize)
         ax_tmp.grid()
         ax_tmp.legend()
         ax_lumi[i].set_ylabel(
-            r'Luminosity $(\mathrm{cm}^{-2}\mathrm{s}^{-1})$')
-        ax_lumi[i].set_xlabel('Turn')
+            r'Luminosity $(\mathrm{cm}^{-2}\mathrm{s}^{-1})$',
+            fontsize=myfontsize)
+        ax_lumi[i].set_xlabel('Turn', fontsize=myfontsize)
         ax_lumi[i].grid()
 
         fig_tmp.suptitle(para1.luminote)
         ax_lumi[i].legend()
 
         lumi[i].save_lumi(fig_tmp)
+        # plt.show()
         plt.close(fig_tmp)
         print('File has been drawn: {0}'.format(lumi[i].lumi_file))
 
@@ -301,6 +308,7 @@ def main(home, yearMonDay, hourMinSec):
 
     my_figsize1 = (20, 10)
     my_figsize2 = (15, 10)
+    # figsize_lumi_beam
 
     # beam1.print()
     # beam2.print()
@@ -311,28 +319,33 @@ def main(home, yearMonDay, hourMinSec):
     # print(beam1.statnote)
     # print(beam2.statnote)
 
-    plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
+    # plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
 
-    plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
+    # plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
 
-    plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
-                         my_figsize1)
+    plot_luminosity_main(home,
+                         yearMonDay,
+                         hourMinSec,
+                         beam1,
+                         beam2,
+                         my_figsize1,
+                         myfontsize=10)
 
-    plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
+    # plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
 
-    plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
+    # plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
 
-    plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2)
+    # plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2)
 
-    plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2)
+    # plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2)
 
     return 0
 
 
 if __name__ == '__main__':
     home = 'D:\\bb2021'
-    yearMonDay = '2021_0823'
-    hourMinSec = '2141_33'
+    yearMonDay = '2021_0825'
+    hourMinSec = '0907_42'
 
     status = main(home, yearMonDay, hourMinSec)
     print(status)
