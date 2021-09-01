@@ -105,19 +105,25 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
         print('File has been drawn: beam {0}'.format(stat.particle))
 
 
-def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize):
+def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize, ncpu):
     row = 3
     col = 3
     row2 = 2
     col2 = 2
 
-    mypool = Pool(processes=(os.cpu_count() - 1))
-    for i in range(para.nbunch):
-        mypool.apply_async(plot_statistic_bunch_oneProcess,
-                           (i, row, col, row2, col2, home, yearMonDay,
-                            hourMinSec, para, myfigsize))
-    mypool.close()
-    mypool.join()
+    if ncpu == 1:
+        for i in range(para.nbunch):
+            plot_statistic_bunch_oneProcess(i, row, col, row2, col2, home,
+                                            yearMonDay, hourMinSec, para,
+                                            myfigsize)
+    else:
+        mypool = Pool(processes=ncpu)
+        for i in range(para.nbunch):
+            mypool.apply_async(plot_statistic_bunch_oneProcess,
+                               (i, row, col, row2, col2, home, yearMonDay,
+                                hourMinSec, para, myfigsize))
+        mypool.close()
+        mypool.join()
 
     plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
                         para, myfigsize)
@@ -239,7 +245,7 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
         print('File has been drawn: {0}'.format(tune.file[j]))
 
 
-def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize):
+def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, ncpu):
 
     order = 10
 
@@ -271,13 +277,18 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize):
     xlim = [xmin, xmax]
     ylim = [ymin, ymax]
 
-    mypool = Pool(processes=(os.cpu_count() - 1))
-    for i in range(para.nbunch):
-        mypool.apply_async(plot_tune_oneProcess,
-                           (order, home, yearMonDay, hourMinSec, para,
-                            myfigsize, i, xlim, ylim))
-    mypool.close()
-    mypool.join()
+    if ncpu == 1:
+        for i in range(para.nbunch):
+            plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para,
+                                 myfigsize, i, xlim, ylim)
+    else:
+        mypool = Pool(processes=ncpu)
+        for i in range(para.nbunch):
+            mypool.apply_async(plot_tune_oneProcess,
+                               (order, home, yearMonDay, hourMinSec, para,
+                                myfigsize, i, xlim, ylim))
+        mypool.close()
+        mypool.join()
 
 
 def plot_distribution_oneProcess(bunchid, home, yearMonDay, hourMinSec, para,
@@ -292,17 +303,24 @@ def plot_distribution_oneProcess(bunchid, home, yearMonDay, hourMinSec, para,
     dist.load_plot_save(para, myfigsize=myfigsize, mysize=200, mybins=300)
 
 
-def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize):
+def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
+                           ncpu):
 
-    mypool = Pool(processes=(os.cpu_count() - 1))
-    for i in range(para.nbunch):
-        mypool.apply_async(plot_distribution_oneProcess,
-                           (i, home, yearMonDay, hourMinSec, para, myfigsize))
-    mypool.close()
-    mypool.join()
+    if ncpu == 1:
+        for i in range(para.nbunch):
+            plot_distribution_oneProcess(i, home, yearMonDay, hourMinSec, para,
+                                         myfigsize)
+    else:
+        mypool = Pool(processes=ncpu)
+        for i in range(para.nbunch):
+            mypool.apply_async(
+                plot_distribution_oneProcess,
+                (i, home, yearMonDay, hourMinSec, para, myfigsize))
+        mypool.close()
+        mypool.join()
 
 
-def main(home, yearMonDay, hourMinSec):
+def main(home, yearMonDay, hourMinSec, ncpu=1):
     startTime = time.time()
     beam1 = Parameter(home, yearMonDay, hourMinSec, 'beam1')
     beam2 = Parameter(home, yearMonDay, hourMinSec, 'beam2')
@@ -320,9 +338,9 @@ def main(home, yearMonDay, hourMinSec):
     # print(beam1.statnote)
     # print(beam2.statnote)
 
-    plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
+    plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1, ncpu)
 
-    plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
+    plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1, ncpu)
 
     plot_luminosity_main(home,
                          yearMonDay,
@@ -332,18 +350,20 @@ def main(home, yearMonDay, hourMinSec):
                          my_figsize1,
                          myfontsize=10)
 
-    plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1)
+    plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1,
+                           ncpu)
 
-    plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1)
+    plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1,
+                           ncpu)
 
-    plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2)
+    plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2, ncpu)
 
-    plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2)
+    plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2, ncpu)
 
     endtime = time.time()
     print('start   : ', time.asctime(time.localtime(startTime)))
     print('end     : ', time.asctime(time.localtime(endtime)))
-    print('running : {0:d} min'.format(int((endtime - startTime) / 60)))
+    print('running :  {0:d} min'.format(int((endtime - startTime) / 60)))
 
     return 0
 
@@ -353,5 +373,6 @@ if __name__ == '__main__':
     yearMonDay = '2021_0825'
     hourMinSec = '0907_42'
 
-    status = main(home, yearMonDay, hourMinSec)
+    ncpu = os.cpu_count() - 1
+    status = main(home, yearMonDay, hourMinSec, ncpu=ncpu)
     print(status)
