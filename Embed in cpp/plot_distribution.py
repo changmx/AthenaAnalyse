@@ -54,7 +54,7 @@ class Distribution:
                 os.makedirs(savePath)
             savePath = os.sep.join([
                 savePath, self.hourMinSec + '_dist_' + self.particle +
-                "_bunch" + str(self.bunchid) + '_turn' + self.dist_turn[i]
+                "_bunch" + str(self.bunchid) + '_superPeriod_' + self.dist_turn[i]
             ])
 
             self.savePath.append(savePath)
@@ -115,7 +115,7 @@ class Distribution:
                                 wspace=0.22,
                                 hspace=0.22)
             # plt.show()
-            self.note = '{0}, turn{1}\n'.format(self.bunchLabel,
+            self.note = '{0}, super period {1}\n'.format(self.bunchLabel,
                                                 self.dist_turn[i])
 
             self.note += r'$\sigma_x={0:e}, \sigma_{{x^\prime}}={1:e}, \sigma_y={2:e}, \sigma_{{y^\prime}}={3:e}, \sigma_z={4:e}, \delta_p={5:e}$'.format(

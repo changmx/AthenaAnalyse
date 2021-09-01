@@ -343,7 +343,7 @@ def main(home, yearMonDay, hourMinSec):
     endtime = time.time()
     print('start   : ', time.asctime(time.localtime(startTime)))
     print('end     : ', time.asctime(time.localtime(endtime)))
-    print('running : ', endtime - startTime)
+    print('running : {0:d} min'.format(int((endtime - startTime) / 60)))
 
     return 0
 
