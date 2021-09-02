@@ -107,7 +107,8 @@ class Tune:
                      resonanceOrder,
                      myalpha,
                      mysize,
-                     resonanceKind='all'):
+                     resonanceKind='all',
+                     myfontsize=10):
         ax.scatter(self.nuX[phaseTime],
                    self.nuY[phaseTime],
                    alpha=myalpha,
@@ -116,7 +117,7 @@ class Tune:
                    zorder=resonanceOrder)
 
         plot_resonanceDiagram_color(resonanceOrder, ax, self.xlim, self.ylim,
-                                    resonanceKind)
+                                    resonanceKind, myfontsize)
 
     def plot_hexbin(self,
                     ax,
@@ -124,14 +125,15 @@ class Tune:
                     resonanceOrder,
                     myalpha,
                     mysize,
-                    resonanceKind='all'):
+                    resonanceKind='all',
+                    myfontsize=10):
         ax.hexbin(self.nuX[phaseTime],
                   self.nuY[phaseTime],
                   gridsize=mysize,
                   cmap='Reds')
 
         plot_resonanceDiagram_color(resonanceOrder, ax, self.xlim, self.ylim,
-                                    resonanceKind)
+                                    resonanceKind, myfontsize)
 
     def save_scatter(self, figure, phaseTime, mydpi=300):
         # print(self.savePath[phaseTime])
