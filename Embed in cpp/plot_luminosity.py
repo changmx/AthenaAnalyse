@@ -52,10 +52,8 @@ class Luminosity:
 
     def plot_luminosity(self, ax, myalpha):
         if self.is_lumiExist:
-            ax.plot(self.lumiTurn,
-                    self.lumi,
-                    label=self.particle,
-                    alpha=myalpha)
+            mylabel = 'super period' if self.particle == 'suPeriod' else self.particle
+            ax.plot(self.lumiTurn, self.lumi, label=mylabel, alpha=myalpha)
 
     def save_lumi(self, figure, mydpi=300):
         figure.savefig(self.save_lumiPath, dpi=mydpi)
