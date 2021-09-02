@@ -1,5 +1,7 @@
 from multiprocessing import Pool
 import os
+
+from matplotlib.pyplot import legend
 from plot_distribution import Distribution
 import time
 import matplotlib as mpl
@@ -12,30 +14,48 @@ from plot_distribution import *
 
 
 def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
-                                    yearMonDay, hourMinSec, para, myfigsize):
+                                    yearMonDay, hourMinSec, para, myfigsize,
+                                    myfontsize):
     fig_stat_tmp0, ax_stat_tmp0 = plt.subplots(row, col, figsize=myfigsize)
+    plt.xticks(fontsize=myfontsize)
+    plt.yticks(fontsize=myfontsize)
     fig_stat_tmp1, ax_stat_tmp1 = plt.subplots(row, col, figsize=myfigsize)
+    plt.xticks(fontsize=myfontsize)
+    plt.yticks(fontsize=myfontsize)
     fig_stat_tmp2, ax_stat_tmp2 = plt.subplots(row, col, figsize=myfigsize)
+    plt.xticks(fontsize=myfontsize)
+    plt.yticks(fontsize=myfontsize)
     fig_stat_tmp3, ax_stat_tmp3 = plt.subplots(row2, col2, figsize=myfigsize)
+    plt.xticks(fontsize=myfontsize)
+    plt.yticks(fontsize=myfontsize)
+
     fig_stat_tmp0.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
     fig_stat_tmp1.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
     fig_stat_tmp2.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
     fig_stat_tmp3.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
+    fig_stat_tmp0.subplots_adjust(top=0.87)
+    fig_stat_tmp3.subplots_adjust(top=0.86, hspace=0.13)
 
     stat = Statistic(home, yearMonDay, hourMinSec, para.particle, bunchid,
                      para.nux, para.nuy)
 
     stat.load_statistic()
 
-    stat.plot_statistic_part0(ax_stat_tmp0, myalpha=1)
+    stat.plot_statistic_part0(ax_stat_tmp0, myalpha=1, myfontsize=myfontsize)
     stat.manage_axGrid(ax_stat_tmp0, row, col)
     fig_stat_tmp0.suptitle(para.statnote)
     stat.save_bunchStatistic(fig_stat_tmp0, part=0)
 
     if stat.version == 'new':
-        stat.plot_statistic_part1(ax_stat_tmp1, myalpha=1)
-        stat.plot_statistic_part2(ax_stat_tmp2, myalpha=1)
-        stat.plot_statistic_part3(ax_stat_tmp3, myalpha=1)
+        stat.plot_statistic_part1(ax_stat_tmp1,
+                                  myalpha=1,
+                                  myfontsize=myfontsize)
+        stat.plot_statistic_part2(ax_stat_tmp2,
+                                  myalpha=1,
+                                  myfontsize=myfontsize)
+        stat.plot_statistic_part3(ax_stat_tmp3,
+                                  myalpha=1,
+                                  myfontsize=myfontsize)
 
         stat.manage_axGrid(ax_stat_tmp1, row, col)
         stat.manage_axGrid(ax_stat_tmp2, row, col)
@@ -58,17 +78,28 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
 
 
 def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
-                        para, myfigsize):
+                        para, myfigsize, myfontsize):
     if para.nbunch > 1:
         fig_stat0, ax_stat0 = plt.subplots(row, col, figsize=myfigsize)
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
         fig_stat1, ax_stat1 = plt.subplots(row, col, figsize=myfigsize)
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
         fig_stat2, ax_stat2 = plt.subplots(row, col, figsize=myfigsize)
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
         fig_stat3, ax_stat3 = plt.subplots(row2, col2, figsize=myfigsize)
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
 
         fig_stat0.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
         fig_stat1.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
         fig_stat2.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
         fig_stat3.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
+
+        fig_stat0.subplots_adjust(top=0.87)
+        fig_stat3.subplots_adjust(top=0.86, hspace=0.13)
 
         for i in range(para.nbunch):
             stat = Statistic(home, yearMonDay, hourMinSec, para.particle, i,
@@ -76,11 +107,19 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
 
             stat.load_statistic()
 
-            stat.plot_statistic_part0(ax_stat0, myalpha=0.5)
+            stat.plot_statistic_part0(ax_stat0,
+                                      myalpha=0.5,
+                                      myfontsize=myfontsize)
             if stat.version == 'new':
-                stat.plot_statistic_part1(ax_stat1, myalpha=0.5)
-                stat.plot_statistic_part2(ax_stat2, myalpha=0.5)
-                stat.plot_statistic_part3(ax_stat3, myalpha=0.5)
+                stat.plot_statistic_part1(ax_stat1,
+                                          myalpha=0.5,
+                                          myfontsize=myfontsize)
+                stat.plot_statistic_part2(ax_stat2,
+                                          myalpha=0.5,
+                                          myfontsize=myfontsize)
+                stat.plot_statistic_part3(ax_stat3,
+                                          myalpha=0.5,
+                                          myfontsize=myfontsize)
 
         stat.manage_axGrid(ax_stat0, row, col)
         fig_stat0.suptitle(para.statnote)
@@ -105,7 +144,9 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
         print('File has been drawn: beam {0}'.format(stat.particle))
 
 
-def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize, ncpu):
+def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize,
+                        myfontsize, ncpu):
+    print('\nStart drawing {0:s} statistic data'.format(para.particle))
     row = 3
     col = 3
     row2 = 2
@@ -115,18 +156,21 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize, ncpu):
         for i in range(para.nbunch):
             plot_statistic_bunch_oneProcess(i, row, col, row2, col2, home,
                                             yearMonDay, hourMinSec, para,
-                                            myfigsize)
+                                            myfigsize, myfontsize)
     else:
         mypool = Pool(processes=ncpu)
         for i in range(para.nbunch):
             mypool.apply_async(plot_statistic_bunch_oneProcess,
                                (i, row, col, row2, col2, home, yearMonDay,
-                                hourMinSec, para, myfigsize))
+                                hourMinSec, para, myfigsize, myfontsize))
+            print(
+                'Callable cpu cores: {0:d}, task {1:d}/{2:d} has been added asynchronously'
+                .format(ncpu, i, para.nbunch))
         mypool.close()
         mypool.join()
 
     plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
-                        para, myfigsize)
+                        para, myfigsize, myfontsize)
 
 
 def plot_luminosity_main(home,
@@ -135,31 +179,37 @@ def plot_luminosity_main(home,
                          para1,
                          para2,
                          myfigsize,
-                         myfontsize=12,
+                         myfontsize,
                          particle3='suPeriod',
                          nbunch3=1):
-    lumi = []
+    print('\nStart drawing luminosity data')
+    lumi = 'tmp'
     particle = [para1.particle, para2.particle, particle3]
     skip = [para2.nbunch, para1.nbunch, nbunch3]
 
     fig_lumi, ax_lumi = plt.subplots(1, 3, figsize=myfigsize, sharey='all')
+    fig_lumi.subplots_adjust(left=0.04, right=0.98, bottom=0.06, wspace=0.12)
+    plt.xticks(fontsize=myfontsize)
+    plt.yticks(fontsize=myfontsize)
 
     for i in range(3):
         fig_tmp, ax_tmp = plt.subplots(1, figsize=(8, 6))
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
+
         fig_tmp.subplots_adjust(left=0.09, right=0.97, top=0.83, bottom=0.08)
         mpl.rcParams['agg.path.chunksize'] = 10000
-        lumi.append(
-            Luminosity(home, yearMonDay, hourMinSec, particle[i], myfontsize))
-        lumi[i].load_luminosity(skip[i])
-        lumi[i].plot_luminosity(ax_tmp, myalpha=1)
-        lumi[i].plot_luminosity(ax_lumi[i], myalpha=1)
+        lumi = Luminosity(home, yearMonDay, hourMinSec, particle[i],
+                          myfontsize)
+        lumi.load_luminosity(skip[i])
+        lumi.plot_luminosity(ax_tmp, myalpha=1)
+        lumi.plot_luminosity(ax_lumi[i], myalpha=1)
 
-        plt.rcParams['font.size'] = myfontsize
         ax_tmp.set_ylabel(r'Luminosity $(\mathrm{cm}^{-2}\mathrm{s}^{-1})$',
                           fontsize=myfontsize)
         ax_tmp.set_xlabel('Turn', fontsize=myfontsize)
         ax_tmp.grid()
-        ax_tmp.legend()
+        ax_tmp.legend(fontsize=myfontsize)
         ax_lumi[i].set_ylabel(
             r'Luminosity $(\mathrm{cm}^{-2}\mathrm{s}^{-1})$',
             fontsize=myfontsize)
@@ -167,22 +217,20 @@ def plot_luminosity_main(home,
         ax_lumi[i].grid()
 
         fig_tmp.suptitle(para1.luminote)
-        ax_lumi[i].legend()
+        ax_lumi[i].legend(fontsize=myfontsize)
 
-        lumi[i].save_lumi(fig_tmp)
-        # plt.show()
+        lumi.save_lumi(fig_tmp)
         plt.close(fig_tmp)
-        print('File has been drawn: {0}'.format(lumi[i].lumi_file))
+        print('File has been drawn: {0}'.format(lumi.lumi_file))
 
     fig_lumi.suptitle(para1.luminote)
-    lumi[0].save_lumiPath = lumi[0].save_lumiTogetherPath
-    lumi[0].save_lumi(fig_lumi)
-
+    lumi.save_lumiPath = lumi.save_lumiTogetherPath
+    lumi.save_lumi(fig_lumi)
     plt.close(fig_lumi)
 
 
 def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
-                         i, xlim, ylim):
+                         myfontsize, i, xlim, ylim):
     '''
     使用多线程同时处理不同束团的tune信息
 
@@ -195,24 +243,34 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
     tune.load()
     for j in range(len(tune.file)):
         fig_tmp1, ax_tmp1 = plt.subplots(1, figsize=myfigsize)
+        fig_tmp1.subplots_adjust(left=0.1, right=0.96, bottom=0.08)
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
+
         fig_tmp2, ax_tmp2 = plt.subplots(1, figsize=myfigsize)
+        fig_tmp2.subplots_adjust(left=0.1, right=0.96, bottom=0.08)
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
+
         tune.plot_scatter(ax_tmp1,
                           j,
                           resonanceOrder=order,
                           myalpha=0.5,
-                          mysize=1)
+                          mysize=1,
+                          myfontsize=myfontsize)
         ax_tmp1.scatter(para.nux,
                         para.nuy,
                         marker='x',
                         color='black',
+                        s=100,
                         zorder=order)
 
-        ax_tmp1.set_xlabel(r'$\nu_x$')
-        ax_tmp1.set_ylabel(r'$\nu_y$')
+        ax_tmp1.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
+        ax_tmp1.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
 
-        ax_tmp1.set_title('{0:s} bunch{1:d} turn {2:s}'.format(
-            para.particle, i, tune.tune_turn[j]))
-        fig_tmp1.suptitle(para.statnote)
+        fig_tmp1.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
+            para.statnote, para.particle, i, tune.tune_turn[j]),
+                          fontsize=10)
 
         tune.save_scatter(fig_tmp1, j)
         plt.close(fig_tmp1)
@@ -224,29 +282,31 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
                          j,
                          resonanceOrder=order,
                          myalpha=0.3,
-                         mysize=200)
+                         mysize=200,
+                         myfontsize=myfontsize)
         ax_tmp2.scatter(para.nux,
                         para.nuy,
                         marker='x',
                         color='black',
+                        s=100,
                         zorder=order)
 
-        ax_tmp2.set_xlabel(r'$\nu_x$')
-        ax_tmp2.set_ylabel(r'$\nu_y$')
+        ax_tmp2.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
+        ax_tmp2.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
 
-        ax_tmp2.set_title('{0:s} bunch{1:d} turn {2:s}'.format(
-            para.particle, i, tune.tune_turn[j]))
-        fig_tmp2.suptitle(para.statnote)
+        fig_tmp2.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
+            para.statnote, para.particle, i, tune.tune_turn[j]),
+                          fontsize=10)
         # ax_tmp2.tick_params(top=False, right=False)
 
         tune.save_hexbin(fig_tmp2, j)
-
         plt.close(fig_tmp2)
         print('File has been drawn: {0}'.format(tune.file[j]))
 
 
-def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, ncpu):
-
+def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
+                   ncpu):
+    print('\nStart drawing {0:s} tune spread data'.format(para.particle))
     order = 10
 
     if para.particle == 'proton':
@@ -280,13 +340,16 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, ncpu):
     if ncpu == 1:
         for i in range(para.nbunch):
             plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para,
-                                 myfigsize, i, xlim, ylim)
+                                 myfigsize, myfontsize, i, xlim, ylim)
     else:
         mypool = Pool(processes=ncpu)
         for i in range(para.nbunch):
             mypool.apply_async(plot_tune_oneProcess,
                                (order, home, yearMonDay, hourMinSec, para,
-                                myfigsize, i, xlim, ylim))
+                                myfigsize, myfontsize, i, xlim, ylim))
+            print(
+                'Callable cpu cores: {0:d}, task {1:d}/{2:d} has been added asynchronously'
+                .format(ncpu, i, para.nbunch))
         mypool.close()
         mypool.join()
 
@@ -305,7 +368,7 @@ def plot_distribution_oneProcess(bunchid, home, yearMonDay, hourMinSec, para,
 
 def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
                            ncpu):
-
+    print('\nStart drawing {0:s} distribution data'.format(para.particle))
     if ncpu == 1:
         for i in range(para.nbunch):
             plot_distribution_oneProcess(i, home, yearMonDay, hourMinSec, para,
@@ -316,6 +379,9 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
             mypool.apply_async(
                 plot_distribution_oneProcess,
                 (i, home, yearMonDay, hourMinSec, para, myfigsize))
+            print(
+                'Callable cpu cores: {0:d}, task {1:d}/{2:d} has been added asynchronously'
+                .format(ncpu, i, para.nbunch))
         mypool.close()
         mypool.join()
 
@@ -327,7 +393,9 @@ def main(home, yearMonDay, hourMinSec, ncpu=1):
 
     my_figsize1 = (20, 10)
     my_figsize2 = (15, 10)
-    # figsize_lumi_beam
+    my_fontsize_stat = 12
+    my_fontsize_lumi = 12
+    my_fontsize_tune = 20
 
     # beam1.print()
     # beam2.print()
@@ -338,17 +406,14 @@ def main(home, yearMonDay, hourMinSec, ncpu=1):
     # print(beam1.statnote)
     # print(beam2.statnote)
 
-    plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1, ncpu)
+    plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1,
+                        my_fontsize_stat, ncpu)
 
-    plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1, ncpu)
+    plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1,
+                        my_fontsize_stat, ncpu)
 
-    plot_luminosity_main(home,
-                         yearMonDay,
-                         hourMinSec,
-                         beam1,
-                         beam2,
-                         my_figsize1,
-                         myfontsize=10)
+    plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
+                         my_figsize1, my_fontsize_lumi)
 
     plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1,
                            ncpu)
@@ -356,9 +421,11 @@ def main(home, yearMonDay, hourMinSec, ncpu=1):
     plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1,
                            ncpu)
 
-    plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2, ncpu)
+    plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2,
+                   my_fontsize_tune, ncpu)
 
-    plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2, ncpu)
+    plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2,
+                   my_fontsize_tune, ncpu)
 
     endtime = time.time()
     print('start   : ', time.asctime(time.localtime(startTime)))
