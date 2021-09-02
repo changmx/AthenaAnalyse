@@ -81,6 +81,7 @@ class Statistic:
             self,
             ax,
             myalpha,
+            myfontsize,
             freqx=(0, 1),
             freqy=(0, 1),
     ):
@@ -98,44 +99,50 @@ class Statistic:
                           self.xAverage,
                           label=self.bunchLabel,
                           alpha=myalpha)
-            ax[0, 0].set_ylabel(r'$\overline{\mathrm{x}}(\mathrm{m})$')
+            ax[0, 0].set_ylabel(r'$\overline{\mathrm{x}}(\mathrm{m})$',
+                                fontsize=myfontsize)
 
             ax[0, 1].plot(self.turn,
                           self.sigmax,
                           label=self.bunchLabel,
                           alpha=myalpha)
-            ax[0, 1].set_ylabel(r'$\sigma_x (\mathrm{m})$')
+            ax[0, 1].set_ylabel(r'$\sigma_x (\mathrm{m})$',
+                                fontsize=myfontsize)
 
             ax[0, 2].plot(self.turn,
                           self.xEmit,
                           label=self.bunchLabel,
                           alpha=myalpha)
-            ax[0, 2].set_ylabel(r'$\epsilon_x (\mathrm{m}\cdot\mathrm{rad})$')
+            ax[0, 2].set_ylabel(r'$\epsilon_x (\mathrm{m}\cdot\mathrm{rad})$',
+                                fontsize=myfontsize)
 
             ax[1, 0].plot(self.turn,
                           self.yAverage,
                           label=self.bunchLabel,
                           alpha=myalpha)
-            ax[1, 0].set_ylabel(r'$\overline{\mathrm{y}} (\mathrm{m})$')
+            ax[1, 0].set_ylabel(r'$\overline{\mathrm{y}} (\mathrm{m})$',
+                                fontsize=myfontsize)
 
             ax[1, 1].plot(self.turn,
                           self.sigmay,
                           label=self.bunchLabel,
                           alpha=myalpha)
-            ax[1, 1].set_ylabel(r'$\sigma_y (\mathrm{m})$')
+            ax[1, 1].set_ylabel(r'$\sigma_y (\mathrm{m})$',
+                                fontsize=myfontsize)
 
             ax[1, 2].plot(self.turn,
                           self.yEmit,
                           label=self.bunchLabel,
                           alpha=myalpha)
-            ax[1, 2].set_ylabel(r'$\epsilon_y (\mathrm{m}\cdot\mathrm{rad})$')
+            ax[1, 2].set_ylabel(r'$\epsilon_y (\mathrm{m}\cdot\mathrm{rad})$',
+                                fontsize=myfontsize)
 
             freq_x = cal_freq_fft(self.turn.shape[0], 1, freqx[0], freqx[1])
             spec_x = cal_spctrum_fft(self.turn.shape[0], 1, freqx[0], freqx[1],
                                      self.xAverage)
 
             ax[2, 0].plot(freq_x, spec_x, label=self.bunchLabel, alpha=myalpha)
-            ax[2, 0].set_ylabel('Amplitude x')
+            ax[2, 0].set_ylabel('Amplitude x', fontsize=myfontsize)
             ax[2, 0].set_yscale('log')
             ax[2, 0].axvline(x=self.nux,
                              ymin=0,
@@ -148,7 +155,7 @@ class Statistic:
                                      self.yAverage)
 
             ax[2, 1].plot(freq_y, spec_y, label=self.bunchLabel, alpha=myalpha)
-            ax[2, 1].set_ylabel('Amplitude y')
+            ax[2, 1].set_ylabel('Amplitude y', fontsize=myfontsize)
             ax[2, 1].set_yscale('log')
             ax[2, 1].axvline(x=self.nuy,
                              ymin=0,
@@ -160,22 +167,18 @@ class Statistic:
                           self.beamloss,
                           label=self.bunchLabel,
                           alpha=myalpha)
-            ax[2, 2].set_ylabel('particle loss')
+            ax[2, 2].set_ylabel('particle loss', fontsize=myfontsize)
 
             for i in range(3):
                 for j in range(3):
-                    ax[i, j].legend(loc='best')
+                    ax[i, j].legend(loc='best', fontsize=myfontsize)
             for i in range(2):
                 for j in range(3):
                     ax[i, j].ticklabel_format(axis='y',
                                               style='sci',
                                               scilimits=(0, 0))
 
-    def plot_statistic_part1(
-        self,
-        ax,
-        myalpha,
-    ):
+    def plot_statistic_part1(self, ax, myalpha, myfontsize):
         if self.version == 'new':
             if self.is_statExist:
                 ax[0, 0].plot(self.turn,
@@ -183,171 +186,183 @@ class Statistic:
                               label=self.bunchLabel,
                               alpha=myalpha)
                 ax[0, 0].set_ylabel(
-                    r'$\overline{\mathrm{x^{\prime}}}(\mathrm{rad})$')
+                    r'$\overline{\mathrm{x^{\prime}}}(\mathrm{rad})$',
+                    fontsize=myfontsize)
 
                 ax[0, 1].plot(self.turn,
                               self.sigmapx,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[0, 1].set_ylabel(r'$\sigma_{x^{\prime}} (\mathrm{rad})$')
+                ax[0, 1].set_ylabel(r'$\sigma_{x^{\prime}} (\mathrm{rad})$',
+                                    fontsize=myfontsize)
 
                 ax[0, 2].plot(self.turn,
                               self.zAverage,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[0, 2].set_ylabel(r'$\overline{\mathrm{z}}(\mathrm{m})$')
+                ax[0, 2].set_ylabel(r'$\overline{\mathrm{z}}(\mathrm{m})$',
+                                    fontsize=myfontsize)
 
                 ax[1, 0].plot(self.turn,
                               self.pyAverage,
                               label=self.bunchLabel,
                               alpha=myalpha)
                 ax[1, 0].set_ylabel(
-                    r'$\overline{\mathrm{y^{\prime}}}(\mathrm{rad})$')
+                    r'$\overline{\mathrm{y^{\prime}}}(\mathrm{rad})$',
+                    fontsize=myfontsize)
 
                 ax[1, 1].plot(self.turn,
                               self.sigmapy,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[1, 1].set_ylabel(r'$\sigma_{y^{\prime}} (\mathrm{rad})$')
+                ax[1, 1].set_ylabel(r'$\sigma_{y^{\prime}} (\mathrm{rad})$',
+                                    fontsize=myfontsize)
 
                 ax[1, 2].plot(self.turn,
                               self.sigmaz,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[1, 2].set_ylabel(r'$\sigma_z (\mathrm{m})$')
+                ax[1, 2].set_ylabel(r'$\sigma_z (\mathrm{m})$',
+                                    fontsize=myfontsize)
 
                 ax[2, 0].plot(self.turn,
                               self.pzAverage,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[2, 0].set_ylabel(r'$\overline{\mathrm{dp}}$')
+                ax[2, 0].set_ylabel(r'$\overline{\mathrm{dp}}$',
+                                    fontsize=myfontsize)
 
                 ax[2, 1].plot(self.turn,
                               self.sigmapy,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[2, 1].set_ylabel(r'$\delta_p$')
+                ax[2, 1].set_ylabel(r'$\delta_p$', fontsize=myfontsize)
 
                 ax[2, 2].plot(self.turn,
                               self.lossPercent,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[2, 2].set_ylabel('Percentage of particle loss(%)')
+                ax[2, 2].set_ylabel('Percentage of particle loss(%)',
+                                    fontsize=myfontsize)
 
                 for i in range(3):
                     for j in range(3):
-                        ax[i, j].legend(loc='best')
+                        ax[i, j].legend(loc='best', fontsize=myfontsize)
                 for i in range(3):
                     for j in range(3):
                         ax[i, j].ticklabel_format(axis='y',
                                                   style='sci',
                                                   scilimits=(0, 0))
 
-    def plot_statistic_part2(
-        self,
-        ax,
-        myalpha,
-    ):
+    def plot_statistic_part2(self, ax, myalpha, myfontsize):
         if self.version == 'new':
             if self.is_statExist:
                 ax[0, 0].plot(self.turn,
                               self.betax,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[0, 0].set_ylabel(r'$\mathrm{\beta_x}(\mathrm{m})$')
+                ax[0, 0].set_ylabel(r'$\mathrm{\beta_x}(\mathrm{m})$',
+                                    fontsize=myfontsize)
 
                 ax[0, 1].plot(self.turn,
                               self.betay,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[0, 1].set_ylabel(r'$\mathrm{\beta_y}(\mathrm{m})$')
+                ax[0, 1].set_ylabel(r'$\mathrm{\beta_y}(\mathrm{m})$',
+                                    fontsize=myfontsize)
 
                 ax[0, 2].plot(self.turn,
                               self.invariantx,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[0, 2].set_ylabel(r'$\mathrm{\gamma_x\beta_x}-{\alpha_x}^2$')
+                ax[0, 2].set_ylabel(r'$\mathrm{\gamma_x\beta_x}-{\alpha_x}^2$',
+                                    fontsize=myfontsize)
 
                 ax[1, 0].plot(self.turn,
                               self.alphax,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[1, 0].set_ylabel(r'$\mathrm{\alpha_x}$')
+                ax[1, 0].set_ylabel(r'$\mathrm{\alpha_x}$',
+                                    fontsize=myfontsize)
 
                 ax[1, 1].plot(self.turn,
                               self.alphay,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[1, 1].set_ylabel(r'$\mathrm{\alpha_y}$')
+                ax[1, 1].set_ylabel(r'$\mathrm{\alpha_y}$',
+                                    fontsize=myfontsize)
 
                 ax[1, 2].plot(self.turn,
                               self.invarianty,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[1, 2].set_ylabel(r'$\mathrm{\gamma_y\beta_y}-{\alpha_y}^2$')
+                ax[1, 2].set_ylabel(r'$\mathrm{\gamma_y\beta_y}-{\alpha_y}^2$',
+                                    fontsize=myfontsize)
 
                 ax[2, 0].plot(self.turn,
                               self.gammax,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[2, 0].set_ylabel(r'$\mathrm{\gamma_x}(\mathrm{m^{-1}})$')
+                ax[2, 0].set_ylabel(r'$\mathrm{\gamma_x}(\mathrm{m^{-1}})$',
+                                    fontsize=myfontsize)
 
                 ax[2, 1].plot(self.turn,
                               self.gammay,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[2, 1].set_ylabel(r'$\mathrm{\gamma_y}(\mathrm{m^{-1}})$')
+                ax[2, 1].set_ylabel(r'$\mathrm{\gamma_y}(\mathrm{m^{-1}})$',
+                                    fontsize=myfontsize)
 
                 ax[2, 2].plot(self.turn,
                               self.beamloss,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[2, 2].set_ylabel('particle loss')
+                ax[2, 2].set_ylabel('particle loss', fontsize=myfontsize)
 
                 for i in range(3):
                     for j in range(3):
-                        ax[i, j].legend(loc='best')
+                        ax[i, j].legend(loc='best', fontsize=myfontsize)
                 # for i in range(3):
                 #     for j in range(3):
                 #         ax[i, j].ticklabel_format(axis='y',
                 #                                   style='sci',
                 #                                   scilimits=(0, 0))
 
-    def plot_statistic_part3(
-        self,
-        ax,
-        myalpha,
-    ):
+    def plot_statistic_part3(self, ax, myalpha, myfontsize):
         if self.version == 'new':
             if self.is_statExist:
                 ax[0, 0].plot(self.turn,
                               self.xzAverage,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[0, 0].set_ylabel(r'$\overline{\mathrm{xz}}(\mathrm{m^2})$')
+                ax[0, 0].set_ylabel(r'$\overline{\mathrm{xz}}(\mathrm{m^2})$',
+                                    fontsize=myfontsize)
 
                 ax[0, 1].plot(self.turn,
                               self.xyAverage,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[0, 1].set_ylabel(r'$\overline{\mathrm{xy}}(\mathrm{m^2})$')
+                ax[0, 1].set_ylabel(r'$\overline{\mathrm{xy}}(\mathrm{m^2})$',
+                                    fontsize=myfontsize)
 
                 ax[1, 0].plot(self.turn,
                               self.yzAverage,
                               label=self.bunchLabel,
                               alpha=myalpha)
-                ax[1, 0].set_ylabel(r'$\overline{\mathrm{yz}}(\mathrm{m^2})$')
+                ax[1, 0].set_ylabel(r'$\overline{\mathrm{yz}}(\mathrm{m^2})$',
+                                    fontsize=myfontsize)
 
                 ax[1, 1].plot(self.turn,
                               self.xzDevideSigmaxSigmaZ,
                               label=self.bunchLabel,
                               alpha=myalpha)
                 ax[1,
-                   1].set_ylabel(r'$\overline{\mathrm{xz/\sigma_x\sigma_z}}$')
+                   1].set_ylabel(r'$\overline{\mathrm{xz/\sigma_x\sigma_z}}$',
+                                 fontsize=myfontsize)
 
                 for i in range(2):
                     for j in range(2):
-                        ax[i, j].legend(loc='best')
+                        ax[i, j].legend(loc='best', fontsize=myfontsize)
                 # for i in range(2):
                 #     for j in range(2):
                 #         ax[i, j].ticklabel_format(axis='y',
