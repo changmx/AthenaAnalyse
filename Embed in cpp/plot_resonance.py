@@ -135,7 +135,8 @@ def plot_resonanceDiagram_color(order,
                                 ax,
                                 xlim=[0, 1],
                                 ylim=[0, 1],
-                                kind='all'):
+                                kind='all',
+                                legendsize=10):
 
     ax.set_xlim(xlim[0], xlim[1])
     ax.set_ylim(ylim[0], ylim[1])
@@ -160,7 +161,7 @@ def plot_resonanceDiagram_color(order,
 
     # ax.scatter(0.315,0.3,marker='x',c='r')
     # ax.scatter(0.58,0.55,marker='x',c='r')
-    ax.legend(handles=legend_elements, loc='upper right')
+    ax.legend(handles=legend_elements, loc='upper right', fontsize=legendsize)
 
 
 if __name__ == '__main__':
