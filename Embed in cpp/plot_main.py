@@ -164,7 +164,7 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize,
                                (i, row, col, row2, col2, home, yearMonDay,
                                 hourMinSec, para, myfigsize, myfontsize))
             print(
-                'Callable cpu cores: {0:d}, task {1:d}/{2:d} has been added asynchronously'
+                'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
                 .format(ncpu, i, para.nbunch))
         mypool.close()
         mypool.join()
@@ -348,7 +348,7 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
                                (order, home, yearMonDay, hourMinSec, para,
                                 myfigsize, myfontsize, i, xlim, ylim))
             print(
-                'Callable cpu cores: {0:d}, task {1:d}/{2:d} has been added asynchronously'
+                'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
                 .format(ncpu, i, para.nbunch))
         mypool.close()
         mypool.join()
@@ -380,7 +380,7 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
                 plot_distribution_oneProcess,
                 (i, home, yearMonDay, hourMinSec, para, myfigsize))
             print(
-                'Callable cpu cores: {0:d}, task {1:d}/{2:d} has been added asynchronously'
+                'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
                 .format(ncpu, i, para.nbunch))
         mypool.close()
         mypool.join()
