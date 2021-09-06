@@ -41,10 +41,11 @@ class Distribution:
         self.savePath = []
 
         for i in range(len(self.file)):
-            matchObj = re.match(r'(.*)bunch(.*)_(.*)_turn(.*).csv',
+            matchObj = re.match(r'(.*)bunch(.*)_(.*)_([a-zA-Z]*)([0-9]*).csv',
                                 self.file[i])
             self.Nmp = matchObj.group(3)
-            self.dist_turn.append(matchObj.group(4))
+            self.turnUnit = matchObj.group(4)
+            self.dist_turn.append(matchObj.group(5))
 
             savePath = os.sep.join([
                 self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
@@ -54,7 +55,8 @@ class Distribution:
                 os.makedirs(savePath)
             savePath = os.sep.join([
                 savePath, self.hourMinSec + '_dist_' + self.particle +
-                "_bunch" + str(self.bunchid) + '_superPeriod_' + self.dist_turn[i]
+                "_bunch" + str(self.bunchid) + '_' + self.turnUnit + '_' +
+                self.dist_turn[i]
             ])
 
             self.savePath.append(savePath)
@@ -115,7 +117,7 @@ class Distribution:
                                 wspace=0.22,
                                 hspace=0.22)
             # plt.show()
-            self.note = '{0}, super period {1}\n'.format(self.bunchLabel,
+            self.note = '{0}, {1} {2}\n'.format(self.bunchLabel, self.turnUnit,
                                                 self.dist_turn[i])
 
             self.note += r'$\sigma_x={0:e}, \sigma_{{x^\prime}}={1:e}, \sigma_y={2:e}, \sigma_{{y^\prime}}={3:e}, \sigma_z={4:e}, \delta_p={5:e}$'.format(
@@ -149,7 +151,10 @@ def plot_hist(ax, x, mybins, xscale, mylabel, myxlabel, myylabel):
     xmin = -scale * xscale
     xmax = scale * xscale
     # n, bins, patches = ax.hist(x, density=True)
-    n, bins, patches = ax.hist(x, density=True, bins=mybins, range=(xmin, xmax))
+    n, bins, patches = ax.hist(x,
+                               density=True,
+                               bins=mybins,
+                               range=(xmin, xmax))
     # ax.hist(x, bins=mybins, label=mylabel)
     ax.set_xlabel(myxlabel)
     ax.set_ylabel(myylabel)
