@@ -1,5 +1,7 @@
 from multiprocessing import Pool
+from multiprocessing import Manager
 import os
+import platform
 
 from matplotlib.pyplot import legend
 from plot_distribution import Distribution
@@ -15,7 +17,7 @@ from plot_distribution import *
 
 def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
                                     yearMonDay, hourMinSec, para, myfigsize,
-                                    myfontsize):
+                                    myfontsize, myqueue):
     fig_stat_tmp0, ax_stat_tmp0 = plt.subplots(row, col, figsize=myfigsize)
     plt.xticks(fontsize=myfontsize)
     plt.yticks(fontsize=myfontsize)
@@ -156,13 +158,16 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize,
         for i in range(para.nbunch):
             plot_statistic_bunch_oneProcess(i, row, col, row2, col2, home,
                                             yearMonDay, hourMinSec, para,
-                                            myfigsize, myfontsize)
+                                            myfigsize, myfontsize, 'no queue')
     else:
+        mymanager = Manager()
+        myqueue = mymanager.Queue(ncpu)
         mypool = Pool(processes=ncpu)
         for i in range(para.nbunch):
-            mypool.apply_async(plot_statistic_bunch_oneProcess,
-                               (i, row, col, row2, col2, home, yearMonDay,
-                                hourMinSec, para, myfigsize, myfontsize))
+            mypool.apply_async(
+                plot_statistic_bunch_oneProcess,
+                (i, row, col, row2, col2, home, yearMonDay, hourMinSec, para,
+                 myfigsize, myfontsize, myqueue))
             print(
                 'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
                 .format(ncpu, i, para.nbunch))
@@ -230,7 +235,7 @@ def plot_luminosity_main(home,
 
 
 def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
-                         myfontsize, i, xlim, ylim):
+                         myfontsize, i, xlim, ylim, myqueue):
     '''
     使用多线程同时处理不同束团的tune信息
 
@@ -340,13 +345,16 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
     if ncpu == 1:
         for i in range(para.nbunch):
             plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para,
-                                 myfigsize, myfontsize, i, xlim, ylim)
+                                 myfigsize, myfontsize, i, xlim, ylim,
+                                 'no queue')
     else:
+        mymanager = Manager()
+        myqueue = mymanager.Queue(ncpu)
         mypool = Pool(processes=ncpu)
         for i in range(para.nbunch):
             mypool.apply_async(plot_tune_oneProcess,
                                (order, home, yearMonDay, hourMinSec, para,
-                                myfigsize, myfontsize, i, xlim, ylim))
+                                myfigsize, myfontsize, i, xlim, ylim, myqueue))
             print(
                 'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
                 .format(ncpu, i, para.nbunch))
@@ -355,7 +363,7 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
 
 
 def plot_distribution_oneProcess(bunchid, home, yearMonDay, hourMinSec, para,
-                                 myfigsize):
+                                 myfigsize, myqueue):
     dist = Distribution(home,
                         yearMonDay,
                         hourMinSec,
@@ -372,13 +380,15 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
     if ncpu == 1:
         for i in range(para.nbunch):
             plot_distribution_oneProcess(i, home, yearMonDay, hourMinSec, para,
-                                         myfigsize)
+                                         myfigsize, 'no queue')
     else:
+        mymanager = Manager()
+        myqueue = mymanager.Queue(ncpu)
         mypool = Pool(processes=ncpu)
         for i in range(para.nbunch):
             mypool.apply_async(
                 plot_distribution_oneProcess,
-                (i, home, yearMonDay, hourMinSec, para, myfigsize))
+                (i, home, yearMonDay, hourMinSec, para, myfigsize, myqueue))
             print(
                 'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
                 .format(ncpu, i, para.nbunch))
@@ -436,7 +446,14 @@ def main(home, yearMonDay, hourMinSec, ncpu=1):
 
 
 if __name__ == '__main__':
-    home = 'D:\\bb2021'
+    home = ''
+    if platform.system() == 'Windows':
+        home = os.sep.join(['D', 'bb2021'])
+    elif platform.system() == 'Linux':
+        home = os.sep.join(['/home', 'changmx', 'bb2021'])
+    else:
+        print('We do not support {0} system now.}'.format(platform.system()))
+        os.exit(1)
     yearMonDay = '2021_0825'
     hourMinSec = '0907_42'
 
