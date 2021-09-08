@@ -13,6 +13,7 @@ from plot_luminosity import *
 from load_parameter import *
 from plot_tune import *
 from plot_distribution import *
+from plot_footprint import *
 
 
 def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
@@ -396,16 +397,25 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
         mypool.join()
 
 
-def main(home, yearMonDay, hourMinSec, ncpu=1):
+def plot_fma_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize):
+    print('\nStart drawing {0:s} tune Frequency Map'.format(para.particle))
+    for i in range(para.nbunch):
+        myfootprint = FootPrint(home, yearMonDay, hourMinSec, para.particle, i)
+        myfootprint.load_plot_save(para, myfigsize, myfontsize)
+
+
+def main(home, yearMonDay, hourMinSec, ncpu=1, type='all'):
     startTime = time.time()
     beam1 = Parameter(home, yearMonDay, hourMinSec, 'beam1')
     beam2 = Parameter(home, yearMonDay, hourMinSec, 'beam2')
 
     my_figsize1 = (20, 10)
     my_figsize2 = (15, 10)
+    my_figsize_fma = (8, 6)
     my_fontsize_stat = 12
     my_fontsize_lumi = 12
     my_fontsize_tune = 20
+    my_fontsize_fma = 15
 
     # beam1.print()
     # beam2.print()
@@ -416,26 +426,32 @@ def main(home, yearMonDay, hourMinSec, ncpu=1):
     # print(beam1.statnote)
     # print(beam2.statnote)
 
-    plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1,
-                        my_fontsize_stat, ncpu)
+    # plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1,
+    #                     my_fontsize_stat, ncpu)
 
-    plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1,
-                        my_fontsize_stat, ncpu)
+    # plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1,
+    #                     my_fontsize_stat, ncpu)
 
-    plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
-                         my_figsize1, my_fontsize_lumi)
+    # plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
+    #                      my_figsize1, my_fontsize_lumi)
 
-    plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1,
-                           ncpu)
+    # plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1,
+    #                        ncpu)
 
-    plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1,
-                           ncpu)
+    # plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1,
+    #                        ncpu)
 
-    plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2,
-                   my_fontsize_tune, ncpu)
+    # plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2,
+    #                my_fontsize_tune, ncpu)
 
-    plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2,
-                   my_fontsize_tune, ncpu)
+    # plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2,
+    #                my_fontsize_tune, ncpu)
+
+    plot_fma_main(home, yearMonDay, hourMinSec, beam1, my_figsize_fma,
+                  my_fontsize_fma)
+
+    plot_fma_main(home, yearMonDay, hourMinSec, beam2, my_figsize_fma,
+                  my_fontsize_fma)
 
     endtime = time.time()
     print('start   : ', time.asctime(time.localtime(startTime)))
@@ -448,14 +464,17 @@ def main(home, yearMonDay, hourMinSec, ncpu=1):
 if __name__ == '__main__':
     home = ''
     if platform.system() == 'Windows':
-        home = os.sep.join(['D', 'bb2021'])
+        home = os.sep.join(['D:', 'bb2021'])
     elif platform.system() == 'Linux':
         home = os.sep.join(['/home', 'changmx', 'bb2021'])
     else:
         print('We do not support {0} system now.}'.format(platform.system()))
         os.exit(1)
-    yearMonDay = '2021_0825'
-    hourMinSec = '0907_42'
+
+    yearMonDay = '2021_0908'
+    hourMinSec = '1713_19'
+    # yearMonDay = '2021_0907'
+    # hourMinSec = '0938_30'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu)
