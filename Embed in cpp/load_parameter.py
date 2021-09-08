@@ -1,6 +1,7 @@
 import json
 import os
 import numpy as np
+import platform
 from general import cal_tuneShift
 from general import sigma
 from constant import Const
@@ -48,6 +49,30 @@ class Parameter:
             self.sigmaz = para_list['Sigma z']
             self.sigmapz = para_list['DeltaP']
 
+            self.fixXStart = para_list['isFixAndSaveCoordinate'][1][
+                'x_start_end_step'][0]
+            self.fixXEnd = para_list['isFixAndSaveCoordinate'][1][
+                'x_start_end_step'][1]
+            self.fixXStep = para_list['isFixAndSaveCoordinate'][1][
+                'x_start_end_step'][2]
+            self.fixNx = self.fixXEnd - self.fixXStart
+
+            self.fixYStart = para_list['isFixAndSaveCoordinate'][2][
+                'y_start_end_step'][0]
+            self.fixYEnd = para_list['isFixAndSaveCoordinate'][2][
+                'y_start_end_step'][1]
+            self.fixYStep = para_list['isFixAndSaveCoordinate'][2][
+                'y_start_end_step'][2]
+            self.fixNy = self.fixYEnd - self.fixYStart
+
+            self.fixZStart = para_list['isFixAndSaveCoordinate'][3][
+                'z_start_end_step'][0]
+            self.fixZEnd = para_list['isFixAndSaveCoordinate'][3][
+                'z_start_end_step'][1]
+            self.fixZStep = para_list['isFixAndSaveCoordinate'][3][
+                'z_start_end_step'][2]
+            self.fixNz = self.fixZEnd - self.fixZStart
+
         if self.particle == 'proton':
             self.mass = Const.MASS_PROTON_EV
             self.radius = Const.RADIUS_PROTON
@@ -73,7 +98,10 @@ class Parameter:
         print(self.nbunch)
         print(self.nux)
         print(self.nuy)
-        print(self.turn)
+        # print(self.turn)
+        print(self.fixNx)
+        print(self.fixNy)
+        print(self.fixNz)
 
     def gen_note_withPath(self, beam2):
         self.turn = self.superiod * beam2.nbunch
@@ -117,3 +145,22 @@ class Parameter:
         self.luminote += 'Nturn superiod = {0:d}, Nturn {1} = {2:d}, Nturn {3} = {4:d}'.format(
             self.superiod, self.particle, self.turn, beam2.particle,
             beam2.turn)
+
+
+if __name__ == '__main__':
+    home = ''
+    if platform.system() == 'Windows':
+        home = os.sep.join(['D:', 'bb2021'])
+    elif platform.system() == 'Linux':
+        home = os.sep.join(['/home', 'changmx', 'bb2021'])
+    else:
+        print('We do not support {0} system now.}'.format(platform.system()))
+        os.exit(1)
+
+    yearMonDay = '2021_0908'
+    hourMinSec = '1538_59'
+
+    beam1 = Parameter(home, yearMonDay, hourMinSec, 'beam1')
+    beam2 = Parameter(home, yearMonDay, hourMinSec, 'beam2')
+
+    beam1.print()
