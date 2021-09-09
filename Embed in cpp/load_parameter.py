@@ -49,29 +49,30 @@ class Parameter:
             self.sigmaz = para_list['Sigma z']
             self.sigmapz = para_list['DeltaP']
 
-            self.fixXStart = para_list['isFixAndSaveCoordinate'][1][
-                'x_start_end_step'][0]
-            self.fixXEnd = para_list['isFixAndSaveCoordinate'][1][
-                'x_start_end_step'][1]
-            self.fixXStep = para_list['isFixAndSaveCoordinate'][1][
-                'x_start_end_step'][2]
-            self.fixNx = self.fixXEnd - self.fixXStart
+            if 'isFixAndSaveCoordinate' in para_list:
+                self.fixXStart = para_list['isFixAndSaveCoordinate'][1][
+                    'x_start_end_step'][0]
+                self.fixXEnd = para_list['isFixAndSaveCoordinate'][1][
+                    'x_start_end_step'][1]
+                self.fixXStep = para_list['isFixAndSaveCoordinate'][1][
+                    'x_start_end_step'][2]
+                self.fixNx = self.fixXEnd - self.fixXStart
 
-            self.fixYStart = para_list['isFixAndSaveCoordinate'][2][
-                'y_start_end_step'][0]
-            self.fixYEnd = para_list['isFixAndSaveCoordinate'][2][
-                'y_start_end_step'][1]
-            self.fixYStep = para_list['isFixAndSaveCoordinate'][2][
-                'y_start_end_step'][2]
-            self.fixNy = self.fixYEnd - self.fixYStart
+                self.fixYStart = para_list['isFixAndSaveCoordinate'][2][
+                    'y_start_end_step'][0]
+                self.fixYEnd = para_list['isFixAndSaveCoordinate'][2][
+                    'y_start_end_step'][1]
+                self.fixYStep = para_list['isFixAndSaveCoordinate'][2][
+                    'y_start_end_step'][2]
+                self.fixNy = self.fixYEnd - self.fixYStart
 
-            self.fixZStart = para_list['isFixAndSaveCoordinate'][3][
-                'z_start_end_step'][0]
-            self.fixZEnd = para_list['isFixAndSaveCoordinate'][3][
-                'z_start_end_step'][1]
-            self.fixZStep = para_list['isFixAndSaveCoordinate'][3][
-                'z_start_end_step'][2]
-            self.fixNz = self.fixZEnd - self.fixZStart
+                self.fixZStart = para_list['isFixAndSaveCoordinate'][3][
+                    'z_start_end_step'][0]
+                self.fixZEnd = para_list['isFixAndSaveCoordinate'][3][
+                    'z_start_end_step'][1]
+                self.fixZStep = para_list['isFixAndSaveCoordinate'][3][
+                    'z_start_end_step'][2]
+                self.fixNz = self.fixZEnd - self.fixZStart
 
         if self.particle == 'proton':
             self.mass = Const.MASS_PROTON_EV
@@ -99,9 +100,9 @@ class Parameter:
         print(self.nux)
         print(self.nuy)
         # print(self.turn)
-        print(self.fixNx)
-        print(self.fixNy)
-        print(self.fixNz)
+        # print(self.fixNx)
+        # print(self.fixNy)
+        # print(self.fixNz)
 
     def gen_note_withPath(self, beam2):
         self.turn = self.superiod * beam2.nbunch
