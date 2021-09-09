@@ -219,28 +219,29 @@ def plot_luminosity_main(home,
         fig_tmp, ax_tmp = plt.subplots(1, figsize=(8, 6))
         plt.xticks(fontsize=myfontsize)
         plt.yticks(fontsize=myfontsize)
-
-        fig_tmp.subplots_adjust(left=0.09, right=0.97, top=0.83, bottom=0.08)
+        # fig_tmp.subplots_adjust(left=0.09, right=0.97, top=0.83, bottom=0.08)
         mpl.rcParams['agg.path.chunksize'] = 10000
+
         lumi = Luminosity(home, yearMonDay, hourMinSec, particle[i],
                           myfontsize)
         lumi.load_luminosity(skip[i])
-        lumi.plot_luminosity(ax_tmp, myalpha=1)
-        lumi.plot_luminosity(ax_lumi[i], myalpha=1)
+        lumi.plot_luminosity(ax_tmp, isLabel=False, myalpha=1)
+        lumi.plot_luminosity(ax_lumi[i], isLabel=True, myalpha=1)
 
         ax_tmp.set_ylabel(r'Luminosity $(\mathrm{cm}^{-2}\mathrm{s}^{-1})$',
                           fontsize=myfontsize)
         ax_tmp.set_xlabel('Turn', fontsize=myfontsize)
         ax_tmp.grid()
-        ax_tmp.legend(fontsize=myfontsize)
+        # ax_tmp.legend(fontsize=myfontsize)
+
         ax_lumi[i].set_ylabel(
             r'Luminosity $(\mathrm{cm}^{-2}\mathrm{s}^{-1})$',
             fontsize=myfontsize)
         ax_lumi[i].set_xlabel('Turn', fontsize=myfontsize)
         ax_lumi[i].grid()
-
-        fig_tmp.suptitle(para1.luminote)
         ax_lumi[i].legend(fontsize=myfontsize)
+
+        # fig_tmp.suptitle(para1.luminote)
 
         lumi.save_lumi(fig_tmp)
         plt.close(fig_tmp)
@@ -556,8 +557,7 @@ if __name__ == '__main__':
             if sys.argv[iargv] in command:
                 type.append(sys.argv[iargv])
             else:
-                print('Warning: invalid option "{0}"'.format(
-                    sys.argv[iargv]))
+                print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
     yearMonDay = '2021_0908'
     hourMinSec = '1713_19'
