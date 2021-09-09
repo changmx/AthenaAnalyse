@@ -2,6 +2,7 @@ from multiprocessing import Pool
 from multiprocessing import Manager
 import os
 import platform
+import sys
 
 from matplotlib.pyplot import legend
 from plot_distribution import Distribution
@@ -398,13 +399,13 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
 
 
 def plot_fma_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize):
-    print('\nStart drawing {0:s} tune Frequency Map'.format(para.particle))
+    print('\nStart drawing {0:s} Frequency Map'.format(para.particle))
     for i in range(para.nbunch):
         myfootprint = FootPrint(home, yearMonDay, hourMinSec, para.particle, i)
         myfootprint.load_plot_save(para, myfigsize, myfontsize)
 
 
-def main(home, yearMonDay, hourMinSec, ncpu=1, type='all'):
+def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     startTime = time.time()
     beam1 = Parameter(home, yearMonDay, hourMinSec, 'beam1')
     beam2 = Parameter(home, yearMonDay, hourMinSec, 'beam2')
@@ -426,32 +427,34 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type='all'):
     # print(beam1.statnote)
     # print(beam2.statnote)
 
-    # plot_statistic_main(home, yearMonDay, hourMinSec, beam1, my_figsize1,
-    #                     my_fontsize_stat, ncpu)
+    for kind in type:
+        if kind == 'all' or kind == 'stat':
+            plot_statistic_main(home, yearMonDay, hourMinSec, beam1,
+                                my_figsize1, my_fontsize_stat, ncpu)
 
-    # plot_statistic_main(home, yearMonDay, hourMinSec, beam2, my_figsize1,
-    #                     my_fontsize_stat, ncpu)
+            plot_statistic_main(home, yearMonDay, hourMinSec, beam2,
+                                my_figsize1, my_fontsize_stat, ncpu)
+        if kind == 'all' or kind == 'lumi':
+            plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
+                                 my_figsize1, my_fontsize_lumi)
+        if kind == 'all' or kind == 'dist':
+            plot_distribution_main(home, yearMonDay, hourMinSec, beam1,
+                                   my_figsize1, ncpu)
 
-    # plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
-    #                      my_figsize1, my_fontsize_lumi)
+            plot_distribution_main(home, yearMonDay, hourMinSec, beam2,
+                                   my_figsize1, ncpu)
+        if kind == 'all' or kind == 'tune':
+            plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2,
+                           my_fontsize_tune, ncpu)
 
-    # plot_distribution_main(home, yearMonDay, hourMinSec, beam1, my_figsize1,
-    #                        ncpu)
+            plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2,
+                           my_fontsize_tune, ncpu)
+        if kind == 'all' or kind == 'fma':
+            plot_fma_main(home, yearMonDay, hourMinSec, beam1, my_figsize_fma,
+                          my_fontsize_fma)
 
-    # plot_distribution_main(home, yearMonDay, hourMinSec, beam2, my_figsize1,
-    #                        ncpu)
-
-    # plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2,
-    #                my_fontsize_tune, ncpu)
-
-    # plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2,
-    #                my_fontsize_tune, ncpu)
-
-    plot_fma_main(home, yearMonDay, hourMinSec, beam1, my_figsize_fma,
-                  my_fontsize_fma)
-
-    plot_fma_main(home, yearMonDay, hourMinSec, beam2, my_figsize_fma,
-                  my_fontsize_fma)
+            plot_fma_main(home, yearMonDay, hourMinSec, beam2, my_figsize_fma,
+                          my_fontsize_fma)
 
     endtime = time.time()
     print('start   : ', time.asctime(time.localtime(startTime)))
@@ -471,11 +474,18 @@ if __name__ == '__main__':
         print('We do not support {0} system now.}'.format(platform.system()))
         os.exit(1)
 
+    type = []
+    if len(sys.argv) == 1:
+        type = ['all']
+    else:
+        for iargv in range(1, len(sys.argv)):
+            type.append(sys.argv[iargv])
+    print(type)
     yearMonDay = '2021_0908'
     hourMinSec = '1713_19'
     # yearMonDay = '2021_0907'
     # hourMinSec = '0938_30'
 
     ncpu = os.cpu_count() - 1
-    status = main(home, yearMonDay, hourMinSec, ncpu=ncpu)
+    status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
     print(status)
