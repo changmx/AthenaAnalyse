@@ -82,24 +82,25 @@ class Tune:
         self.nuX = []
         self.nuY = []
         for i in range(len(self.file)):
-            tmp_nuX, tmp_nuY, tmp_tag = np.loadtxt(self.file[i],
-                                                   delimiter=',',
-                                                   skiprows=1,
-                                                   usecols=(2, 3, 4),
-                                                   unpack=True)
+            if self.isExist[i]:
+                tmp_nuX, tmp_nuY, tmp_tag = np.loadtxt(self.file[i],
+                                                       delimiter=',',
+                                                       skiprows=1,
+                                                       usecols=(2, 3, 4),
+                                                       unpack=True)
 
-            l_nuX = list(tmp_nuX)
-            l_nuY = list(tmp_nuY)
+                l_nuX = list(tmp_nuX)
+                l_nuY = list(tmp_nuY)
 
-            delete_number = 0  # 把数组转化为列表来删除元素时，每删除一个元素，被删除元素后面的所有元素下标都会减一，因此用这个参数来表示删除元素后其他元素下标的变化
-            for i in range(len(tmp_tag)):  # 删除列表中的元素
-                if tmp_tag[i] <= 0:
-                    del l_nuX[i - delete_number]
-                    del l_nuY[i - delete_number]
-                    delete_number += 1
+                delete_number = 0  # 把数组转化为列表来删除元素时，每删除一个元素，被删除元素后面的所有元素下标都会减一，因此用这个参数来表示删除元素后其他元素下标的变化
+                for i in range(len(tmp_tag)):  # 删除列表中的元素
+                    if tmp_tag[i] <= 0:
+                        del l_nuX[i - delete_number]
+                        del l_nuY[i - delete_number]
+                        delete_number += 1
 
-            self.nuX.append(l_nuX)
-            self.nuY.append(l_nuY)
+                self.nuX.append(l_nuX)
+                self.nuY.append(l_nuY)
 
     def plot_scatter(self,
                      ax,
