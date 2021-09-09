@@ -41,7 +41,9 @@ class FootPrint:
         self.isExist = []
         self.savePath_fma = []
         self.savePath_aper = []
-        self.savePath_dist = []
+        self.savePath_dist_xpx = []
+        self.savePath_dist_ypy = []
+        self.savePath_dist_xy = []
 
         for i in range(len(self.file)):
             matchObj = re.match(
@@ -66,18 +68,44 @@ class FootPrint:
             ])
             self.savePath_fma.append(savePath_fma)
 
-            savePath_dist = os.sep.join([
+            savePath_dist_xpx = os.sep.join([
                 self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
                 'figure_distribution', 'fixPoint',
-                self.particle + '_bunch' + str(self.bunchid)
+                self.particle + '_bunch' + str(self.bunchid) + '_xpx'
             ])
-            if not os.path.exists(savePath_dist):
-                os.makedirs(savePath_dist)
-            savePath_dist = os.sep.join([
-                savePath_dist, self.hourMinSec + '_' + self.particle +
+            if not os.path.exists(savePath_dist_xpx):
+                os.makedirs(savePath_dist_xpx)
+            savePath_dist_xpx = os.sep.join([
+                savePath_dist_xpx, self.hourMinSec + '_' + self.particle +
                 '_bunch' + str(self.bunchid)
             ])
-            self.savePath_dist.append(savePath_dist)
+            self.savePath_dist_xpx.append(savePath_dist_xpx)
+
+            savePath_dist_ypy = os.sep.join([
+                self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
+                'figure_distribution', 'fixPoint',
+                self.particle + '_bunch' + str(self.bunchid) + '_ypy'
+            ])
+            if not os.path.exists(savePath_dist_ypy):
+                os.makedirs(savePath_dist_ypy)
+            savePath_dist_ypy = os.sep.join([
+                savePath_dist_ypy, self.hourMinSec + '_' + self.particle +
+                '_bunch' + str(self.bunchid)
+            ])
+            self.savePath_dist_ypy.append(savePath_dist_ypy)
+
+            savePath_dist_xy = os.sep.join([
+                self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
+                'figure_distribution', 'fixPoint',
+                self.particle + '_bunch' + str(self.bunchid) + '_xy'
+            ])
+            if not os.path.exists(savePath_dist_xy):
+                os.makedirs(savePath_dist_xy)
+            savePath_dist_xy = os.sep.join([
+                savePath_dist_xy, self.hourMinSec + '_' + self.particle +
+                '_bunch' + str(self.bunchid)
+            ])
+            self.savePath_dist_xy.append(savePath_dist_xy)
 
             # savePath_aper = os.sep.join([
             #     self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
@@ -190,6 +218,25 @@ class FootPrint:
         fig_z_dist, ax_z_dist = plt.subplots()
         plt.subplots_adjust(left=0.15)
 
+        unitConvert = 1e3
+
+        # xmin = para.fixXStart * para.fixXStep * para.sigmax * 1.2 * unitConvert
+        # xmax = para.fixXEnd * para.fixXStep * para.sigmax * 1.2 * unitConvert
+        # ymin = para.fixYStart * para.fixYStep * para.sigmay * 1.2 * unitConvert
+        # ymax = para.fixYEnd * para.fixYStep * para.sigmay * 1.2 * unitConvert
+        # pxmin = -1 * para.sigmapx * 5 * unitConvert
+        # pxmax = para.sigmapx * 5 * unitConvert
+        # pymin = -1 * para.sigmapy * 5 * unitConvert
+        # pymax = para.sigmapy * 5 * unitConvert
+        xmax = np.amax(xArray) * 1.2 * unitConvert
+        xmin = np.amin(xArray) * 1.2 * unitConvert
+        ymax = np.amax(yArray) * 1.2 * unitConvert
+        ymin = np.amin(yArray) * 1.2 * unitConvert
+        pxmin = np.amax(pxArray) * 1.2 * unitConvert
+        pxmax = np.amin(pxArray) * 1.2 * unitConvert
+        pymin = np.amax(pyArray) * 1.2 * unitConvert
+        pymax = np.amin(pyArray) * 1.2 * unitConvert
+
         for i in range(totalTurn):
             turn = turnArray[i * totalPoint]
             x = xArray[i * totalPoint:(i + 1) * totalPoint]
@@ -199,31 +246,46 @@ class FootPrint:
             z = zArray[i * totalPoint:(i + 1) * totalPoint]
             pz = pzArray[i * totalPoint:(i + 1) * totalPoint]
 
-            ax_xpx_dist.scatter(x * 1e3, px * 1e3, color='tab:blue', s=1)
-            ax_ypy_dist.scatter(y * 1e3, py * 1e3, color='tab:blue', s=1)
-            ax_xy_dist.scatter(x * 1e3, y * 1e3, color='tab:blue', s=1)
+            ax_xpx_dist.scatter(x * unitConvert,
+                                px * unitConvert,
+                                color='tab:blue',
+                                s=1)
+            ax_ypy_dist.scatter(y * unitConvert,
+                                py * unitConvert,
+                                color='tab:blue',
+                                s=1)
+            ax_xy_dist.scatter(x * unitConvert,
+                               y * unitConvert,
+                               color='tab:blue',
+                               s=1)
 
             ax_xpx_dist.set_xlabel('x(mm)')
             ax_xpx_dist.set_ylabel(r'$\rm x^{\prime}$(mrad)')
+            ax_xpx_dist.set_xlim(xmin, xmax)
+            ax_xpx_dist.set_ylim(pxmin, pxmax)
 
             ax_ypy_dist.set_xlabel('y(mm)')
             ax_ypy_dist.set_ylabel(r'$\rm y^{\prime}$(mrad)')
+            ax_ypy_dist.set_xlim(ymin, ymax)
+            ax_ypy_dist.set_ylim(pymin, pymax)
 
             ax_xy_dist.set_xlabel('x(mm)')
             ax_xy_dist.set_ylabel('y(mm)')
+            ax_xy_dist.set_xlim(xmin, xmax)
+            ax_xy_dist.set_ylim(ymin, ymax)
 
             ax_xpx_dist.set_title('turn ' + str(int(turn)))
             ax_ypy_dist.set_title('turn ' + str(int(turn)))
             ax_xy_dist.set_title('turn ' + str(int(turn)))
 
-            fig_xpx_dist.savefig(self.savePath_dist[fileid] + "_" +
-                                 str(int(turn)) + '_xpx.png',
+            fig_xpx_dist.savefig(self.savePath_dist_xpx[fileid] + "_xpx_" +
+                                 str(int(turn)) + '.png',
                                  dpi=150)
-            fig_ypy_dist.savefig(self.savePath_dist[fileid] + "_" +
-                                 str(int(turn)) + '_ypy.png',
+            fig_ypy_dist.savefig(self.savePath_dist_ypy[fileid] + "_ypy_" +
+                                 str(int(turn)) + '.png',
                                  dpi=150)
-            fig_xy_dist.savefig(self.savePath_dist[fileid] + "_" +
-                                str(int(turn)) + '_xy.png',
+            fig_xy_dist.savefig(self.savePath_dist_xy[fileid] + "_xy_" +
+                                str(int(turn)) + '.png',
                                 dpi=150)
 
             ax_xpx_dist.cla()
