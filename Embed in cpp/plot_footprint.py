@@ -41,6 +41,7 @@ class FootPrint:
         self.isExist = []
         self.savePath_fma = []
         self.savePath_aper = []
+        self.savePath_dist = []
 
         for i in range(len(self.file)):
             matchObj = re.match(
@@ -53,7 +54,7 @@ class FootPrint:
 
             savePath_fma = os.sep.join([
                 self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
-                'figure_footprint'
+                'figure_frequencyMap'
             ])
             if not os.path.exists(savePath_fma):
                 os.makedirs(savePath_fma)
@@ -65,33 +66,39 @@ class FootPrint:
             ])
             self.savePath_fma.append(savePath_fma)
 
-            savePath_aper = os.sep.join([
+            savePath_dist = os.sep.join([
                 self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
-                'figure_dynamicAperture'
+                'figure_distribution', 'fixPoint',
+                self.particle + '_bunch' + str(self.bunchid)
             ])
-            if not os.path.exists(savePath_aper):
-                os.makedirs(savePath_aper)
-            savePath_aper = os.sep.join([
-                savePath_aper, self.hourMinSec + '_fma_' + self.particle +
-                "_bunch" + str(self.bunchid) + '_' + str(self.npoint) +
-                'points_' + self.turnUnit + '_' + str(self.startTurn[i]) +
-                '-' + str(self.endTurn[i])
+            if not os.path.exists(savePath_dist):
+                os.makedirs(savePath_dist)
+            savePath_dist = os.sep.join([
+                savePath_dist, self.hourMinSec + '_' + self.particle +
+                '_bunch' + str(self.bunchid)
             ])
-            self.savePath_aper.append(savePath_aper)
+            self.savePath_dist.append(savePath_dist)
+
+            # savePath_aper = os.sep.join([
+            #     self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
+            #     'figure_dynamicAperture'
+            # ])
+            # if not os.path.exists(savePath_aper):
+            #     os.makedirs(savePath_aper)
+            # savePath_aper = os.sep.join([
+            #     savePath_aper, self.hourMinSec + '_fma_' + self.particle +
+            #     "_bunch" + str(self.bunchid) + '_' + str(self.npoint) +
+            #     'points_' + self.turnUnit + '_' + str(self.startTurn[i]) +
+            #     '-' + str(self.endTurn[i])
+            # ])
+            # self.savePath_aper.append(savePath_aper)
 
     def load_plot_save(self, para, myfigsize, myfontsize, myscattersize=1):
 
-        isxConjugate = False if para.nux <= 0.5 else True
-        isyConjugate = False if para.nuy <= 0.5 else True
+        self.isxConjugate = False if para.nux <= 0.5 else True
+        self.isyConjugate = False if para.nuy <= 0.5 else True
 
         for i in range(len(self.file)):
-            fig_fma, ax_fma = plt.subplots(figsize=myfigsize)
-            plt.xticks(fontsize=myfontsize)
-            plt.yticks(fontsize=myfontsize)
-            plt.subplots_adjust(left=0.17, right=0.96, top=0.95, bottom=0.12)
-            # fig_aper, ax_aper = plt.subplots(figsize=myfigsize)
-            # plt.xticks(fontsize=myfontsize)
-            # plt.yticks(fontsize=myfontsize)
 
             turn, x, px, y, py, z, pz, tag = np.loadtxt(self.file[i],
                                                         delimiter=',',
@@ -99,91 +106,189 @@ class FootPrint:
                                                         usecols=(0, 1, 2, 3, 4,
                                                                  5, 6, 7),
                                                         unpack=True)
-            plot_fix_distribution_perturn(para, turn, x, px, y, py, z, pz, tag)
-            nuxArray = []
-            nuyArray = []
-            nuzArray = []
-            diffusion_xyArray = []
-            # xArray = []
-            # yArray = []
-            # diffusion_xyzArray = []
-
-            # diffusion_xyArray_aper = np.zeros((para.fixNy, para.fixNx))
-            # diffusion_xyArray_aper = []
-
-            for ix in range(para.fixNx):
-                for iy in range(para.fixNy):
-                    for iz in range(para.fixNz):
-                        index = ix * para.fixNy * para.fixNz + iy * para.fixNz + iz
-                        if (index > 0 and index % 100 == 0):
-                            print('Reading fixPoint[{0}]'.format(index))
-                        isExist, nux, nuy, nuz, diffusion_xy, diffusion_xyz, x0, y0, diffusion_aper = cal_fma_aper(
-                            para, index + 1, self.npoint,
-                            self.endTurn[i] - self.startTurn[i] + 1,
-                            isxConjugate, isyConjugate, x, px, y, py, z, tag)
-                        if isExist:
-                            nuxArray.append(nux[0])
-                            nuyArray.append(nuy[0])
-                            nuzArray.append(nuz[0])
-                            diffusion_xyArray.append(diffusion_xy)
-                            # diffusion_xyzArray.append(diffusion_xyz)
-                            # xArray.append(x0)
-                            # yArray.append(y0)
-                            # diffusion_xyArray_aper.append(diffusion_aper)
-                            # diffusion_xyArray_aper[iy, ix] = diffusion_aper
-
-            sc_fma = ax_fma.scatter(nuxArray,
-                                    nuyArray,
-                                    c=diffusion_xyArray,
-                                    s=myscattersize,
-                                    norm=matplotlib.colors.LogNorm(),
-                                    cmap='rainbow')
-            ax_fma.set_xlabel('Horizontal tune', fontsize=myfontsize)
-            ax_fma.set_ylabel('Vertical tune', fontsize=myfontsize)
-            cbar_fma = fig_fma.colorbar(sc_fma)
-            cbar_fma.ax.tick_params(labelsize=myfontsize)
-            # cbar_fma.set_label('Tune diffusion', fontsize=myfontsize)
-            ax_fma.scatter(para.nux, para.nuy, marker='x', c='tab:red')
-            fig_fma.savefig(self.savePath_fma[i], dpi=300)
-            # fig_fma.show()
-            plt.close(fig_fma)
-
-            # # print(xArray)
-            # # print(yArray)
-            # # print(diffusion_xyArray_aper)
-            # # xArray *= 1e3
-            # # yArray *= 1e3
-            # sc_aper = ax_aper.scatter(xArray,
-            #                           yArray,
-            #                           c=diffusion_xyArray_aper,
-            #                           s=40,
-            #                           alpha=0.6,
-            #                           norm=matplotlib.colors.LogNorm(),
-            #                           cmap='viridis')
-            # # ax_aper.set_xlabel('x(mm)', fontsize=myfontsize)
-            # # ax_aper.set_ylabel('y(mm)', fontsize=myfontsize)
-            # cbar_aper = fig_aper.colorbar(sc_aper)
-            # cbar_aper.ax.tick_params(labelsize=myfontsize)
-            # fig_aper.savefig(self.savePath_aper[i], dpi=300)
-
-            # x_aper = [
-            #     tmp * para.fixXStep
-            #     for tmp in np.arange(para.fixXStart, para.fixXEnd)
-            # ]
-            # y_aper = [
-            #     tmp * para.fixYStep
-            #     for tmp in np.arange(para.fixYStart, para.fixYEnd)
-            # ]
-            # pcm = ax_aper.pcolormesh(x_aper,
-            #                          y_aper,
-            #                          diffusion_xyArray_aper,
-            #                          shading='auto',
-            #                          cmap='viridis')
-            # fig_aper.colorbar(pcm, ax=ax_aper)
-            # plt.show()
-            # plt.close(fig_aper)
+            self.plot_fix_distribution_perturn(i, para, turn, x, px, y, py, z,
+                                               pz, tag)
+            self.plot_fma(i, para, x, px, y, py, z, tag, myfigsize, myfontsize,
+                          myscattersize)
 
             print('File has been drawn: {0}'.format(self.file[i]))
+
+    def plot_fma(self,
+                 i,
+                 para,
+                 x,
+                 px,
+                 y,
+                 py,
+                 z,
+                 tag,
+                 myfigsize,
+                 myfontsize,
+                 myscattersize=1):
+        fig_fma, ax_fma = plt.subplots(figsize=myfigsize)
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
+        plt.subplots_adjust(left=0.17, right=0.96, top=0.95, bottom=0.12)
+        nuxArray = []
+        nuyArray = []
+        nuzArray = []
+        diffusion_xyArray = []
+
+        xArray = []
+        yArray = []
+
+        for ix in range(para.fixNx):
+            for iy in range(para.fixNy):
+                for iz in range(para.fixNz):
+                    index = ix * para.fixNy * para.fixNz + iy * para.fixNz + iz
+                    # if (index > 0 and index % 100 == 0):
+                    #     print('Reading fixPoint[{0}]'.format(index))
+                    isExist, nux, nuy, nuz, diffusion_xy, diffusion_xyz, x0, y0, diffusion_aper = cal_fma_aper(
+                        para, index + 1, self.npoint,
+                        self.endTurn[i] - self.startTurn[i] + 1,
+                        self.isxConjugate, self.isyConjugate, x, px, y, py, z,
+                        tag)
+                    if isExist:
+                        nuxArray.append(nux[0])
+                        nuyArray.append(nuy[0])
+                        nuzArray.append(nuz[0])
+                        diffusion_xyArray.append(diffusion_xy)
+                        # diffusion_xyzArray.append(diffusion_xyz)
+                        # xArray.append(x0)
+                        # yArray.append(y0)
+                        # diffusion_xyArray_aper.append(diffusion_aper)
+                        # diffusion_xyArray_aper[iy, ix] = diffusion_aper
+
+        sc_fma = ax_fma.scatter(nuxArray,
+                                nuyArray,
+                                c=diffusion_xyArray,
+                                s=myscattersize,
+                                norm=matplotlib.colors.LogNorm(),
+                                cmap='rainbow')
+        ax_fma.set_xlabel('Horizontal tune', fontsize=myfontsize)
+        ax_fma.set_ylabel('Vertical tune', fontsize=myfontsize)
+        cbar_fma = fig_fma.colorbar(sc_fma)
+        cbar_fma.ax.tick_params(labelsize=myfontsize)
+        # cbar_fma.set_label('Tune diffusion', fontsize=myfontsize)
+        ax_fma.scatter(para.nux, para.nuy, marker='x', c='tab:red')
+        fig_fma.savefig(self.savePath_fma[i], dpi=300)
+        # fig_fma.show()
+        plt.close(fig_fma)
+
+    def plot_fix_distribution_perturn(self, fileid, para, turnArray, xArray,
+                                      pxArray, yArray, pyArray, zArray,
+                                      pzArray, tagArray):
+        totalPoint = para.fixNx * para.fixNy * para.fixNz
+        totalTurn = int(len(turnArray) / totalPoint)
+
+        fig_xpx_dist, ax_xpx_dist = plt.subplots()
+        plt.subplots_adjust(left=0.15)
+        fig_ypy_dist, ax_ypy_dist = plt.subplots()
+        plt.subplots_adjust(left=0.15)
+        fig_xy_dist, ax_xy_dist = plt.subplots()
+        plt.subplots_adjust(left=0.15)
+        fig_z_dist, ax_z_dist = plt.subplots()
+        plt.subplots_adjust(left=0.15)
+
+        for i in range(totalTurn):
+            turn = turnArray[i * totalPoint]
+            x = xArray[i * totalPoint:(i + 1) * totalPoint]
+            px = pxArray[i * totalPoint:(i + 1) * totalPoint]
+            y = yArray[i * totalPoint:(i + 1) * totalPoint]
+            py = pyArray[i * totalPoint:(i + 1) * totalPoint]
+            z = zArray[i * totalPoint:(i + 1) * totalPoint]
+            pz = pzArray[i * totalPoint:(i + 1) * totalPoint]
+
+            ax_xpx_dist.scatter(x * 1e3, px * 1e3, color='tab:blue', s=1)
+            ax_ypy_dist.scatter(y * 1e3, py * 1e3, color='tab:blue', s=1)
+            ax_xy_dist.scatter(x * 1e3, y * 1e3, color='tab:blue', s=1)
+
+            ax_xpx_dist.set_xlabel('x(mm)')
+            ax_xpx_dist.set_ylabel(r'$\rm x^{\prime}$(mrad)')
+
+            ax_ypy_dist.set_xlabel('y(mm)')
+            ax_ypy_dist.set_ylabel(r'$\rm y^{\prime}$(mrad)')
+
+            ax_xy_dist.set_xlabel('x(mm)')
+            ax_xy_dist.set_ylabel('y(mm)')
+
+            ax_xpx_dist.set_title('turn ' + str(int(turn)))
+            ax_ypy_dist.set_title('turn ' + str(int(turn)))
+            ax_xy_dist.set_title('turn ' + str(int(turn)))
+
+            fig_xpx_dist.savefig(self.savePath_dist[fileid] + "_" +
+                                 str(int(turn)) + '_xpx.png',
+                                 dpi=150)
+            fig_ypy_dist.savefig(self.savePath_dist[fileid] + "_" +
+                                 str(int(turn)) + '_ypy.png',
+                                 dpi=150)
+            fig_xy_dist.savefig(self.savePath_dist[fileid] + "_" +
+                                str(int(turn)) + '_xy.png',
+                                dpi=150)
+
+            ax_xpx_dist.cla()
+            ax_ypy_dist.cla()
+            ax_xy_dist.cla()
+
+    def plot_DA(self,
+                para,
+                turn,
+                x,
+                px,
+                y,
+                py,
+                z,
+                pz,
+                tag,
+                myfigsize,
+                myfontsize,
+                myscattersize=1):
+        abc = 'abc'
+        # fig_aper, ax_aper = plt.subplots(figsize=myfigsize)
+        # plt.xticks(fontsize=myfontsize)
+        # plt.yticks(fontsize=myfontsize)
+
+        # xArray = []
+        # yArray = []
+        # diffusion_xyzArray = []
+
+        # diffusion_xyArray_aper = np.zeros((para.fixNy, para.fixNx))
+        # diffusion_xyArray_aper = []
+
+        # # print(xArray)
+        # # print(yArray)
+        # # print(diffusion_xyArray_aper)
+        # # xArray *= 1e3
+        # # yArray *= 1e3
+        # sc_aper = ax_aper.scatter(xArray,
+        #                           yArray,
+        #                           c=diffusion_xyArray_aper,
+        #                           s=40,
+        #                           alpha=0.6,
+        #                           norm=matplotlib.colors.LogNorm(),
+        #                           cmap='viridis')
+        # # ax_aper.set_xlabel('x(mm)', fontsize=myfontsize)
+        # # ax_aper.set_ylabel('y(mm)', fontsize=myfontsize)
+        # cbar_aper = fig_aper.colorbar(sc_aper)
+        # cbar_aper.ax.tick_params(labelsize=myfontsize)
+        # fig_aper.savefig(self.savePath_aper[i], dpi=300)
+
+        # x_aper = [
+        #     tmp * para.fixXStep
+        #     for tmp in np.arange(para.fixXStart, para.fixXEnd)
+        # ]
+        # y_aper = [
+        #     tmp * para.fixYStep
+        #     for tmp in np.arange(para.fixYStart, para.fixYEnd)
+        # ]
+        # pcm = ax_aper.pcolormesh(x_aper,
+        #                          y_aper,
+        #                          diffusion_xyArray_aper,
+        #                          shading='auto',
+        #                          cmap='viridis')
+        # fig_aper.colorbar(pcm, ax=ax_aper)
+        # plt.show()
+        # plt.close(fig_aper)
 
 
 def cal_fma_aper(para, tagid, totalPoints, totalTurns, isxConjugate,
@@ -275,57 +380,9 @@ def cal_action_angle(u, pu, alpha, beta):
     return J
 
 
-def plot_fix_distribution_perturn(para, turnArray, xArray, pxArray, yArray,
-                                  pyArray, zArray, pzArray, tagArray):
-    totalPoint = para.fixNx * para.fixNy * para.fixNz
-    totalTurn = int(len(turnArray) / totalPoint)
-
-    fig_x_dist, ax_x_dist = plt.subplots()
-    fig_y_dist, ax_y_dist = plt.subplots()
-    fig_z_dist, ax_z_dist = plt.subplots()
-    for i in range(totalTurn):
-        turn = turnArray[i * totalPoint]
-        x = xArray[i * totalPoint:(i + 1) * totalPoint]
-        px = pxArray[i * totalPoint:(i + 1) * totalPoint]
-        y = yArray[i * totalPoint:(i + 1) * totalPoint]
-        py = pyArray[i * totalPoint:(i + 1) * totalPoint]
-        z = zArray[i * totalPoint:(i + 1) * totalPoint]
-        pz = pzArray[i * totalPoint:(i + 1) * totalPoint]
-
-        ax_x_dist.scatter(x, px, color='tab:blue', s=1)
-        ax_y_dist.scatter(y, py, color='tab:blue', s=1)
-
-        ax_x_dist.set_xlabel('x')
-        ax_x_dist.set_ylabel('px')
-
-        ax_y_dist.set_xlabel('y')
-        ax_y_dist.set_ylabel('py')
-
-        ax_x_dist.set_title('turn' + str(int(turn)))
-        ax_y_dist.set_title('turn' + str(int(turn)))
-
-        fig_x_dist.savefig(r'D:\bb2021\distribution\tmp\\' + str(int(turn)) +
-                           '_x.png')
-        fig_y_dist.savefig(r'D:\bb2021\distribution\tmp\\' + str(int(turn)) +
-                           '_y.png')
-
-        ax_x_dist.cla()
-        ax_y_dist.cla()
-
-
 if __name__ == '__main__':
     home = 'D:\\bb2021'
     yearMonDay = '2021_0906'
     hourMinSec = '1806_01'
     # yearMonDay = '2021_0907'
     # hourMinSec = '1201_12'
-
-    p_footprint = FootPrint(home, yearMonDay, hourMinSec, 'proton', bunchid=0)
-    e_footprint = FootPrint(home,
-                            yearMonDay,
-                            hourMinSec,
-                            'electron',
-                            bunchid=0)
-
-    p_footprint.load_plot_save(1, (8, 6), 15)
-    e_footprint.load_plot_save(1, (8, 6), 15)
