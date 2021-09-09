@@ -1,5 +1,7 @@
 from multiprocessing import Pool
 from multiprocessing import Manager
+from multiprocessing import process
+from multiprocessing.context import Process
 import os
 import platform
 import sys
@@ -162,19 +164,33 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize,
                                             yearMonDay, hourMinSec, para,
                                             myfigsize, myfontsize, 'no queue')
     else:
-        mymanager = Manager()
-        myqueue = mymanager.Queue(ncpu)
-        mypool = Pool(processes=ncpu)
+        ps = []
         for i in range(para.nbunch):
-            mypool.apply_async(
-                plot_statistic_bunch_oneProcess,
-                (i, row, col, row2, col2, home, yearMonDay, hourMinSec, para,
-                 myfigsize, myfontsize, myqueue))
-            print(
-                'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
-                .format(ncpu, i, para.nbunch))
-        mypool.close()
-        mypool.join()
+            p = Process(target=plot_statistic_bunch_oneProcess,
+                        args=(i, row, col, row2, col2, home, yearMonDay,
+                              hourMinSec, para, myfigsize, myfontsize,
+                              'queue'))
+            ps.append(p)
+        for i in range(para.nbunch):
+            ps[i].start()
+            print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
+                  format(os.cpu_count(), i, para.nbunch))
+        for i in range(para.nbunch):
+            ps[i].join()
+
+        # mymanager = Manager()
+        # myqueue = mymanager.Queue(ncpu)
+        # mypool = Pool(processes=ncpu)
+        # for i in range(para.nbunch):
+        #     mypool.apply_async(
+        #         plot_statistic_bunch_oneProcess,
+        #         (i, row, col, row2, col2, home, yearMonDay, hourMinSec, para,
+        #          myfigsize, myfontsize, myqueue))
+        #     print(
+        #         'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
+        #         .format(ncpu, i, para.nbunch))
+        # mypool.close()
+        # mypool.join()
 
     plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
                         para, myfigsize, myfontsize)
@@ -249,66 +265,67 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
                 para.nuy, xlim, ylim)
     tune.load()
     for j in range(len(tune.file)):
-        fig_tmp1, ax_tmp1 = plt.subplots(1, figsize=myfigsize)
-        fig_tmp1.subplots_adjust(left=0.1, right=0.96, bottom=0.08)
-        plt.xticks(fontsize=myfontsize)
-        plt.yticks(fontsize=myfontsize)
+        if tune.isExist[j]:
+            fig_tmp1, ax_tmp1 = plt.subplots(1, figsize=myfigsize)
+            fig_tmp1.subplots_adjust(left=0.1, right=0.96, bottom=0.08)
+            plt.xticks(fontsize=myfontsize)
+            plt.yticks(fontsize=myfontsize)
 
-        fig_tmp2, ax_tmp2 = plt.subplots(1, figsize=myfigsize)
-        fig_tmp2.subplots_adjust(left=0.1, right=0.96, bottom=0.08)
-        plt.xticks(fontsize=myfontsize)
-        plt.yticks(fontsize=myfontsize)
+            fig_tmp2, ax_tmp2 = plt.subplots(1, figsize=myfigsize)
+            fig_tmp2.subplots_adjust(left=0.1, right=0.96, bottom=0.08)
+            plt.xticks(fontsize=myfontsize)
+            plt.yticks(fontsize=myfontsize)
 
-        tune.plot_scatter(ax_tmp1,
-                          j,
-                          resonanceOrder=order,
-                          myalpha=0.5,
-                          mysize=1,
-                          myfontsize=myfontsize)
-        ax_tmp1.scatter(para.nux,
-                        para.nuy,
-                        marker='x',
-                        color='black',
-                        s=100,
-                        zorder=order)
+            tune.plot_scatter(ax_tmp1,
+                              j,
+                              resonanceOrder=order,
+                              myalpha=0.5,
+                              mysize=1,
+                              myfontsize=myfontsize)
+            ax_tmp1.scatter(para.nux,
+                            para.nuy,
+                            marker='x',
+                            color='black',
+                            s=100,
+                            zorder=order)
 
-        ax_tmp1.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
-        ax_tmp1.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
+            ax_tmp1.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
+            ax_tmp1.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
 
-        fig_tmp1.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
-            para.statnote, para.particle, i, tune.tune_turn[j]),
-                          fontsize=10)
+            fig_tmp1.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
+                para.statnote, para.particle, i, tune.tune_turn[j]),
+                              fontsize=10)
 
-        tune.save_scatter(fig_tmp1, j)
-        plt.close(fig_tmp1)
+            tune.save_scatter(fig_tmp1, j)
+            plt.close(fig_tmp1)
 
-        # ax_tmp1.clear()
-        # ax_tmp1.tick_params(top=False, right=False)
+            # ax_tmp1.clear()
+            # ax_tmp1.tick_params(top=False, right=False)
 
-        tune.plot_hexbin(ax_tmp2,
-                         j,
-                         resonanceOrder=order,
-                         myalpha=0.3,
-                         mysize=200,
-                         myfontsize=myfontsize)
-        ax_tmp2.scatter(para.nux,
-                        para.nuy,
-                        marker='x',
-                        color='black',
-                        s=100,
-                        zorder=order)
+            tune.plot_hexbin(ax_tmp2,
+                             j,
+                             resonanceOrder=order,
+                             myalpha=0.3,
+                             mysize=200,
+                             myfontsize=myfontsize)
+            ax_tmp2.scatter(para.nux,
+                            para.nuy,
+                            marker='x',
+                            color='black',
+                            s=100,
+                            zorder=order)
 
-        ax_tmp2.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
-        ax_tmp2.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
+            ax_tmp2.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
+            ax_tmp2.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
 
-        fig_tmp2.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
-            para.statnote, para.particle, i, tune.tune_turn[j]),
-                          fontsize=10)
-        # ax_tmp2.tick_params(top=False, right=False)
+            fig_tmp2.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
+                para.statnote, para.particle, i, tune.tune_turn[j]),
+                              fontsize=10)
+            # ax_tmp2.tick_params(top=False, right=False)
 
-        tune.save_hexbin(fig_tmp2, j)
-        plt.close(fig_tmp2)
-        print('File has been drawn: {0}'.format(tune.file[j]))
+            tune.save_hexbin(fig_tmp2, j)
+            plt.close(fig_tmp2)
+            print('File has been drawn: {0}'.format(tune.file[j]))
 
 
 def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
@@ -350,18 +367,30 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
                                  myfigsize, myfontsize, i, xlim, ylim,
                                  'no queue')
     else:
-        mymanager = Manager()
-        myqueue = mymanager.Queue(ncpu)
-        mypool = Pool(processes=ncpu)
+        ps = []
         for i in range(para.nbunch):
-            mypool.apply_async(plot_tune_oneProcess,
-                               (order, home, yearMonDay, hourMinSec, para,
-                                myfigsize, myfontsize, i, xlim, ylim, myqueue))
-            print(
-                'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
-                .format(ncpu, i, para.nbunch))
-        mypool.close()
-        mypool.join()
+            p = Process(target=plot_tune_oneProcess,
+                        args=(order, home, yearMonDay, hourMinSec, para,
+                              myfigsize, myfontsize, i, xlim, ylim, 'queue'))
+            ps.append(p)
+        for i in range(para.nbunch):
+            ps[i].start()
+            print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
+                  format(os.cpu_count(), i, para.nbunch))
+        for i in range(para.nbunch):
+            ps[i].join()
+        # mymanager = Manager()
+        # myqueue = mymanager.Queue(ncpu)
+        # mypool = Pool(processes=ncpu)
+        # for i in range(para.nbunch):
+        #     mypool.apply_async(plot_tune_oneProcess,
+        #                        (order, home, yearMonDay, hourMinSec, para,
+        #                         myfigsize, myfontsize, i, xlim, ylim, myqueue))
+        #     print(
+        #         'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
+        #         .format(ncpu, i, para.nbunch))
+        # mypool.close()
+        # mypool.join()
 
 
 def plot_distribution_oneProcess(bunchid, home, yearMonDay, hourMinSec, para,
@@ -384,28 +413,67 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
             plot_distribution_oneProcess(i, home, yearMonDay, hourMinSec, para,
                                          myfigsize, 'no queue')
     else:
-        mymanager = Manager()
-        myqueue = mymanager.Queue(ncpu)
-        mypool = Pool(processes=ncpu)
+        ps = []
         for i in range(para.nbunch):
-            mypool.apply_async(
-                plot_distribution_oneProcess,
-                (i, home, yearMonDay, hourMinSec, para, myfigsize, myqueue))
-            print(
-                'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
-                .format(ncpu, i, para.nbunch))
-        mypool.close()
-        mypool.join()
+            p = Process(target=plot_distribution_oneProcess,
+                        args=(i, home, yearMonDay, hourMinSec, para, myfigsize,
+                              'queue'))
+            ps.append(p)
+        for i in range(para.nbunch):
+            ps[i].start()
+            print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
+                  format(os.cpu_count(), i, para.nbunch))
+        for i in range(para.nbunch):
+            ps[i].join()
+        # mymanager = Manager()
+        # myqueue = mymanager.Queue(ncpu)
+        # mypool = Pool(processes=ncpu)
+        # for i in range(para.nbunch):
+        #     mypool.apply_async(
+        #         plot_distribution_oneProcess,
+        #         (i, home, yearMonDay, hourMinSec, para, myfigsize, myqueue))
+        #     print(
+        #         'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
+        #         .format(ncpu, i, para.nbunch))
+        # mypool.close()
+        # mypool.join()
 
 
-def plot_fma_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize):
+def plot_fma_oneProcess(bunchid, home, yearMonDay, hourMinSec, para, myfigsize,
+                        myfontsize):
+    myfootprint = FootPrint(home, yearMonDay, hourMinSec, para.particle,
+                            bunchid)
+    myfootprint.load_plot_save(para, myfigsize, myfontsize)
+
+
+def plot_fma_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
+                  ncpu):
     print('\nStart drawing {0:s} Frequency Map'.format(para.particle))
-    for i in range(para.nbunch):
-        myfootprint = FootPrint(home, yearMonDay, hourMinSec, para.particle, i)
-        myfootprint.load_plot_save(para, myfigsize, myfontsize)
+    if ncpu == 1:
+        for i in range(para.nbunch):
+            plot_fma_oneProcess(i, home, yearMonDay, hourMinSec, para,
+                                myfigsize, myfontsize)
+    else:
+        ps = []
+        for i in range(para.nbunch):
+            p = Process(target=plot_fma_oneProcess,
+                        args=(i, home, yearMonDay, hourMinSec, para, myfigsize,
+                              myfontsize))
+            ps.append(p)
+        for i in range(para.nbunch):
+            ps[i].start()
+            print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
+                  format(os.cpu_count(), i, para.nbunch))
+        for i in range(para.nbunch):
+            ps[i].join()
 
 
 def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
+    # Default contexts and start methods on Windows is spawn.
+    # Default contexts and start methods on Unix is fork.
+    if platform.system() == 'Linux':
+        ncpu = os.cpu_count() - 1
+
     startTime = time.time()
     beam1 = Parameter(home, yearMonDay, hourMinSec, 'beam1')
     beam2 = Parameter(home, yearMonDay, hourMinSec, 'beam2')
@@ -434,27 +502,31 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
 
             plot_statistic_main(home, yearMonDay, hourMinSec, beam2,
                                 my_figsize1, my_fontsize_stat, ncpu)
+
         if kind == 'all' or kind == 'lumi':
             plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
                                  my_figsize1, my_fontsize_lumi)
+
         if kind == 'all' or kind == 'dist':
             plot_distribution_main(home, yearMonDay, hourMinSec, beam1,
                                    my_figsize1, ncpu)
 
             plot_distribution_main(home, yearMonDay, hourMinSec, beam2,
                                    my_figsize1, ncpu)
+
         if kind == 'all' or kind == 'tune':
             plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2,
                            my_fontsize_tune, ncpu)
 
             plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2,
                            my_fontsize_tune, ncpu)
+
         if kind == 'all' or kind == 'fma':
             plot_fma_main(home, yearMonDay, hourMinSec, beam1, my_figsize_fma,
-                          my_fontsize_fma)
+                          my_fontsize_fma, ncpu)
 
             plot_fma_main(home, yearMonDay, hourMinSec, beam2, my_figsize_fma,
-                          my_fontsize_fma)
+                          my_fontsize_fma, ncpu)
 
     endtime = time.time()
     print('start   : ', time.asctime(time.localtime(startTime)))
@@ -474,13 +546,19 @@ if __name__ == '__main__':
         print('We do not support {0} system now.}'.format(platform.system()))
         os.exit(1)
 
+    command = ('all', 'stat', 'lumi', 'tune', 'dist', 'fma')
+
     type = []
     if len(sys.argv) == 1:
         type = ['all']
     else:
         for iargv in range(1, len(sys.argv)):
-            type.append(sys.argv[iargv])
-    print(type)
+            if sys.argv[iargv] in command:
+                type.append(sys.argv[iargv])
+            else:
+                print('Warning: invalid option "{0}"'.format(
+                    sys.argv[iargv]))
+
     yearMonDay = '2021_0908'
     hourMinSec = '1713_19'
     # yearMonDay = '2021_0907'
