@@ -279,10 +279,16 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
             xgap = abs(xmax - xmin)
             ygap = abs(ymax - ymin)
 
-            axmin = xmin - xgap * 0.5
-            aymin = ymin - ygap * 0.5
-            axmax = xmax + xgap * 0.5
-            aymax = ymax + ygap * 0.5
+            if para.tuneshift_direction > 0:
+                axmin = xmin - xgap * 0.3
+                aymin = ymin - ygap * 0.3
+                axmax = xmax + xgap * 0.7
+                aymax = ymax + ygap * 0.7
+            else:
+                axmin = xmin - xgap * 0.7
+                aymin = ymin - ygap * 0.7
+                axmax = xmax + xgap * 0.3
+                aymax = ymax + ygap * 0.3
 
             axmin = 0 if axmin < 0 else axmin
             aymin = 0 if aymin < 0 else aymin
@@ -292,14 +298,11 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
             if existFirst == 1:
                 tune.xlim = [axmin, axmax]
                 tune.ylim = [aymin, aymax]
-            print(tune.xlim[0], xmin, tune.xlim[1], xmax)
-            print(tune.ylim[0], ymin, tune.ylim[1], ymax)
+
             tune.xlim[0] = axmin if xmin < tune.xlim[0] else tune.xlim[0]
             tune.ylim[0] = aymin if ymin < tune.ylim[0] else tune.ylim[0]
             tune.xlim[1] = axmax if xmax > tune.xlim[1] else tune.xlim[1]
             tune.ylim[1] = aymax if ymax > tune.ylim[1] else tune.ylim[1]
-            print(tune.xlim)
-            print(tune.ylim)
 
             # fig_tmp1, ax_tmp1 = plt.subplots(1, figsize=myfigsize)
             # fig_tmp1.subplots_adjust(left=0.1, right=0.96, bottom=0.08)
@@ -342,14 +345,14 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
                              ax_tmp2,
                              j,
                              resonanceOrder=order,
-                             myalpha=0.3,
-                             mysize=200,
+                             myalpha=0.8,
+                             mygridsize=200,
                              myfontsize=myfontsize)
             ax_tmp2.scatter(para.nux,
                             para.nuy,
                             marker='x',
                             color='black',
-                            s=100,
+                            s=50,
                             zorder=order)
 
             ax_tmp2.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
@@ -368,7 +371,7 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
 def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
                    ncpu):
     print('\nStart drawing {0:s} tune spread data'.format(para.particle))
-    order = 10
+    order = 12
 
     if ncpu == 1:
         for i in range(para.nbunch):
@@ -566,8 +569,10 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2021_0908'
-    hourMinSec = '1713_19'
+    yearMonDay = '2021_0826'
+    hourMinSec = '1128_05'
+    # yearMonDay = '2021_0908'
+    # hourMinSec = '1713_19'
     # yearMonDay = '2021_0907'
     # hourMinSec = '0938_30'
 
