@@ -9,6 +9,8 @@ import os
 import glob
 import re
 
+from plot_general import myhexbin
+
 
 class Tune:
     """
@@ -116,7 +118,7 @@ class Tune:
                         self.nuY[phaseTime],
                         alpha=myalpha,
                         s=mysize,
-                        color='tab:red',
+                        color='red',
                         zorder=resonanceOrder)
         # cbar = fig.colorbar(sc)
         # cbar.ax.tick_params(labelsize=myfontsize)
@@ -129,14 +131,22 @@ class Tune:
                     phaseTime,
                     resonanceOrder,
                     myalpha,
-                    mysize,
+                    mygridsize,
                     resonanceKind='all',
                     myfontsize=10):
-        he = ax.hexbin(self.nuX[phaseTime],
-                       self.nuY[phaseTime],
-                       gridsize=mysize,
-                       norm=matplotlib.colors.LogNorm(),
-                       cmap='coolwarm')
+        # he = ax.hexbin(self.nuX[phaseTime],
+        #                self.nuY[phaseTime],
+        #                gridsize=mysize,
+        #                norm=matplotlib.colors.LogNorm(),
+        #                cmap='coolwarm')
+        he = myhexbin(ax,
+                      self.nuX[phaseTime],
+                      self.nuY[phaseTime],
+                      gridsize=mygridsize,
+                      alpha=myalpha,
+                      scattersize=1,
+                      norm=matplotlib.colors.LogNorm(),
+                      cmap='jet')
         cbar = fig.colorbar(he)
         cbar.ax.tick_params(labelsize=myfontsize)
 
