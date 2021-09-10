@@ -254,7 +254,7 @@ def plot_luminosity_main(home,
 
 
 def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
-                         myfontsize, i, xlim, ylim, myqueue):
+                         myfontsize, i, myqueue):
     '''
     使用多线程同时处理不同束团的tune信息
 
@@ -262,48 +262,84 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
     目前认为原因是在执行tune.load()之后，tune对象里数据量太大，传递这些数据给不同线程太耗时间，导致并行效果很差。
     因此改为并行处理不同束团，这样在不同线程内部加载数据文件，就可以省去传递数据所耗时间。
     '''
+
     tune = Tune(home, yearMonDay, hourMinSec, para.particle, i, para.nux,
-                para.nuy, xlim, ylim)
+                para.nuy)
     tune.load()
+
+    existFirst = 0
     for j in range(len(tune.file)):
         if tune.isExist[j]:
-            fig_tmp1, ax_tmp1 = plt.subplots(1, figsize=myfigsize)
-            fig_tmp1.subplots_adjust(left=0.1, right=0.96, bottom=0.08)
-            plt.xticks(fontsize=myfontsize)
-            plt.yticks(fontsize=myfontsize)
+            existFirst += 1
+            xmin = min(tune.nuX[j])
+            ymin = min(tune.nuY[j])
+            xmax = max(tune.nuX[j])
+            ymax = max(tune.nuY[j])
+
+            xgap = abs(xmax - xmin)
+            ygap = abs(ymax - ymin)
+
+            axmin = xmin - xgap * 0.5
+            aymin = ymin - ygap * 0.5
+            axmax = xmax + xgap * 0.5
+            aymax = ymax + ygap * 0.5
+
+            axmin = 0 if axmin < 0 else axmin
+            aymin = 0 if aymin < 0 else aymin
+            axmax = 1 if axmax > 1 else axmax
+            aymax = 1 if aymax > 1 else aymax
+
+            if existFirst == 1:
+                tune.xlim = [axmin, axmax]
+                tune.ylim = [aymin, aymax]
+            print(tune.xlim[0], xmin, tune.xlim[1], xmax)
+            print(tune.ylim[0], ymin, tune.ylim[1], ymax)
+            tune.xlim[0] = axmin if xmin < tune.xlim[0] else tune.xlim[0]
+            tune.ylim[0] = aymin if ymin < tune.ylim[0] else tune.ylim[0]
+            tune.xlim[1] = axmax if xmax > tune.xlim[1] else tune.xlim[1]
+            tune.ylim[1] = aymax if ymax > tune.ylim[1] else tune.ylim[1]
+            print(tune.xlim)
+            print(tune.ylim)
+
+            # fig_tmp1, ax_tmp1 = plt.subplots(1, figsize=myfigsize)
+            # fig_tmp1.subplots_adjust(left=0.1, right=0.96, bottom=0.08)
+            # plt.xticks(fontsize=myfontsize)
+            # plt.yticks(fontsize=myfontsize)
 
             fig_tmp2, ax_tmp2 = plt.subplots(1, figsize=myfigsize)
-            fig_tmp2.subplots_adjust(left=0.1, right=0.96, bottom=0.08)
+            fig_tmp2.subplots_adjust(right=1)
             plt.xticks(fontsize=myfontsize)
             plt.yticks(fontsize=myfontsize)
 
-            tune.plot_scatter(ax_tmp1,
-                              j,
-                              resonanceOrder=order,
-                              myalpha=0.5,
-                              mysize=1,
-                              myfontsize=myfontsize)
-            ax_tmp1.scatter(para.nux,
-                            para.nuy,
-                            marker='x',
-                            color='black',
-                            s=100,
-                            zorder=order)
+            # tune.plot_scatter(fig_tmp1,
+            #                   ax_tmp1,
+            #                   j,
+            #                   resonanceOrder=order,
+            #                   myalpha=0.5,
+            #                   mysize=1,
+            #                   myfontsize=myfontsize)
+            # ax_tmp1.scatter(para.nux,
+            #                 para.nuy,
+            #                 marker='x',
+            #                 color='black',
+            #                 s=100,
+            #                 zorder=order)
 
-            ax_tmp1.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
-            ax_tmp1.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
+            # ax_tmp1.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
+            # ax_tmp1.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
 
-            fig_tmp1.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
-                para.statnote, para.particle, i, tune.tune_turn[j]),
-                              fontsize=10)
+            # fig_tmp1.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
+            #     para.statnote, para.particle, i, tune.tune_turn[j]),
+            #                   fontsize=10)
 
-            tune.save_scatter(fig_tmp1, j)
-            plt.close(fig_tmp1)
+            # tune.save_scatter(fig_tmp1, j)
+            # plt.close(fig_tmp1)
 
             # ax_tmp1.clear()
             # ax_tmp1.tick_params(top=False, right=False)
 
-            tune.plot_hexbin(ax_tmp2,
+            tune.plot_hexbin(fig_tmp2,
+                             ax_tmp2,
                              j,
                              resonanceOrder=order,
                              myalpha=0.3,
@@ -319,9 +355,9 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
             ax_tmp2.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
             ax_tmp2.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
 
-            fig_tmp2.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
-                para.statnote, para.particle, i, tune.tune_turn[j]),
-                              fontsize=10)
+            # fig_tmp2.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
+            #     para.statnote, para.particle, i, tune.tune_turn[j]),
+            #                   fontsize=10)
             # ax_tmp2.tick_params(top=False, right=False)
 
             tune.save_hexbin(fig_tmp2, j)
@@ -334,45 +370,16 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
     print('\nStart drawing {0:s} tune spread data'.format(para.particle))
     order = 10
 
-    if para.particle == 'proton':
-        factor = 8
-    elif para.particle == 'electron':
-        factor = 1
-
-    if para.tuneshift_direction > 0:
-        xmin = para.nux - 0.01
-        ymin = para.nuy - 0.01
-        xmax = para.nux + factor * para.xix
-        ymax = para.nuy + factor * para.xiy
-        xmax = float(format(xmax, '.2f'))
-        ymax = float(format(ymax, '.2f'))
-    else:
-        xmax = para.nux - 0.01
-        ymax = para.nuy - 0.01
-        xmin = para.nux + factor * para.xix
-        ymin = para.nuy + factor * para.xiy
-        xmin = float(format(xmin, '.2f'))
-        ymin = float(format(ymin, '.2f'))
-
-    xmin = xmin if xmin >= 0 else 0
-    xmax = xmax if xmax <= 1 else 1
-    ymin = ymin if ymin >= 0 else 0
-    ymax = ymax if ymax <= 1 else 1
-
-    xlim = [xmin, xmax]
-    ylim = [ymin, ymax]
-
     if ncpu == 1:
         for i in range(para.nbunch):
             plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para,
-                                 myfigsize, myfontsize, i, xlim, ylim,
-                                 'no queue')
+                                 myfigsize, myfontsize, i, 'no queue')
     else:
         ps = []
         for i in range(para.nbunch):
             p = Process(target=plot_tune_oneProcess,
                         args=(order, home, yearMonDay, hourMinSec, para,
-                              myfigsize, myfontsize, i, xlim, ylim, 'queue'))
+                              myfigsize, myfontsize, i, 'queue'))
             ps.append(p)
         for i in range(para.nbunch):
             ps[i].start()
@@ -480,11 +487,11 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     beam2 = Parameter(home, yearMonDay, hourMinSec, 'beam2')
 
     my_figsize1 = (20, 10)
-    my_figsize2 = (15, 10)
+    my_figsize_tune = (8, 6)
     my_figsize_fma = (8, 6)
     my_fontsize_stat = 12
     my_fontsize_lumi = 12
-    my_fontsize_tune = 20
+    my_fontsize_tune = 12
     my_fontsize_fma = 15
 
     # beam1.print()
@@ -516,11 +523,11 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
                                    my_figsize1, ncpu)
 
         if kind == 'all' or kind == 'tune':
-            plot_tune_main(home, yearMonDay, hourMinSec, beam1, my_figsize2,
-                           my_fontsize_tune, ncpu)
+            plot_tune_main(home, yearMonDay, hourMinSec, beam1,
+                           my_figsize_tune, my_fontsize_tune, ncpu)
 
-            plot_tune_main(home, yearMonDay, hourMinSec, beam2, my_figsize2,
-                           my_fontsize_tune, ncpu)
+            plot_tune_main(home, yearMonDay, hourMinSec, beam2,
+                           my_figsize_tune, my_fontsize_tune, ncpu)
 
         if kind == 'all' or kind == 'fma':
             plot_fma_main(home, yearMonDay, hourMinSec, beam1, my_figsize_fma,
