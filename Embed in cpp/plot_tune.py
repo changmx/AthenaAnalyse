@@ -1,6 +1,7 @@
 from json import load
 
 from matplotlib.colors import Normalize
+import matplotlib
 from plot_resonance import plot_resonanceDiagram_color
 import matplotlib.pyplot as plt
 import numpy as np
@@ -93,16 +94,17 @@ class Tune:
                 l_nuY = list(tmp_nuY)
 
                 delete_number = 0  # 把数组转化为列表来删除元素时，每删除一个元素，被删除元素后面的所有元素下标都会减一，因此用这个参数来表示删除元素后其他元素下标的变化
-                for i in range(len(tmp_tag)):  # 删除列表中的元素
-                    if tmp_tag[i] <= 0:
-                        del l_nuX[i - delete_number]
-                        del l_nuY[i - delete_number]
+                for j in range(len(tmp_tag)):  # 删除列表中的元素
+                    if tmp_tag[j] <= 0:
+                        del l_nuX[j - delete_number]
+                        del l_nuY[j - delete_number]
                         delete_number += 1
 
                 self.nuX.append(l_nuX)
                 self.nuY.append(l_nuY)
 
     def plot_scatter(self,
+                     fig,
                      ax,
                      phaseTime,
                      resonanceOrder,
@@ -110,17 +112,19 @@ class Tune:
                      mysize,
                      resonanceKind='all',
                      myfontsize=10):
-        ax.scatter(self.nuX[phaseTime],
-                   self.nuY[phaseTime],
-                   alpha=myalpha,
-                   s=mysize,
-                   color='red',
-                   zorder=resonanceOrder)
-
+        sc = ax.scatter(self.nuX[phaseTime],
+                        self.nuY[phaseTime],
+                        alpha=myalpha,
+                        s=mysize,
+                        color='tab:red',
+                        zorder=resonanceOrder)
+        # cbar = fig.colorbar(sc)
+        # cbar.ax.tick_params(labelsize=myfontsize)
         plot_resonanceDiagram_color(resonanceOrder, ax, self.xlim, self.ylim,
                                     resonanceKind, myfontsize)
 
     def plot_hexbin(self,
+                    fig,
                     ax,
                     phaseTime,
                     resonanceOrder,
@@ -128,10 +132,13 @@ class Tune:
                     mysize,
                     resonanceKind='all',
                     myfontsize=10):
-        ax.hexbin(self.nuX[phaseTime],
-                  self.nuY[phaseTime],
-                  gridsize=mysize,
-                  cmap='Reds')
+        he = ax.hexbin(self.nuX[phaseTime],
+                       self.nuY[phaseTime],
+                       gridsize=mysize,
+                       norm=matplotlib.colors.LogNorm(),
+                       cmap='coolwarm')
+        cbar = fig.colorbar(he)
+        cbar.ax.tick_params(labelsize=myfontsize)
 
         plot_resonanceDiagram_color(resonanceOrder, ax, self.xlim, self.ylim,
                                     resonanceKind, myfontsize)
