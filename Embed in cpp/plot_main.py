@@ -571,10 +571,6 @@ if __name__ == '__main__':
 
     yearMonDay = '2021_0826'
     hourMinSec = '1128_05'
-    # yearMonDay = '2021_0908'
-    # hourMinSec = '1713_19'
-    # yearMonDay = '2021_0907'
-    # hourMinSec = '0938_30'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
