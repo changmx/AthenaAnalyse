@@ -53,6 +53,7 @@ def plot_resonanceDiagram_all(order, col='b', kind='all'):
 def plot_resonanceDiagram_one(ax, order, col, repeatLine, legend, kind='all'):
     # 绘制某一阶数的共振线
     FN = Farey(order)
+    mylinewidth = 1
     # print(FN)
     for f in FN:
         h, k = f  # Node h/k on the axes
@@ -68,39 +69,41 @@ def plot_resonanceDiagram_one(ax, order, col, repeatLine, legend, kind='all'):
                               c / a - 1 * b / a]]  # 两点确定一条直线，确定两个点的横纵坐标
                     # print('one',coord)
                     if coord not in repeatLine:  # 如果这条线的数据在列表中不存在，说明之前没有画过这条线
-                        ax.plot(coord[0], coord[1], color=col)
+                        ax.plot(coord[0], coord[1], color=col, lw=mylinewidth)
                         repeatLine.append(coord)  # 画之，并添加到列表中，下次不再画这条线
 
                     coord = [[c / a - 0 * b / a, c / a - 1 * b / a], [0, 1]]
                     if coord not in repeatLine:
-                        ax.plot(coord[0], coord[1], color=col)
+                        ax.plot(coord[0], coord[1], color=col, lw=mylinewidth)
                         repeatLine.append(coord)
 
                     coord = [[c / a + 0 * b / a, c / a + 1 * b / a], [1, 0]]
                     if coord not in repeatLine:
-                        ax.plot(coord[0], coord[1], color=col)
+                        ax.plot(coord[0], coord[1], color=col, lw=mylinewidth)
                         repeatLine.append(coord)
 
                 if kind == 'all' or kind == 'diff':
                     coord = [[0, 1], [c / a + 0 * b / a, c / a + 1 * b / a]]
                     if coord not in repeatLine:
-                        ax.plot(coord[0], coord[1], color=col)
+                        ax.plot(coord[0], coord[1], color=col, lw=mylinewidth)
                         repeatLine.append(coord)
 
                     coord = [[c / a + 0 * b / a, c / a + 1 * b / a], [0, 1]]
                     if coord not in repeatLine:
-                        ax.plot(coord[0], coord[1], color=col)
+                        ax.plot(coord[0], coord[1], color=col, lw=mylinewidth)
                         repeatLine.append(coord)
 
                     coord = [[c / a - 0 * b / a, c / a - 1 * b / a], [1, 0]]
                     if coord not in repeatLine:
-                        ax.plot(coord[0], coord[1], color=col)
+                        ax.plot(coord[0], coord[1], color=col, lw=mylinewidth)
                         repeatLine.append(coord)
 
             if q == k and p == 1:  # FN elements below 1/k
                 break
     legend.append(
-        Line2D([0], [0], color=col, lw=4,
+        Line2D([0], [0],
+               color=col,
+               lw=mylinewidth,
                label=str(order) + '-order'))  # 添加这条线的图例
 
 
@@ -147,7 +150,8 @@ def plot_resonanceDiagram_color(order,
     # 各个阶数共振线的颜色
     col = [
         'midnightblue', 'black', 'tab:orange', 'tab:green', 'tab:red',
-        'tab:purple', 'tab:blue', 'tab:pink', 'tab:gray', 'tab:cyan'
+        'tab:purple', 'tab:blue', 'tab:pink', 'tab:gray', 'tab:cyan',
+        'tab:brown', 'tab:olive'
     ]
     # col = [
     #     'midnightblue', 'black', 'gold', 'crimson', 'darkorange', 'mediumblue',
