@@ -220,22 +220,10 @@ class FootPrint:
 
         unitConvert = 1e3
 
-        # xmin = para.fixXStart * para.fixXStep * para.sigmax * 1.2 * unitConvert
-        # xmax = para.fixXEnd * para.fixXStep * para.sigmax * 1.2 * unitConvert
-        # ymin = para.fixYStart * para.fixYStep * para.sigmay * 1.2 * unitConvert
-        # ymax = para.fixYEnd * para.fixYStep * para.sigmay * 1.2 * unitConvert
-        # pxmin = -1 * para.sigmapx * 5 * unitConvert
-        # pxmax = para.sigmapx * 5 * unitConvert
-        # pymin = -1 * para.sigmapy * 5 * unitConvert
-        # pymax = para.sigmapy * 5 * unitConvert
-        xmax = np.amax(xArray) * 1.2 * unitConvert
-        xmin = np.amin(xArray) * 1.2 * unitConvert
-        ymax = np.amax(yArray) * 1.2 * unitConvert
-        ymin = np.amin(yArray) * 1.2 * unitConvert
-        pxmin = np.amax(pxArray) * 1.2 * unitConvert
-        pxmax = np.amin(pxArray) * 1.2 * unitConvert
-        pymin = np.amax(pyArray) * 1.2 * unitConvert
-        pymax = np.amin(pyArray) * 1.2 * unitConvert
+        xmin, xmax = cal_ax_lim(xArray, unitConvert)
+        ymin, ymax = cal_ax_lim(yArray, unitConvert)
+        pxmin, pxmax = cal_ax_lim(pxArray, unitConvert)
+        pymin, pymax = cal_ax_lim(pyArray, unitConvert)
 
         for i in range(totalTurn):
             turn = turnArray[i * totalPoint]
@@ -440,6 +428,23 @@ def cal_action_angle(u, pu, alpha, beta):
     gamma = (1 + alpha**2) / beta
     J = (gamma * u**2 + 2 * alpha * u * pu + beta * pu**2)
     return J
+
+
+def cal_ax_lim(array, convert=1):
+    '''
+    return axmin, axmax time unit convert
+    '''
+    min = np.amin(array)
+    max = np.amax(array)
+    if min >= 0:
+        axmin = min * 0.8 * convert
+    else:
+        axmin = min * 1.2 * convert
+    if max >= 0:
+        axmax = max * 1.2 * convert
+    else:
+        axmax = min * 0.8 * convert
+    return axmin, axmax
 
 
 if __name__ == '__main__':
