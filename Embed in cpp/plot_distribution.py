@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 import os
 import glob
@@ -6,6 +7,8 @@ import re
 
 from numpy.lib import delete
 from load_parameter import Parameter
+
+from plot_general import myhexbin
 
 
 class Distribution:
@@ -87,32 +90,41 @@ class Distribution:
                 col = 4
                 fig, ax = plt.subplots(row, col, figsize=myfigsize)
 
-                plot_hexbin(fig, ax[0, 0], x, px, mysize, para.sigmax,
-                            para.sigmapx, 'x', 'px')
-                plot_hexbin(fig, ax[1, 0], y, py, mysize, para.sigmay,
-                            para.sigmapy, 'y', 'py')
-                plot_hexbin(fig, ax[2, 0], z, pz, mysize, para.sigmaz,
-                            para.sigmapz, 'z', 'pz')
+                plot_hexbin(fig, ax[0, 0], x / para.sigmax, px / para.sigmapx,
+                            mysize, 1, 1, r'$\rm x/\sigma_x$',
+                            r'$\rm x^{\prime}/\sigma_{{x^{\prime}}}$')
+                plot_hexbin(fig, ax[1, 0], y / para.sigmay, py / para.sigmapy,
+                            mysize, 1, 1, r'$\rm y/\sigma_y$',
+                            r'$\rm y^{\prime}/\sigma_{{y^{\prime}}}$')
+                plot_hexbin(fig, ax[2, 0], z / para.sigmaz, pz / para.sigmapz,
+                            mysize, 1, 1, r'$\rm z/\sigma_z$',
+                            r'$\rm \delta_p/\sigma_{{\delta_p}}$')
 
-                plot_hexbin(fig, ax[0, 1], x, y, mysize, para.sigmax,
-                            para.sigmay, 'x', 'y')
-                plot_hexbin(fig, ax[1, 1], z, x, mysize, para.sigmaz,
-                            para.sigmax, 'z', 'x')
-                plot_hexbin(fig, ax[2, 1], z, y, mysize, para.sigmaz,
-                            para.sigmay, 'z', 'y')
+                plot_hexbin(fig, ax[0, 1], x / para.sigmax, y / para.sigmay,
+                            mysize, 1, 1, r'$\rm x/\sigma_x$',
+                            r'$\rm y/\sigma_y$')
+                plot_hexbin(fig, ax[1, 1], z / para.sigmaz, x / para.sigmax,
+                            mysize, 1, 1, r'$\rm z/\sigma_z$',
+                            r'$\rm x/\sigma_x$')
+                plot_hexbin(fig, ax[2, 1], z / para.sigmaz, y / para.sigmay,
+                            mysize, 1, 1, r'$\rm z/\sigma_z$',
+                            r'$\rm y/\sigma_y$')
 
-                plot_hist(ax[0, 2], x, mybins, para.sigmax, self.bunchLabel,
-                          'x', 'counts')
-                plot_hist(ax[0, 3], px, mybins, para.sigmapx, self.bunchLabel,
-                          'px', 'counts')
-                plot_hist(ax[1, 2], y, mybins, para.sigmay, self.bunchLabel,
-                          'y', 'counts')
-                plot_hist(ax[1, 3], py, mybins, para.sigmapy, self.bunchLabel,
-                          'py', 'counts')
-                plot_hist(ax[2, 2], z, mybins, para.sigmaz, self.bunchLabel,
-                          'z', 'counts')
-                plot_hist(ax[2, 3], pz, mybins, para.sigmapz, self.bunchLabel,
-                          'dp', 'counts')
+                plot_hist(ax[0, 2], x / para.sigmax, mybins, 1,
+                          self.bunchLabel, r'$\rm x/\sigma_x$', 'counts')
+                plot_hist(ax[0,
+                             3], px / para.sigmapx, mybins, 1, self.bunchLabel,
+                          r'$\rm x^{\prime}/\sigma_{{x^{\prime}}}$', 'counts')
+                plot_hist(ax[1, 2], y / para.sigmay, mybins, 1,
+                          self.bunchLabel, r'$\rm y/\sigma_y$', 'counts')
+                plot_hist(ax[1,
+                             3], py / para.sigmapy, mybins, 1, self.bunchLabel,
+                          r'$\rm y^{\prime}/\sigma_{{y^{\prime}}}$', 'counts')
+                plot_hist(ax[2, 2], z / para.sigmaz, mybins, 1,
+                          self.bunchLabel, r'$\rm z/\sigma_z$', 'counts')
+                plot_hist(ax[2,
+                             3], pz / para.sigmapz, mybins, 1, self.bunchLabel,
+                          r'$\rm \delta_p/\sigma_{{\delta_p}}$', 'counts')
 
                 plt.subplots_adjust(left=0.05,
                                     right=0.98,
@@ -141,12 +153,21 @@ def plot_hexbin(fig, ax, x, y, mysize, xscale, yscale, myxlabel, myylabel):
     ymin = -scale * yscale
     ymax = scale * yscale
     ax.set(xlim=(xmin, xmax), ylim=(ymin, ymax))
-    hb = ax.hexbin(x, y, gridsize=mysize, cmap='Blues', bins='log')
+    hb = myhexbin(ax,
+                  x,
+                  y,
+                  gridsize=mysize,
+                  scattersize=1,
+                  norm=matplotlib.colors.LogNorm(),
+                  cmap='jet',
+                  alpha=1)
+    # hb = ax.hexbin(x, y, gridsize=mysize, cmap='Blues', bins='log')
     cb = fig.colorbar(hb, ax=ax)
     ax.set_xlabel(myxlabel)
     ax.set_ylabel(myylabel)
+    ax.grid()
     # cb.set_label(r'$\mathrm{log_{10}(N)}$')
-    ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
+    # ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
     # ax.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
 
 
@@ -155,15 +176,21 @@ def plot_hist(ax, x, mybins, xscale, mylabel, myxlabel, myylabel):
     xmin = -scale * xscale
     xmax = scale * xscale
     # n, bins, patches = ax.hist(x, density=True)
-    n, bins, patches = ax.hist(x,
+    N, bins, patches = ax.hist(x,
                                density=True,
                                bins=mybins,
                                range=(xmin, xmax))
+    fracs = N / N.max()
+    norm = matplotlib.colors.Normalize(fracs.min(), fracs.max())
+    for thisfrac, thispatch in zip(fracs, patches):
+        color = plt.cm.viridis(norm(thisfrac))
+        thispatch.set_facecolor(color)
     # ax.hist(x, bins=mybins, label=mylabel)
     ax.set_xlabel(myxlabel)
-    ax.set_ylabel(myylabel)
-    ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
+    # ax.set_ylabel(myylabel)
+    # ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
     ax.grid()
+    ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1))
     # ax.legend()
 
 
