@@ -175,6 +175,7 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize,
             ps[i].start()
             print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
                   format(os.cpu_count(), i, para.nbunch))
+            time.sleep(1)
         for i in range(para.nbunch):
             ps[i].join()
 
@@ -388,6 +389,7 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
             ps[i].start()
             print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
                   format(os.cpu_count(), i, para.nbunch))
+            time.sleep(1)
         for i in range(para.nbunch):
             ps[i].join()
         # mymanager = Manager()
@@ -434,6 +436,7 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
             ps[i].start()
             print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
                   format(os.cpu_count(), i, para.nbunch))
+            time.sleep(1)
         for i in range(para.nbunch):
             ps[i].join()
         # mymanager = Manager()
@@ -475,6 +478,7 @@ def plot_fma_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
             ps[i].start()
             print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
                   format(os.cpu_count(), i, para.nbunch))
+            time.sleep(1)
         for i in range(para.nbunch):
             ps[i].join()
 
