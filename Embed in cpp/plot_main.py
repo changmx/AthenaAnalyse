@@ -454,25 +454,27 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
 
 
 def plot_fma_oneProcess(bunchid, home, yearMonDay, hourMinSec, para, myfigsize,
-                        myfontsize):
+                        myfontsize, myscattersize, mydistTurnStep):
     myfootprint = FootPrint(home, yearMonDay, hourMinSec, para.particle,
                             bunchid)
-    myfootprint.load_plot_save(para, myfigsize, myfontsize)
+    myfootprint.load_plot_save(para, myfigsize, myfontsize, myscattersize,
+                               mydistTurnStep)
 
 
 def plot_fma_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
-                  ncpu):
+                  myscattersize, mydistTurnStep, ncpu):
     print('\nStart drawing {0:s} Frequency Map'.format(para.particle))
     if ncpu == 1:
         for i in range(para.nbunch):
             plot_fma_oneProcess(i, home, yearMonDay, hourMinSec, para,
-                                myfigsize, myfontsize)
+                                myfigsize, myfontsize, myscattersize,
+                                mydistTurnStep)
     else:
         ps = []
         for i in range(para.nbunch):
             p = Process(target=plot_fma_oneProcess,
                         args=(i, home, yearMonDay, hourMinSec, para, myfigsize,
-                              myfontsize))
+                              myfontsize, myscattersize, mydistTurnStep))
             ps.append(p)
         for i in range(para.nbunch):
             ps[i].start()
@@ -500,6 +502,9 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     my_fontsize_lumi = 12
     my_fontsize_tune = 12
     my_fontsize_fma = 15
+
+    my_fma_scattersize = 1
+    my_fma_distTurnStep = 2
 
     # beam1.print()
     # beam2.print()
@@ -538,10 +543,12 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
 
         if kind == 'all' or kind == 'fma':
             plot_fma_main(home, yearMonDay, hourMinSec, beam1, my_figsize_fma,
-                          my_fontsize_fma, ncpu)
+                          my_fontsize_fma, my_fma_scattersize,
+                          my_fma_distTurnStep, ncpu)
 
             plot_fma_main(home, yearMonDay, hourMinSec, beam2, my_figsize_fma,
-                          my_fontsize_fma, ncpu)
+                          my_fontsize_fma, my_fma_scattersize,
+                          my_fma_distTurnStep, ncpu)
 
     endtime = time.time()
     print('start   : ', time.asctime(time.localtime(startTime)))
@@ -573,8 +580,8 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2021_0826'
-    hourMinSec = '1128_05'
+    yearMonDay = '2021_0914'
+    hourMinSec = '1659_12'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
