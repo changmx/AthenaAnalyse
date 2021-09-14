@@ -51,7 +51,7 @@ class Tune:
         self.file = self.hourMinSec + '_' + self.particle + '_bunch' + str(
             bunchid) + '_phase_'
         self.file = os.sep.join([
-            self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
+            self.home, 'phase', self.yearMonDay, self.hourMinSec,
             self.file
         ])
 
