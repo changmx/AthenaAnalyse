@@ -70,7 +70,7 @@ class FootPrint:
 
             savePath_dist_xpx = os.sep.join([
                 self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
-                'figure_distribution', 'fixPoint',
+                'figure_distribution',
                 self.particle + '_bunch' + str(self.bunchid) + '_xpx'
             ])
             if not os.path.exists(savePath_dist_xpx):
@@ -83,7 +83,7 @@ class FootPrint:
 
             savePath_dist_ypy = os.sep.join([
                 self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
-                'figure_distribution', 'fixPoint',
+                'figure_distribution',
                 self.particle + '_bunch' + str(self.bunchid) + '_ypy'
             ])
             if not os.path.exists(savePath_dist_ypy):
@@ -96,7 +96,7 @@ class FootPrint:
 
             savePath_dist_xy = os.sep.join([
                 self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
-                'figure_distribution', 'fixPoint',
+                'figure_distribution',
                 self.particle + '_bunch' + str(self.bunchid) + '_xy'
             ])
             if not os.path.exists(savePath_dist_xy):
@@ -121,10 +121,20 @@ class FootPrint:
             # ])
             # self.savePath_aper.append(savePath_aper)
 
-    def load_plot_save(self, para, myfigsize, myfontsize, myscattersize=1):
+    def load_plot_save(self,
+                       para,
+                       myfigsize,
+                       myfontsize,
+                       myscattersize=1,
+                       myDistTurnStep=20):
 
         self.isxConjugate = False if para.nux <= 0.5 else True
         self.isyConjugate = False if para.nuy <= 0.5 else True
+
+        xlim_dist = [None, None]
+        pxlim_dist = [None, None]
+        ylim_dist = [None, None]
+        pylim_dist = [None, None]
 
         for i in range(len(self.file)):
 
@@ -135,7 +145,9 @@ class FootPrint:
                                                                  5, 6, 7),
                                                         unpack=True)
             self.plot_fix_distribution_perturn(i, para, turn, x, px, y, py, z,
-                                               pz, tag)
+                                               pz, tag, xlim_dist, pxlim_dist,
+                                               ylim_dist, pylim_dist,
+                                               myDistTurnStep)
             self.plot_fma(i, para, x, px, y, py, z, tag, myfigsize, myfontsize,
                           myscattersize)
 
@@ -203,9 +215,24 @@ class FootPrint:
         # fig_fma.show()
         plt.close(fig_fma)
 
-    def plot_fix_distribution_perturn(self, fileid, para, turnArray, xArray,
-                                      pxArray, yArray, pyArray, zArray,
-                                      pzArray, tagArray):
+    def plot_fix_distribution_perturn(
+        self,
+        fileid,
+        para,
+        turnArray,
+        xArray,
+        pxArray,
+        yArray,
+        pyArray,
+        zArray,
+        pzArray,
+        tagArray,
+        xlim,
+        pxlim,
+        ylim,
+        pylim,
+        turnStep=20,
+    ):
         totalPoint = para.fixNx * para.fixNy * para.fixNz
         totalTurn = int(len(turnArray) / totalPoint)
 
@@ -220,47 +247,60 @@ class FootPrint:
 
         unitConvert = 1e3
 
-        xmin, xmax = cal_ax_lim(xArray, unitConvert)
-        ymin, ymax = cal_ax_lim(yArray, unitConvert)
-        pxmin, pxmax = cal_ax_lim(pxArray, unitConvert)
-        pymin, pymax = cal_ax_lim(pyArray, unitConvert)
+        cal_ax_lim(xArray, xlim, unitConvert)
+        cal_ax_lim(yArray, ylim, unitConvert)
+        cal_ax_lim(pxArray, pxlim, unitConvert)
+        cal_ax_lim(pyArray, pylim, unitConvert)
 
-        for i in range(totalTurn):
-            turn = turnArray[i * totalPoint]
-            x = xArray[i * totalPoint:(i + 1) * totalPoint]
-            px = pxArray[i * totalPoint:(i + 1) * totalPoint]
-            y = yArray[i * totalPoint:(i + 1) * totalPoint]
-            py = pyArray[i * totalPoint:(i + 1) * totalPoint]
-            z = zArray[i * totalPoint:(i + 1) * totalPoint]
-            pz = pzArray[i * totalPoint:(i + 1) * totalPoint]
+        plotTurn = int(totalTurn / turnStep)
+        if plotTurn * turnStep < totalTurn:
+            plotTurn += 1
+        for i in range(plotTurn):
+            iturn = i * turnStep
+            
+            turn = turnArray[iturn * totalPoint]
+            x = xArray[iturn * totalPoint:(iturn + 1) * totalPoint]
+            px = pxArray[iturn * totalPoint:(iturn + 1) * totalPoint]
+            y = yArray[iturn * totalPoint:(iturn + 1) * totalPoint]
+            py = pyArray[iturn * totalPoint:(iturn + 1) * totalPoint]
+            z = zArray[iturn * totalPoint:(iturn + 1) * totalPoint]
+            pz = pzArray[iturn * totalPoint:(iturn + 1) * totalPoint]
+            tag = tagArray[iturn * totalPoint:(iturn + 1) * totalPoint]
 
-            ax_xpx_dist.scatter(x * unitConvert,
-                                px * unitConvert,
-                                color='tab:blue',
-                                s=1)
-            ax_ypy_dist.scatter(y * unitConvert,
-                                py * unitConvert,
-                                color='tab:blue',
-                                s=1)
-            ax_xy_dist.scatter(x * unitConvert,
-                               y * unitConvert,
-                               color='tab:blue',
-                               s=1)
+            xexit = []
+            pxexit = []
+            yexit = []
+            pyexit = []
+            zexit = []
+            pzexit = []
+
+            for id in range(np.size(tag)):
+                if tag[id] > 0:
+                    xexit.append(x[id] * unitConvert)
+                    pxexit.append(px[id] * unitConvert)
+                    yexit.append(y[id] * unitConvert)
+                    pyexit.append(py[id] * unitConvert)
+                    zexit.append(z[id] * unitConvert)
+                    pzexit.append(pz[id] * unitConvert)
+
+            ax_xpx_dist.scatter(xexit, pxexit, color='tab:blue', s=1)
+            ax_ypy_dist.scatter(yexit, pyexit, color='tab:blue', s=1)
+            ax_xy_dist.scatter(xexit, yexit, color='tab:blue', s=1)
 
             ax_xpx_dist.set_xlabel('x(mm)')
             ax_xpx_dist.set_ylabel(r'$\rm x^{\prime}$(mrad)')
-            ax_xpx_dist.set_xlim(xmin, xmax)
-            ax_xpx_dist.set_ylim(pxmin, pxmax)
+            ax_xpx_dist.set_xlim(xlim[0], xlim[1])
+            ax_xpx_dist.set_ylim(pxlim[0], pxlim[1])
 
             ax_ypy_dist.set_xlabel('y(mm)')
             ax_ypy_dist.set_ylabel(r'$\rm y^{\prime}$(mrad)')
-            ax_ypy_dist.set_xlim(ymin, ymax)
-            ax_ypy_dist.set_ylim(pymin, pymax)
+            ax_ypy_dist.set_xlim(ylim[0], ylim[1])
+            ax_ypy_dist.set_ylim(pylim[0], pylim[1])
 
             ax_xy_dist.set_xlabel('x(mm)')
             ax_xy_dist.set_ylabel('y(mm)')
-            ax_xy_dist.set_xlim(xmin, xmax)
-            ax_xy_dist.set_ylim(ymin, ymax)
+            ax_xy_dist.set_xlim(xlim[0], xlim[1])
+            ax_xy_dist.set_ylim(ylim[0], ylim[1])
 
             ax_xpx_dist.set_title('turn ' + str(int(turn)))
             ax_ypy_dist.set_title('turn ' + str(int(turn)))
@@ -279,6 +319,10 @@ class FootPrint:
             ax_xpx_dist.cla()
             ax_ypy_dist.cla()
             ax_xy_dist.cla()
+        plt.close(fig_xpx_dist)
+        plt.close(fig_ypy_dist)
+        plt.close(fig_xy_dist)
+        plt.close(fig_z_dist)
 
     def plot_DA(self,
                 para,
@@ -430,7 +474,7 @@ def cal_action_angle(u, pu, alpha, beta):
     return J
 
 
-def cal_ax_lim(array, convert=1):
+def cal_ax_lim(array, minmaxlist, convert=1):
     '''
     return axmin, axmax time unit convert
     '''
@@ -444,7 +488,20 @@ def cal_ax_lim(array, convert=1):
         axmax = max * 1.2 * convert
     else:
         axmax = min * 0.8 * convert
-    return axmin, axmax
+
+    limabs = np.amax([np.abs(axmin), np.abs(axmax)])
+    axmin = -1 * limabs
+    axmax = limabs
+
+    if minmaxlist[0] == None or minmaxlist[1] == None:
+        minmaxlist[0] = axmin
+        minmaxlist[1] = axmax
+    else:
+        if min < minmaxlist[0] or max > minmaxlist[1]:
+            minmaxlist[0] = axmin
+            minmaxlist[1] = axmax
+        else:
+            pass
 
 
 if __name__ == '__main__':
