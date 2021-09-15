@@ -454,27 +454,28 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
 
 
 def plot_fma_oneProcess(bunchid, home, yearMonDay, hourMinSec, para, myfigsize,
-                        myfontsize, myscattersize, mydistTurnStep):
+                        myfontsize, myscattersize, mydistTurnStep, isDistZip):
     myfootprint = FootPrint(home, yearMonDay, hourMinSec, para.particle,
                             bunchid)
     myfootprint.load_plot_save(para, myfigsize, myfontsize, myscattersize,
-                               mydistTurnStep)
+                               mydistTurnStep, isDistZip)
 
 
 def plot_fma_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
-                  myscattersize, mydistTurnStep, ncpu):
+                  myscattersize, mydistTurnStep, isDistZip, ncpu):
     print('\nStart drawing {0:s} Frequency Map'.format(para.particle))
     if ncpu == 1:
         for i in range(para.nbunch):
             plot_fma_oneProcess(i, home, yearMonDay, hourMinSec, para,
                                 myfigsize, myfontsize, myscattersize,
-                                mydistTurnStep)
+                                mydistTurnStep, isDistZip)
     else:
         ps = []
         for i in range(para.nbunch):
             p = Process(target=plot_fma_oneProcess,
                         args=(i, home, yearMonDay, hourMinSec, para, myfigsize,
-                              myfontsize, myscattersize, mydistTurnStep))
+                              myfontsize, myscattersize, mydistTurnStep,
+                              isDistZip))
             ps.append(p)
         for i in range(para.nbunch):
             ps[i].start()
@@ -505,6 +506,11 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
 
     my_fma_scattersize = 1
     my_fma_distTurnStep = 2
+    my_fma_dist_isZip = True
+    if platform.system() == 'Linux':
+        my_fma_dist_isZip = True
+    elif platform.system() == 'Windows':
+        my_fma_dist_isZip = False
 
     # beam1.print()
     # beam2.print()
@@ -544,11 +550,11 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
         if kind == 'all' or kind == 'fma':
             plot_fma_main(home, yearMonDay, hourMinSec, beam1, my_figsize_fma,
                           my_fontsize_fma, my_fma_scattersize,
-                          my_fma_distTurnStep, ncpu)
+                          my_fma_distTurnStep, my_fma_dist_isZip, ncpu)
 
             plot_fma_main(home, yearMonDay, hourMinSec, beam2, my_figsize_fma,
                           my_fontsize_fma, my_fma_scattersize,
-                          my_fma_distTurnStep, ncpu)
+                          my_fma_distTurnStep, my_fma_dist_isZip, ncpu)
 
     endtime = time.time()
     print('start   : ', time.asctime(time.localtime(startTime)))
