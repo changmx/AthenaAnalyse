@@ -50,10 +50,15 @@ class Tune:
 
         self.file = self.hourMinSec + '_' + self.particle + '_bunch' + str(
             bunchid) + '_phase_'
-        self.file = os.sep.join([
-            self.home, 'phase', self.yearMonDay, self.hourMinSec,
-            self.file
-        ])
+        if self.yearMonDay > '2021_0913':
+            self.file = os.sep.join([
+                self.home, 'phase', self.yearMonDay, self.hourMinSec, self.file
+            ])
+        else:
+            self.file = os.sep.join([
+                self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
+                self.file
+            ])
 
         self.file = glob.glob(self.file + '*')
         # print(self.file)
