@@ -5,6 +5,7 @@ import os
 import glob
 import re
 import PyNAFF as pnf
+import zipfile
 
 
 class FootPrint:
@@ -126,7 +127,8 @@ class FootPrint:
                        myfigsize,
                        myfontsize,
                        myscattersize=1,
-                       myDistTurnStep=20):
+                       myDistTurnStep=20,
+                       isDistZip=False):
 
         self.isxConjugate = False if para.nux <= 0.5 else True
         self.isyConjugate = False if para.nuy <= 0.5 else True
@@ -147,7 +149,7 @@ class FootPrint:
             self.plot_fix_distribution_perturn(i, para, turn, x, px, y, py, z,
                                                pz, tag, xlim_dist, pxlim_dist,
                                                ylim_dist, pylim_dist,
-                                               myDistTurnStep)
+                                               myDistTurnStep, isDistZip)
             self.plot_fma(i, para, x, px, y, py, z, tag, myfigsize, myfontsize,
                           myscattersize)
 
@@ -215,24 +217,23 @@ class FootPrint:
         # fig_fma.show()
         plt.close(fig_fma)
 
-    def plot_fix_distribution_perturn(
-        self,
-        fileid,
-        para,
-        turnArray,
-        xArray,
-        pxArray,
-        yArray,
-        pyArray,
-        zArray,
-        pzArray,
-        tagArray,
-        xlim,
-        pxlim,
-        ylim,
-        pylim,
-        turnStep=20,
-    ):
+    def plot_fix_distribution_perturn(self,
+                                      fileid,
+                                      para,
+                                      turnArray,
+                                      xArray,
+                                      pxArray,
+                                      yArray,
+                                      pyArray,
+                                      zArray,
+                                      pzArray,
+                                      tagArray,
+                                      xlim,
+                                      pxlim,
+                                      ylim,
+                                      pylim,
+                                      turnStep=20,
+                                      isZip=False):
         totalPoint = para.fixNx * para.fixNy * para.fixNz
         totalTurn = int(len(turnArray) / totalPoint)
 
@@ -252,12 +253,20 @@ class FootPrint:
         cal_ax_lim(pxArray, pxlim, unitConvert)
         cal_ax_lim(pyArray, pylim, unitConvert)
 
+        if isZip:
+            zip_xpx = zipfile.ZipFile(
+                self.savePath_dist_xpx[fileid] + '_xpx.zip', 'w')
+            zip_ypy = zipfile.ZipFile(
+                self.savePath_dist_ypy[fileid] + '_ypy.zip', 'w')
+            zip_xy = zipfile.ZipFile(self.savePath_dist_xy[fileid] + '_xy.zip',
+                                     'w')
+
         plotTurn = int(totalTurn / turnStep)
         if plotTurn * turnStep < totalTurn:
             plotTurn += 1
         for i in range(plotTurn):
             iturn = i * turnStep
-            
+
             turn = turnArray[iturn * totalPoint]
             x = xArray[iturn * totalPoint:(iturn + 1) * totalPoint]
             px = pxArray[iturn * totalPoint:(iturn + 1) * totalPoint]
@@ -306,19 +315,34 @@ class FootPrint:
             ax_ypy_dist.set_title('turn ' + str(int(turn)))
             ax_xy_dist.set_title('turn ' + str(int(turn)))
 
-            fig_xpx_dist.savefig(self.savePath_dist_xpx[fileid] + "_xpx_" +
-                                 str(int(turn)) + '.png',
-                                 dpi=150)
-            fig_ypy_dist.savefig(self.savePath_dist_ypy[fileid] + "_ypy_" +
-                                 str(int(turn)) + '.png',
-                                 dpi=150)
-            fig_xy_dist.savefig(self.savePath_dist_xy[fileid] + "_xy_" +
-                                str(int(turn)) + '.png',
-                                dpi=150)
+            file_xpx = self.savePath_dist_xpx[fileid] + "_xpx_" + str(
+                int(turn)) + '.png'
+            file_ypy = self.savePath_dist_ypy[fileid] + "_ypy_" + str(
+                int(turn)) + '.png'
+            file_xy = self.savePath_dist_xy[fileid] + "_xy_" + str(
+                int(turn)) + '.png'
+            fig_xpx_dist.savefig(file_xpx, dpi=150)
+            fig_ypy_dist.savefig(file_ypy, dpi=150)
+            fig_xy_dist.savefig(file_xy, dpi=150)
+
+            if isZip:
+                zip_xpx.write(file_xpx, os.path.split(file_xpx)[1])
+                zip_ypy.write(file_ypy, os.path.split(file_ypy)[1])
+                zip_xy.write(file_xy, os.path.split(file_xy)[1])
+
+                os.remove(file_xpx)
+                os.remove(file_ypy)
+                os.remove(file_xy)
 
             ax_xpx_dist.cla()
             ax_ypy_dist.cla()
             ax_xy_dist.cla()
+
+        if isZip:
+            zip_xpx.close()
+            zip_ypy.close()
+            zip_xy.close()
+
         plt.close(fig_xpx_dist)
         plt.close(fig_ypy_dist)
         plt.close(fig_xy_dist)
