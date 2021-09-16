@@ -372,7 +372,7 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
 def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
                    ncpu):
     print('\nStart drawing {0:s} tune spread data'.format(para.particle))
-    order = 12
+    order = 10
 
     if ncpu == 1:
         for i in range(para.nbunch):
