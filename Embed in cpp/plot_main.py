@@ -505,13 +505,13 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     my_fontsize_fma = 15
 
     my_fma_scattersize = 1
-    my_fma_distTurnStep = 2
+    my_fma_distTurnStep = 25
     my_fma_dist_isZip = True
     if platform.system() == 'Linux':
         my_fma_dist_isZip = True
     elif platform.system() == 'Windows':
         my_fma_dist_isZip = False
-
+        
     # beam1.print()
     # beam2.print()
 
@@ -586,8 +586,8 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2021_0914'
-    hourMinSec = '1659_12'
+    yearMonDay = '2021_0915'
+    hourMinSec = '2243_00'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
