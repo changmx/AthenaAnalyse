@@ -216,6 +216,7 @@ def plot_luminosity_main(home,
     plt.xticks(fontsize=myfontsize)
     plt.yticks(fontsize=myfontsize)
 
+    myxlabel = ['Turn', 'Turn', 'Super period']
     for i in range(3):
         fig_tmp, ax_tmp = plt.subplots(1, figsize=(8, 6))
         plt.xticks(fontsize=myfontsize)
@@ -231,14 +232,15 @@ def plot_luminosity_main(home,
 
         ax_tmp.set_ylabel(r'Luminosity $(\mathrm{cm}^{-2}\mathrm{s}^{-1})$',
                           fontsize=myfontsize)
-        ax_tmp.set_xlabel('Turn', fontsize=myfontsize)
+        ax_tmp.set_xlabel(myxlabel[i], fontsize=myfontsize)
         ax_tmp.grid()
         # ax_tmp.legend(fontsize=myfontsize)
 
         ax_lumi[i].set_ylabel(
             r'Luminosity $(\mathrm{cm}^{-2}\mathrm{s}^{-1})$',
             fontsize=myfontsize)
-        ax_lumi[i].set_xlabel('Turn', fontsize=myfontsize)
+
+        ax_lumi[i].set_xlabel(myxlabel[i], fontsize=myfontsize)
         ax_lumi[i].grid()
         ax_lumi[i].legend(fontsize=myfontsize)
 
@@ -511,7 +513,7 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
         my_fma_dist_isZip = True
     elif platform.system() == 'Windows':
         my_fma_dist_isZip = False
-        
+
     # beam1.print()
     # beam2.print()
 
