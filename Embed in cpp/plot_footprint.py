@@ -255,11 +255,11 @@ class FootPrint:
 
         if isZip:
             zip_xpx = zipfile.ZipFile(
-                self.savePath_dist_xpx[fileid] + '_xpx.zip', 'w')
+                self.savePath_dist_xpx[fileid] + '_xpx.zip', 'a')
             zip_ypy = zipfile.ZipFile(
-                self.savePath_dist_ypy[fileid] + '_ypy.zip', 'w')
+                self.savePath_dist_ypy[fileid] + '_ypy.zip', 'a')
             zip_xy = zipfile.ZipFile(self.savePath_dist_xy[fileid] + '_xy.zip',
-                                     'w')
+                                     'a')
 
         plotTurn = int(totalTurn / turnStep)
         if plotTurn * turnStep < totalTurn:
