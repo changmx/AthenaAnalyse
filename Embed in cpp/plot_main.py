@@ -504,7 +504,7 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     my_fontsize_stat = 12
     my_fontsize_lumi = 12
     my_fontsize_tune = 12
-    my_fontsize_fma = 15
+    my_fontsize_fma = 12
 
     my_fma_scattersize = 1
     my_fma_distTurnStep = 25
@@ -588,8 +588,8 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2021_0915'
-    hourMinSec = '2243_00'
+    yearMonDay = '2021_0917'
+    hourMinSec = '1002_37'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
