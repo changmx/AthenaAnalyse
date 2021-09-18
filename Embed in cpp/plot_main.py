@@ -456,28 +456,29 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
 
 
 def plot_fma_oneProcess(bunchid, home, yearMonDay, hourMinSec, para, myfigsize,
-                        myfontsize, myscattersize, mydistTurnStep, isDistZip):
+                        myfontsize, myscattersize, mydistTurnStep, isDistZip,
+                        plotkind):
     myfootprint = FootPrint(home, yearMonDay, hourMinSec, para.particle,
                             bunchid)
     myfootprint.load_plot_save(para, myfigsize, myfontsize, myscattersize,
-                               mydistTurnStep, isDistZip)
+                               mydistTurnStep, isDistZip, plotkind)
 
 
 def plot_fma_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
-                  myscattersize, mydistTurnStep, isDistZip, ncpu):
+                  myscattersize, mydistTurnStep, isDistZip, plotkind, ncpu):
     print('\nStart drawing {0:s} Frequency Map'.format(para.particle))
     if ncpu == 1:
         for i in range(para.nbunch):
             plot_fma_oneProcess(i, home, yearMonDay, hourMinSec, para,
                                 myfigsize, myfontsize, myscattersize,
-                                mydistTurnStep, isDistZip)
+                                mydistTurnStep, isDistZip, plotkind)
     else:
         ps = []
         for i in range(para.nbunch):
             p = Process(target=plot_fma_oneProcess,
                         args=(i, home, yearMonDay, hourMinSec, para, myfigsize,
                               myfontsize, myscattersize, mydistTurnStep,
-                              isDistZip))
+                              isDistZip, plotkind))
             ps.append(p)
         for i in range(para.nbunch):
             ps[i].start()
@@ -549,14 +550,14 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
             plot_tune_main(home, yearMonDay, hourMinSec, beam2,
                            my_figsize_tune, my_fontsize_tune, ncpu)
 
-        if kind == 'all' or kind == 'fma':
+        if kind == 'all' or kind == 'fma' or kind == 'fma-fma' or kind == 'fma-dist':
             plot_fma_main(home, yearMonDay, hourMinSec, beam1, my_figsize_fma,
                           my_fontsize_fma, my_fma_scattersize,
-                          my_fma_distTurnStep, my_fma_dist_isZip, ncpu)
+                          my_fma_distTurnStep, my_fma_dist_isZip, kind, ncpu)
 
             plot_fma_main(home, yearMonDay, hourMinSec, beam2, my_figsize_fma,
                           my_fontsize_fma, my_fma_scattersize,
-                          my_fma_distTurnStep, my_fma_dist_isZip, ncpu)
+                          my_fma_distTurnStep, my_fma_dist_isZip, kind, ncpu)
 
     endtime = time.time()
     print('start   : ', time.asctime(time.localtime(startTime)))
@@ -576,7 +577,8 @@ if __name__ == '__main__':
         print('We do not support {0} system now.}'.format(platform.system()))
         os.exit(1)
 
-    command = ('all', 'stat', 'lumi', 'tune', 'dist', 'fma')
+    command = ('all', 'stat', 'lumi', 'tune', 'dist', 'fma', 'fma-fma',
+               'fma-dist')
 
     type = []
     if len(sys.argv) == 1:
