@@ -128,7 +128,8 @@ class FootPrint:
                        myfontsize,
                        myscattersize=1,
                        myDistTurnStep=20,
-                       isDistZip=False):
+                       isDistZip=False,
+                       plotkind='all'):
 
         self.isxConjugate = False if para.nux <= 0.5 else True
         self.isyConjugate = False if para.nuy <= 0.5 else True
@@ -146,12 +147,15 @@ class FootPrint:
                                                         usecols=(0, 1, 2, 3, 4,
                                                                  5, 6, 7),
                                                         unpack=True)
-            self.plot_fix_distribution_perturn(i, para, turn, x, px, y, py, z,
-                                               pz, tag, xlim_dist, pxlim_dist,
-                                               ylim_dist, pylim_dist,
-                                               myDistTurnStep, isDistZip)
-            self.plot_fma(i, para, x, px, y, py, z, tag, myfigsize, myfontsize,
-                          myscattersize)
+            if plotkind == 'all' or plotkind == 'fma' or plotkind == 'fma-dist':
+                self.plot_fix_distribution_perturn(i, para, turn, x, px, y, py,
+                                                   z, pz, tag, xlim_dist,
+                                                   pxlim_dist, ylim_dist,
+                                                   pylim_dist, myDistTurnStep,
+                                                   isDistZip)
+            if plotkind == 'all' or plotkind == 'fma' or plotkind == 'fma-fma':
+                self.plot_fma(i, para, x, y, tag, myfigsize, myfontsize,
+                              myscattersize)
 
             print('File has been drawn: {0}'.format(self.file[i]))
 
@@ -159,10 +163,7 @@ class FootPrint:
                  i,
                  para,
                  x,
-                 px,
                  y,
-                 py,
-                 z,
                  tag,
                  myfigsize,
                  myfontsize,
@@ -173,11 +174,7 @@ class FootPrint:
         plt.subplots_adjust(left=0.17, right=0.96, top=0.95, bottom=0.12)
         nuxArray = []
         nuyArray = []
-        nuzArray = []
         diffusion_xyArray = []
-
-        xArray = []
-        yArray = []
 
         for ix in range(para.fixNx):
             for iy in range(para.fixNy):
@@ -185,21 +182,14 @@ class FootPrint:
                     index = ix * para.fixNy * para.fixNz + iy * para.fixNz + iz
                     # if (index > 0 and index % 100 == 0):
                     #     print('Reading fixPoint[{0}]'.format(index))
-                    isExist, nux, nuy, nuz, diffusion_xy, diffusion_xyz, x0, y0, diffusion_aper = cal_fma_aper(
+                    isExist, nux, nuy, diffusion_xy = cal_fma(
                         para, index + 1, self.npoint,
                         self.endTurn[i] - self.startTurn[i] + 1,
-                        self.isxConjugate, self.isyConjugate, x, px, y, py, z,
-                        tag)
+                        self.isxConjugate, self.isyConjugate, x, y, tag)
                     if isExist:
-                        nuxArray.append(nux[0])
-                        nuyArray.append(nuy[0])
-                        nuzArray.append(nuz[0])
+                        nuxArray.append(nux)
+                        nuyArray.append(nuy)
                         diffusion_xyArray.append(diffusion_xy)
-                        # diffusion_xyzArray.append(diffusion_xyz)
-                        # xArray.append(x0)
-                        # yArray.append(y0)
-                        # diffusion_xyArray_aper.append(diffusion_aper)
-                        # diffusion_xyArray_aper[iy, ix] = diffusion_aper
 
         sc_fma = ax_fma.scatter(nuxArray,
                                 nuyArray,
@@ -409,87 +399,55 @@ class FootPrint:
         # plt.close(fig_aper)
 
 
-def cal_fma_aper(para, tagid, totalPoints, totalTurns, isxConjugate,
-                 isyConjugate, xArray, pxArray, yArray, pyArray, zArray,
-                 tagArray):
+def cal_fma(para, tagid, totalPoints, totalTurns, isxConjugate, isyConjugate,
+            xArray, yArray, tagArray):
     '''
     Numerical Analysis of Fundamental Frequencies (NAFF) algorithm
+
+    选择前一半圈数频率作为FMA的x轴与y轴坐标，是否正确未知。或许试试后一半圈数？或者所有圈数的频率？或者最大频率？或者最小频率？
     '''
     totalRows = totalPoints * totalTurns
     x = xArray[tagid - 1:totalRows:totalPoints]
-    px = pxArray[tagid - 1:totalRows:totalPoints]
     y = yArray[tagid - 1:totalRows:totalPoints]
-    py = pyArray[tagid - 1:totalRows:totalPoints]
-    z = zArray[tagid - 1:totalRows:totalPoints]
-    # print(z)
     tag = tagArray[tagid - 1:totalRows:totalPoints]
 
     isExist = True
-    nux = [0, 0]
-    nuy = [0, 0]
-    nuz = [0, 0]
-    diffusion_xy = 0
-    diffusion_xyz = 0
-    diffusion_xy_aper = 0
 
-    x0 = 0
-    y0 = 0
+    half = int(totalTurns / 2)
+
+    nux = 0
+    nuy = 0
+    nux_tmp = np.zeros(half + 1)
+    nuy_tmp = np.zeros(half + 1)
+
+    diffusion_xy = 0
 
     for mytag in tag:
         if mytag <= 0:
             isExist = False
-
-    half = int(totalTurns / 2)
+    turn_step = int(totalTurns / 10)
     if isExist:
-        # calculate fma
-        nux[0] = pnf.naff(x[0:half], half, 1)[0][1]
-        nuy[0] = pnf.naff(y[0:half], half, 1)[0][1]
-        # nuz[0] = pnf.naff(z[0:half], half, 1)[0][1]
-        nux[1] = pnf.naff(x[half:totalTurns], half, 1)[0][1]
-        nuy[1] = pnf.naff(y[half:totalTurns], half, 1)[0][1]
-        # nuz[1] = pnf.naff(z[half:totalTurns], half, 1)[0][1]
+        nux = pnf.naff(x[0:half], half, 1)[0][1]
+        nuy = pnf.naff(y[0:half], half, 1)[0][1]
+        for turn_offset in range(0, half + 1, turn_step):
+            nux_tmp[turn_offset] = abs(
+                nux -
+                pnf.naff(x[turn_offset:half + turn_offset], half, 1)[0][1])
+            nuy_tmp[turn_offset] = abs(
+                nuy -
+                pnf.naff(y[turn_offset:half + turn_offset], half, 1)[0][1])
 
         if isxConjugate:
-            nux[0] = 1 - nux[0]
-            nux[1] = 1 - nux[1]
+            nux = 1 - nux
         if isyConjugate:
-            nuy[0] = 1 - nuy[0]
-            nuy[1] = 1 - nuy[1]
+            nuy = 1 - nuy
 
-        dnux = np.abs(nux[0] - nux[1])
-        dnuy = np.abs(nuy[0] - nuy[1])
-        # dnuz = np.abs(nuz[0] - nuz[1])
+        dnux = np.amax(nux_tmp)
+        dnuy = np.amax(nuy_tmp)
 
         diffusion_xy = np.sqrt(dnux**2 + dnuy**2)
-        # diffusion_xyz = np.sqrt(dnux**2 + dnuy**2 + dnuz**2)
 
-        #calculate dynamic aperture
-        # x0 = x[0]
-        # y0 = y[0]
-        # xmax = np.amax(x[1:])
-        # xmin = np.amin(x[1:])
-        # xmaxaper = xmax if xmax > abs(xmin) else xmin
-        # xindex = np.argwhere(x == xmaxaper)
-        # dx = (x[xindex] - x[0])
-
-        # ymax = np.amax(y[1:])
-        # ymin = np.amin(y[1:])
-        # ymaxaper = ymax if ymax > abs(ymin) else ymin
-        # yindex = np.argwhere(y == ymaxaper)
-        # dy = (y[yindex] - y[0])
-        # print(xindex, yindex)
-        # diffusion_xy_aper = np.sqrt(dx**2 + dy**2)
-        x0 = x[0]
-        y0 = y[0]
-        jx0 = cal_action_angle(x[0], px[0], para.alphax, para.betax)
-        jx1 = cal_action_angle(x[-1], px[-1], para.alphax, para.betax)
-        jy0 = cal_action_angle(y[0], py[0], para.alphay, para.betay)
-        jy1 = cal_action_angle(y[-1], py[-1], para.alphay, para.betay)
-        dx = (jx1 - jx0) / totalTurns
-        dy = (jy1 - jy0) / totalTurns
-        diffusion_xy_aper = np.sqrt(dx**2 + dy**2)
-
-    return isExist, nux, nuy, nuz, diffusion_xy, diffusion_xyz, x0, y0, diffusion_xy_aper
+    return isExist, nux, nuy, diffusion_xy
 
 
 def cal_action_angle(u, pu, alpha, beta):
