@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 import os
 from general import cal_freq_fft
 from general import cal_spctrum_fft
@@ -85,6 +86,7 @@ class Statistic:
             freqx=(0, 1),
             freqy=(0, 1),
     ):
+        matplotlib.rcParams['agg.path.chunksize'] = 10000
         if self.is_statExist:
             if self.nux > 0.5:
                 freqx = (0.5, 1)
@@ -179,6 +181,7 @@ class Statistic:
                                               scilimits=(0, 0))
 
     def plot_statistic_part1(self, ax, myalpha, myfontsize):
+        matplotlib.rcParams['agg.path.chunksize'] = 10000
         if self.version == 'new':
             if self.is_statExist:
                 ax[0, 0].plot(self.turn,
@@ -255,6 +258,7 @@ class Statistic:
                                                   scilimits=(0, 0))
 
     def plot_statistic_part2(self, ax, myalpha, myfontsize):
+        matplotlib.rcParams['agg.path.chunksize'] = 10000
         if self.version == 'new':
             if self.is_statExist:
                 ax[0, 0].plot(self.turn,
@@ -329,6 +333,7 @@ class Statistic:
                 #                                   scilimits=(0, 0))
 
     def plot_statistic_part3(self, ax, myalpha, myfontsize):
+        matplotlib.rcParams['agg.path.chunksize'] = 10000
         if self.version == 'new':
             if self.is_statExist:
                 ax[0, 0].plot(self.turn,

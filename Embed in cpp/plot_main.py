@@ -10,6 +10,7 @@ from matplotlib.pyplot import legend
 from plot_distribution import Distribution
 import time
 import matplotlib as mpl
+import matplotlib
 
 from plot_statistic import *
 from plot_luminosity import *
@@ -22,6 +23,7 @@ from plot_footprint import *
 def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
                                     yearMonDay, hourMinSec, para, myfigsize,
                                     myfontsize, myqueue):
+    matplotlib.rcParams['agg.path.chunksize'] = 10000
     fig_stat_tmp0, ax_stat_tmp0 = plt.subplots(row, col, figsize=myfigsize)
     plt.xticks(fontsize=myfontsize)
     plt.yticks(fontsize=myfontsize)
@@ -85,6 +87,7 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
 
 def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
                         para, myfigsize, myfontsize):
+    matplotlib.rcParams['agg.path.chunksize'] = 10000
     if para.nbunch > 1:
         fig_stat0, ax_stat0 = plt.subplots(row, col, figsize=myfigsize)
         plt.xticks(fontsize=myfontsize)
@@ -572,7 +575,7 @@ if __name__ == '__main__':
     if platform.system() == 'Windows':
         home = os.sep.join(['D:', 'bb2021'])
     elif platform.system() == 'Linux':
-        home = os.sep.join(['/home', 'changmx', 'bb2021'])
+        home = os.sep.join(['/raid/home', 'changmx', 'bb2021'])
     else:
         print('We do not support {0} system now.}'.format(platform.system()))
         os.exit(1)
@@ -590,8 +593,8 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2021_0917'
-    hourMinSec = '1002_37'
+    yearMonDay = '2021_0919'
+    hourMinSec = '1110_22'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
