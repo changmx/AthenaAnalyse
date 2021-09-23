@@ -233,7 +233,7 @@ class Statistic:
                                     fontsize=myfontsize)
 
                 ax[2, 1].plot(self.turn,
-                              self.sigmapy,
+                              self.sigmapz,
                               label=self.bunchLabel,
                               alpha=myalpha)
                 ax[2, 1].set_ylabel(r'$\delta_p$', fontsize=myfontsize)
