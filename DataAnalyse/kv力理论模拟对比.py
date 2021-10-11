@@ -3,24 +3,30 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-n = 1.250e11
+n = 1.7e11
 e = 1.602176565e-19
 epsilon0 = 8.854187817e-12
-sigma = 12e-5
-rmssigma = sigma/2
+beta_x = 0.06
+beta_y = 0.06
+emit_x = 6e-8
+emit_y = 6e-8
+sigmax = math.sqrt(beta_x * emit_x)
+sigmay = math.sqrt(beta_y * emit_y)
+rmssigma = np.sqrt(sigmax**2)
+sigma = rmssigma*2
 pi = math.pi
 
-Ngrid = 128
-gridLen = 1e-5
+Ngrid = 256
+gridLen = 2e-5
 stride = 1e-6
 
 fScale = 1e-13
 figYscale = -13
 
-direction = "x°"
+direction = "x"
 
 type = "kv"
-
+myfontsize = 20
 x = []
 y = []
 
@@ -40,30 +46,39 @@ for r_x in np.arange(-(Ngrid / 2) * gridLen, (Ngrid / 2) * gridLen, stride):
             y.append(F / fScale)
 
 fig, ax = plt.subplots()
-ax.plot(x, y, label="理论值")
+ax.plot(x, y, label="Theoretical value")
 
-plt.rcParams['font.sans-serif'] = ['SimHei']
-plt.rcParams['axes.unicode_minus'] = False
-# plt.rcParams['savefig.dpi'] = 600       #image pixel
-# plt.rcParams['figure.dpi'] = 600        #image resolution
-# plt.figure(figsize=(18,6))
-figXlable = '径向距离$(r/ {\\sigma_{RMS}})$'
-figYlable = '束束力$(\\times 10^{a}N)$'.format(a=figYscale)
-figTitle = '{Ftype}分布,{Fdirection}方向,网格(${Fgrid}\\times$'.format(
-    Ftype=type, Fdirection=direction, Fgrid=Ngrid)
-ax.set(xlabel=figXlable, ylabel=figYlable,
-       title=figTitle + '$1\\times 10^{-5}m)$,束束力理论值与模拟值对比')
+figXlable = 'Distance $(r/ {\sigma})$'
+figYlable = r'Electric field force $(\times 10^{{{0}}}N)$'.format(figYscale)
+ax.set_xlabel(figXlable, fontsize=myfontsize)
+ax.set_ylabel(figYlable, fontsize=myfontsize)
+plt.tick_params(labelsize=myfontsize)
 ax.grid()
 
-file_path2 = r'E:\changmx\bb2021\electricForce\2021_0224_kv_proton\1734_11_proton_50000_x.csv'
-# file_path2 = r'E:\changmx\bb2021\electricForce\2021_0224_kv_proton\1738_00_proton_50000_x.csv'
+# file_path = r'D:\bb2021\electricForce\2021_1008\1124_18\1124_18_proton_10000_x.csv'
+# file_path2 = r'D:\bb2021\electricForce\2021_1008\1124_38\1124_38_proton_100000_x.csv'
+# file_path3 = r'D:\bb2021\electricForce\2021_1008\1125_42\1125_42_proton_1000000_x.csv'
+file_path = r'D:\bb2021\electricForce\2021_1008\1131_14\1131_14_proton_10000_x.csv'
+file_path2 = r'D:\bb2021\electricForce\2021_1008\1130_43\1130_43_proton_100000_x.csv'
+file_path3 = r'D:\bb2021\electricForce\2021_1008\1129_31\1129_31_proton_1000000_x.csv'
+
+X, Y = np.loadtxt(file_path, delimiter=',', usecols=(0, 1), unpack=True)
 X2, Y2 = np.loadtxt(file_path2, delimiter=',', usecols=(0, 1), unpack=True)
-ax.scatter(X2 / rmssigma, Y2 / fScale, label="$1\\times 10^{5}$个宏粒子模拟值")
+X3, Y3 = np.loadtxt(file_path3, delimiter=',', usecols=(0, 1), unpack=True)
+
+ax.plot(X / rmssigma, Y / fScale, label=r'$1\times 10^{4}$ macro particles')
+ax.plot(X2 / rmssigma, Y2 / fScale, label=r'$1\times 10^{5}$ macro particles')
+ax.plot(X3 / rmssigma, Y3 / fScale, label=r'$1\times 10^{6}$ macro particles')
 
 name = "E:\\changmx\\bb2019\\electricForce\\" + type + \
     direction + str(Ngrid) + '长度' + str(gridLen) + "1.png"
 
-ax.legend()
+# ax.set_xlim([0, 3])
+# ax.set_ylim([-7, 1])
+ax.set_xlim([6, 6.2])
+ax.set_ylim([-2.2, -2.1])
+
+ax.legend(fontsize=myfontsize)
 # fig.savefig(name)
 plt.show()
 plt.close()

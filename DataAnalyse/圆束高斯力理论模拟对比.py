@@ -11,17 +11,17 @@ emit_x = 6e-8
 sigma = math.sqrt(beta_x*emit_x)
 pi = math.pi
 
-Ngrid = 128
-gridLenX = 2.5e-5
-gridLenY = 2.5e-5
+Ngrid = 256
+gridLenX = 1e-5
+gridLenY = 1e-5
 stride = 1e-6
 
 fScale = 1e-13
 figYscale = -13
 
 direction = "x"
-file_path2 = r'E:\changmx\bb2021\electricForce\2021_0224_gaussian_proton\1726_20_proton_50000_x.csv' # poisson
-file_path3 = r'E:\changmx\bb2021\electricForce\2021_0224_gaussian_proton\1729_36_proton_50000_x.csv' # fft
+file_path2 = r'D:\bb2021\electricForce\2021_0929_gaussian_electron\1705_56\1705_56_electron_50000_x.csv'
+file_path3 = r'D:\bb2021\electricForce\2021_0929_gaussian_proton\1705_56\1705_56_proton_50000_x.csv'
 type = "gaussian"
 
 x = []
@@ -30,7 +30,7 @@ y = []
 if direction=="x":
 	for r_x in np.arange(-(Ngrid / 2) * gridLenX, (Ngrid / 2) * gridLenX, stride):
 		r_y = 0
-		r = np.sqrt(r_y**2+r_x**2)
+		r = np.sqrt(r_y**2+r_x**2)*np.sign(r_x)
 		F = -n*e*e/(2*pi*epsilon0)*(r_x/(r*r))*(1-math.exp(-r*r/(2*sigma*sigma)))
 		# print(r,F)
 		x.append(r_x / sigma )
@@ -41,7 +41,7 @@ if direction=="x":
 elif direction=="y":
 	for r_y in np.arange(-(Ngrid / 2) * gridLenY, (Ngrid / 2) * gridLenY, stride):
 		r_x = 0
-		r = (r_x*r_x+r_y*r_y)**0.5*r_y/abs(r_y)
+		r = np.sqrt(r_y**2+r_x**2)*np.sign(r_y)
 		F = -n*e*e/(2*pi*epsilon0*r)*(1-math.exp(-r*r/(2*sigma*sigma)))
 		x.append(r / sigma)
 		y.append(F / fScale)
@@ -62,9 +62,9 @@ ax.set(xlabel=figXlable, ylabel=figYlable,
 ax.grid()
 
 X2, Y2 = np.loadtxt(file_path2, delimiter=',', usecols=(0, 1), unpack=True)
-ax.plot(X2 / sigma, Y2 / fScale, label="$5\\times 10^{4}$个宏粒子模拟值")
+ax.plot(X2 / sigma, Y2 / fScale, label="$5\\times 10^{4}$个宏粒子模拟值", marker = 'o', markeredgewidth = 1, alpha = 0.2)
 X3, Y3 = np.loadtxt(file_path3, delimiter=',', usecols=(0, 1), unpack=True)
-ax.plot(X3 / sigma, Y3 / fScale, label="$fft 5\\times 10^{4}$个宏粒子模拟值")
+ax.plot(X3 / sigma, Y3 / fScale, label="$fft 5\\times 10^{4}$个宏粒子模拟值", marker = 'x', markeredgewidth = 1, alpha = 0.2)
 
 # name = "E:\\changmx\\bb2019\electricForce\\" + type + direction + str(Ngrid) + '长度' + str(gridLen) + "1.png"
 
