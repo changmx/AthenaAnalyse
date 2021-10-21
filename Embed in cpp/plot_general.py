@@ -40,6 +40,13 @@ def myhexbin(ax,
     xmax = np.amax(xArray)
     ymax = np.amax(yArray)
 
+    if xmax == xmin:
+        xmin = xmin - (xmin - 0) * 0.2
+        xmax = xmax + (1 - xmax) * 0.2
+    if ymax == ymin:
+        ymin = ymin - (ymin - 0) * 0.2
+        ymax = ymax + (1 - ymax) * 0.2
+        
     dx = (xmax - xmin) / gridsize
     dy = (ymax - ymin) / gridsize
 
@@ -54,7 +61,7 @@ def myhexbin(ax,
             offset = iy * nx + ix
             x[offset] = xmin + ix * dx
             y[offset] = ymin + iy * dy
-    c = z.flatten() # 把二维数组展开为一维数组
+    c = z.flatten()  # 把二维数组展开为一维数组
 
     he = ax.scatter(x,
                     y,

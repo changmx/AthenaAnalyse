@@ -281,7 +281,13 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
             ymin = min(tune.nuY[j])
             xmax = max(tune.nuX[j])
             ymax = max(tune.nuY[j])
-
+            if xmax == xmin:
+                xmin = xmin - (xmin - 0) * 0.2
+                xmax = xmax + (1 - xmax) * 0.2
+            if ymax == ymin:
+                ymin = ymin - (ymin - 0) * 0.2
+                ymax = ymax + (1 - ymax) * 0.2
+                
             xgap = abs(xmax - xmin)
             ygap = abs(ymax - ymin)
 
