@@ -106,6 +106,10 @@ class Tune:
                         del l_nuX[j - delete_number]
                         del l_nuY[j - delete_number]
                         delete_number += 1
+                    elif np.isnan(tmp_nuX[j]) or np.isnan(tmp_nuY[j]) or np.isinf(tmp_nuX[j]) or np.isinf(tmp_nuY[j]):
+                        del l_nuX[j - delete_number]
+                        del l_nuY[j - delete_number]
+                        delete_number += 1
 
                 self.nuX.append(l_nuX)
                 self.nuY.append(l_nuY)
