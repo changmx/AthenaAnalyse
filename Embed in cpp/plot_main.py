@@ -5,6 +5,7 @@ from multiprocessing.context import Process
 import os
 import platform
 import sys
+import socket
 
 from matplotlib.pyplot import legend
 from plot_distribution import Distribution
@@ -287,7 +288,7 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
             if ymax == ymin:
                 ymin = ymin - (ymin - 0) * 0.2
                 ymax = ymax + (1 - ymax) * 0.2
-                
+
             xgap = abs(xmax - xmin)
             ygap = abs(ymax - ymin)
 
@@ -578,17 +579,21 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
 
 if __name__ == '__main__':
     home = ''
-    if platform.system() == 'Windows':
+    if socket.gethostname() == 'DESKTOP-T722QRP':
         home = os.sep.join(['D:', 'bb2021'])
-    elif platform.system() == 'Linux':
-        home = os.sep.join(['/raid/home', 'changmx', 'bb2021'])
+    elif socket.gethostname() == 'zts-gpu':
+        home = os.sep.join(['/home', 'changmx', 'bb2021'])
+    elif socket.gethostname() == 'sdgx-server01':
+        home = os.sep.join(['/raid', 'home', 'changmx', 'bb2021'])
     else:
-        print('We do not support {0} system now.}'.format(platform.system()))
+        print(
+            'We do not support current machine now, please add hostname: {0} to home path list.}'
+            .format(socket.gethostname()))
         os.exit(1)
 
     command = ('all', 'stat', 'lumi', 'tune', 'dist', 'fma', 'fma-fma',
                'fma-dist')
-
+   
     type = []
     if len(sys.argv) == 1:
         type = ['all']
