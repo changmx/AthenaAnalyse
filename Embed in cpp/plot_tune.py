@@ -97,22 +97,16 @@ class Tune:
                                                        usecols=(2, 3, 4),
                                                        unpack=True)
 
-                l_nuX = list(tmp_nuX)
-                l_nuY = list(tmp_nuY)
-
-                delete_number = 0  # 把数组转化为列表来删除元素时，每删除一个元素，被删除元素后面的所有元素下标都会减一，因此用这个参数来表示删除元素后其他元素下标的变化
-                for j in range(len(tmp_tag)):  # 删除列表中的元素
+                delete_list = []  # 保存需要删除的元素下标，最后统一删除
+                for j in range(len(tmp_tag)):
                     if tmp_tag[j] <= 0:
-                        del l_nuX[j - delete_number]
-                        del l_nuY[j - delete_number]
-                        delete_number += 1
+                        delete_list.append(j)
                     elif np.isnan(tmp_nuX[j]) or np.isnan(tmp_nuY[j]) or np.isinf(tmp_nuX[j]) or np.isinf(tmp_nuY[j]):
-                        del l_nuX[j - delete_number]
-                        del l_nuY[j - delete_number]
-                        delete_number += 1
+                        delete_list.append(j)
+                
+                self.nuX.append(np.delete(tmp_nuX,delete_list))
+                self.nuX.append(np.delete(tmp_nuY,delete_list))
 
-                self.nuX.append(l_nuX)
-                self.nuY.append(l_nuY)
 
     def plot_scatter(self,
                      fig,
