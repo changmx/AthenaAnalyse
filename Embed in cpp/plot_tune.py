@@ -105,7 +105,7 @@ class Tune:
                         delete_list.append(j)
                 
                 self.nuX.append(np.delete(tmp_nuX,delete_list))
-                self.nuX.append(np.delete(tmp_nuY,delete_list))
+                self.nuY.append(np.delete(tmp_nuY,delete_list))
 
 
     def plot_scatter(self,
