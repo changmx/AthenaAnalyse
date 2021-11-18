@@ -12,6 +12,7 @@ from plot_distribution import Distribution
 import time
 import matplotlib as mpl
 import matplotlib
+from plot_general import TimeStat
 
 from plot_statistic import *
 from plot_luminosity import *
@@ -155,7 +156,8 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
 
 
 def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize,
-                        myfontsize, ncpu):
+                        myfontsize, ncpu, timestat):
+    timestat.start('stat')
     print('\nStart drawing {0:s} statistic data'.format(para.particle))
     row = 3
     col = 3
@@ -199,6 +201,7 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize,
 
     plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
                         para, myfigsize, myfontsize)
+    timestat.end('stat')
 
 
 def plot_luminosity_main(home,
@@ -208,8 +211,10 @@ def plot_luminosity_main(home,
                          para2,
                          myfigsize,
                          myfontsize,
+                         timestat,
                          particle3='suPeriod',
                          nbunch3=1):
+    timestat.start('lumi')
     print('\nStart drawing luminosity data')
     lumi = 'tmp'
     particle = [para1.particle, para2.particle, particle3]
@@ -258,6 +263,7 @@ def plot_luminosity_main(home,
     lumi.save_lumiPath = lumi.save_lumiTogetherPath
     lumi.save_lumi(fig_lumi)
     plt.close(fig_lumi)
+    timestat.end('lumi')
 
 
 def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
@@ -382,7 +388,8 @@ def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
 
 
 def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
-                   ncpu):
+                   ncpu, timestat):
+    timestat.start('tune')
     print('\nStart drawing {0:s} tune spread data'.format(para.particle))
     order = 10
 
@@ -416,6 +423,7 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
         #         .format(ncpu, i, para.nbunch))
         # mypool.close()
         # mypool.join()
+        timestat.end('tune')
 
 
 def plot_distribution_oneProcess(bunchid, home, yearMonDay, hourMinSec, para,
@@ -430,8 +438,9 @@ def plot_distribution_oneProcess(bunchid, home, yearMonDay, hourMinSec, para,
     dist.load_plot_save(para, myfigsize=myfigsize, mysize=200, mybins=300)
 
 
-def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
-                           ncpu):
+def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize, ncpu,
+                           timestat):
+    timestat.start('lumi')
     print('\nStart drawing {0:s} distribution data'.format(para.particle))
     if ncpu == 1:
         for i in range(para.nbunch):
@@ -463,6 +472,7 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
         #         .format(ncpu, i, para.nbunch))
         # mypool.close()
         # mypool.join()
+    timestat.end('lumi')
 
 
 def plot_fma_oneProcess(bunchid, home, yearMonDay, hourMinSec, para, myfigsize,
@@ -475,7 +485,9 @@ def plot_fma_oneProcess(bunchid, home, yearMonDay, hourMinSec, para, myfigsize,
 
 
 def plot_fma_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
-                  myscattersize, mydistTurnStep, isDistZip, plotkind, ncpu):
+                  myscattersize, mydistTurnStep, isDistZip, plotkind, ncpu,
+                  timestat):
+    timestat.start('fma')
     print('\nStart drawing {0:s} Frequency Map'.format(para.particle))
     if ncpu == 1:
         for i in range(para.nbunch):
@@ -497,6 +509,7 @@ def plot_fma_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
             time.sleep(1)
         for i in range(para.nbunch):
             ps[i].join()
+    timestat.end('fma')
 
 
 def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
@@ -505,7 +518,8 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     if platform.system() == 'Linux':
         ncpu = os.cpu_count() - 1
 
-    startTime = time.time()
+    runningTime = TimeStat()
+    runningTime.start('total')
     beam1 = Parameter(home, yearMonDay, hourMinSec, 'beam1')
     beam2 = Parameter(home, yearMonDay, hourMinSec, 'beam2')
 
@@ -537,42 +551,46 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     for kind in type:
         if kind == 'all' or kind == 'stat':
             plot_statistic_main(home, yearMonDay, hourMinSec, beam1,
-                                my_figsize1, my_fontsize_stat, ncpu)
+                                my_figsize1, my_fontsize_stat, ncpu,
+                                runningTime)
 
             plot_statistic_main(home, yearMonDay, hourMinSec, beam2,
-                                my_figsize1, my_fontsize_stat, ncpu)
+                                my_figsize1, my_fontsize_stat, ncpu,
+                                runningTime)
 
         if kind == 'all' or kind == 'lumi':
             plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
-                                 my_figsize1, my_fontsize_lumi)
+                                 my_figsize1, my_fontsize_lumi, runningTime)
 
         if kind == 'all' or kind == 'dist':
             plot_distribution_main(home, yearMonDay, hourMinSec, beam1,
-                                   my_figsize1, ncpu)
+                                   my_figsize1, ncpu, runningTime)
 
             plot_distribution_main(home, yearMonDay, hourMinSec, beam2,
-                                   my_figsize1, ncpu)
+                                   my_figsize1, ncpu, runningTime)
 
         if kind == 'all' or kind == 'tune':
             plot_tune_main(home, yearMonDay, hourMinSec, beam1,
-                           my_figsize_tune, my_fontsize_tune, ncpu)
+                           my_figsize_tune, my_fontsize_tune, ncpu,
+                           runningTime)
 
             plot_tune_main(home, yearMonDay, hourMinSec, beam2,
-                           my_figsize_tune, my_fontsize_tune, ncpu)
+                           my_figsize_tune, my_fontsize_tune, ncpu,
+                           runningTime)
 
         if kind == 'all' or kind == 'fma' or kind == 'fma-fma' or kind == 'fma-dist':
             plot_fma_main(home, yearMonDay, hourMinSec, beam1, my_figsize_fma,
                           my_fontsize_fma, my_fma_scattersize,
-                          my_fma_distTurnStep, my_fma_dist_isZip, kind, ncpu)
+                          my_fma_distTurnStep, my_fma_dist_isZip, kind, ncpu,
+                          runningTime)
 
             plot_fma_main(home, yearMonDay, hourMinSec, beam2, my_figsize_fma,
                           my_fontsize_fma, my_fma_scattersize,
-                          my_fma_distTurnStep, my_fma_dist_isZip, kind, ncpu)
+                          my_fma_distTurnStep, my_fma_dist_isZip, kind, ncpu,
+                          runningTime)
 
-    endtime = time.time()
-    print('start   : ', time.asctime(time.localtime(startTime)))
-    print('end     : ', time.asctime(time.localtime(endtime)))
-    print('running :  {0:d} min'.format(int((endtime - startTime) / 60)))
+    runningTime.end('total')
+    runningTime.printTimeStat()
 
     return 0
 
@@ -593,7 +611,7 @@ if __name__ == '__main__':
 
     command = ('all', 'stat', 'lumi', 'tune', 'dist', 'fma', 'fma-fma',
                'fma-dist')
-   
+
     type = []
     if len(sys.argv) == 1:
         type = ['all']
@@ -604,8 +622,8 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2021_0919'
-    hourMinSec = '1110_22'
+    yearMonDay = '2021_1118'
+    hourMinSec = '0926_30'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
