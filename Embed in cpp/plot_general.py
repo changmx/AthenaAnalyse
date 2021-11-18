@@ -2,6 +2,68 @@ from typing import ChainMap
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import time
+
+
+class TimeStat:
+    def __init__(self) -> None:
+        self.timeDict = {
+            'total': {
+                'start': 0,
+                'end': 0,
+                'running': 0
+            },
+            'stat': {
+                'start': 0,
+                'end': 0,
+                'running': 0
+            },
+            'lumi': {
+                'start': 0,
+                'end': 0,
+                'running': 0
+            },
+            'tune': {
+                'start': 0,
+                'end': 0,
+                'running': 0
+            },
+            'dist': {
+                'start': 0,
+                'end': 0,
+                'running': 0
+            },
+            'fma': {
+                'start': 0,
+                'end': 0,
+                'running': 0
+            }
+        }
+
+    def start(self, mykey):
+        self.timeDict[mykey]['start'] = time.time()
+
+    def end(self, mykey):
+        self.timeDict[mykey]['end'] = time.time()
+        self.timeDict[mykey]['running'] = self.timeDict[mykey][
+            'end'] - self.timeDict[mykey]['start']
+
+    def printTimeStat(self):
+        for mykey in self.timeDict:
+            mymin, mysec = divmod(
+                self.timeDict[mykey]['end'] - self.timeDict[mykey]['start'],
+                60)
+            if mykey == 'total':
+                print('\n')
+                print('{0:<10s}: {1:s}'.format(
+                    'start',
+                    time.asctime(time.localtime(
+                        self.timeDict[mykey]['start']))))
+                print('{0:<10s}: {1:s}'.format(
+                    'end',
+                    time.asctime(time.localtime(self.timeDict[mykey]['end']))))
+            print('{0:<10s}: {1:.0f} min {2:.0f} sec'.format(
+                mykey, mymin, mysec))
 
 
 def myhexbin(ax,
@@ -46,7 +108,7 @@ def myhexbin(ax,
     if ymax == ymin:
         ymin = ymin - (ymin - 0) * 0.2
         ymax = ymax + (1 - ymax) * 0.2
-        
+
     dx = (xmax - xmin) / gridsize
     dy = (ymax - ymin) / gridsize
 
