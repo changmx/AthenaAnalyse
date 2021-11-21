@@ -45,14 +45,14 @@ class TimeStat:
 
     def end(self, mykey):
         self.timeDict[mykey]['end'] = time.time()
-        self.timeDict[mykey]['running'] = self.timeDict[mykey][
+        self.timeDict[mykey]['running'] += self.timeDict[mykey][
             'end'] - self.timeDict[mykey]['start']
+        # print(self.timeDict[mykey]['start'], self.timeDict[mykey]['end'],
+        #       self.timeDict[mykey]['running'])
 
     def printTimeStat(self):
         for mykey in self.timeDict:
-            mymin, mysec = divmod(
-                self.timeDict[mykey]['end'] - self.timeDict[mykey]['start'],
-                60)
+            mymin, mysec = divmod(self.timeDict[mykey]['running'], 60)
             if mykey == 'total':
                 print('\n')
                 print('{0:<10s}: {1:s}'.format(
@@ -62,7 +62,7 @@ class TimeStat:
                 print('{0:<10s}: {1:s}'.format(
                     'end',
                     time.asctime(time.localtime(self.timeDict[mykey]['end']))))
-            print('{0:<10s}: {1:.0f} min {2:.0f} sec'.format(
+            print('{0:<10s}: {1:<4.0f} min {2:<4.0f} sec'.format(
                 mykey, mymin, mysec))
 
 
