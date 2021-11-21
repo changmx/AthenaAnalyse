@@ -423,7 +423,7 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
         #         .format(ncpu, i, para.nbunch))
         # mypool.close()
         # mypool.join()
-        timestat.end('tune')
+    timestat.end('tune')
 
 
 def plot_distribution_oneProcess(bunchid, home, yearMonDay, hourMinSec, para,
@@ -440,7 +440,7 @@ def plot_distribution_oneProcess(bunchid, home, yearMonDay, hourMinSec, para,
 
 def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize, ncpu,
                            timestat):
-    timestat.start('lumi')
+    timestat.start('dist')
     print('\nStart drawing {0:s} distribution data'.format(para.particle))
     if ncpu == 1:
         for i in range(para.nbunch):
@@ -472,7 +472,7 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize, ncpu,
         #         .format(ncpu, i, para.nbunch))
         # mypool.close()
         # mypool.join()
-    timestat.end('lumi')
+    timestat.end('dist')
 
 
 def plot_fma_oneProcess(bunchid, home, yearMonDay, hourMinSec, para, myfigsize,
