@@ -137,5 +137,27 @@ def myhexbin(ax,
     return he
 
 
+def plot_save_single_figure(ax, x, y, xlabel, ylabel, label=None, alpha=1, fontsize=10, figsize=(8, 6), isgrid=True, yscale='linear', dpi=300, **kwargs):
+
+    ax.plot(x, y, label=label, alpha=alpha)
+
+    ax.set_xlabel(xlabel, fontsize=fontsize)
+    ax.set_ylabel(ylabel, fontsize=fontsize)
+    ax.set_yscale(yscale)
+    # plt.xticks(fontsize=fontsize)
+    # plt.yticks(fontsize=fontsize)
+
+    if label is not None:
+        ax.legend(fontsize=fontsize)
+    if isgrid:
+        ax.grid()
+    if 'ystyle' in kwargs:
+        if kwargs['ystyle'] == 'sci':
+            ax.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    if 'vline' in kwargs:
+        ax.axvline(x=kwargs['vline'], ymin=0, ymax=1,
+                   color='red', linestyle="--")
+
+
 if __name__ == '__main__':
     pass
