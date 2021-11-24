@@ -26,6 +26,7 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
                                     yearMonDay, hourMinSec, para, myfigsize,
                                     myfontsize, myqueue):
     matplotlib.rcParams['agg.path.chunksize'] = 10000
+    plt.rcParams.update({'figure.max_open_warning': 0})
     fig_stat_tmp0, ax_stat_tmp0 = plt.subplots(row, col, figsize=myfigsize)
     plt.xticks(fontsize=myfontsize)
     plt.yticks(fontsize=myfontsize)
@@ -46,43 +47,55 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
     fig_stat_tmp0.subplots_adjust(top=0.87)
     fig_stat_tmp3.subplots_adjust(top=0.86, hspace=0.13)
 
+    fig_single = []
+    ax_single = []
+    single_name = ['x-average', 'x-sigma', 'x-emit', 'y-average', 'y-sigma', 'y-emit', 'x-fft', 'y-fft',  'loss', 'px-average', 'px-sigma', 'z-average', 'py-average', 'py-sigma', 'z-sigma', 'pz-average',
+                   'pz-sigma', 'loss-percent', 'beta-x', 'beta-y', 'invariant-x', 'alpha-x', 'alpha-y', 'invariant-y', 'gamma-x', 'gamma-y', 'xz-average', 'xy-average', 'yz-average', 'xzDevideSigmaxSigmaZ']
+    for i_single in range(30):
+        fig_tmp, ax_tmp = plt.subplots(figsize=(8, 6))
+        plt.xticks(fontsize=15)
+        plt.yticks(fontsize=15)
+        fig_single.append(fig_tmp)
+        ax_single.append(ax_tmp)
+
     stat = Statistic(home, yearMonDay, hourMinSec, para.particle, bunchid,
                      para.nux, para.nuy)
 
     stat.load_statistic()
 
-    stat.plot_statistic_part0(ax_stat_tmp0, myalpha=1, myfontsize=myfontsize)
+    stat.plot_statistic_part0(ax_stat_tmp0, ax_single,
+                              myalpha=1, myfontsize=myfontsize)
+    stat.plot_statistic_part1(ax_stat_tmp1, ax_single,
+                              myalpha=1, myfontsize=myfontsize)
+    stat.plot_statistic_part2(ax_stat_tmp2, ax_single,
+                              myalpha=1, myfontsize=myfontsize)
+    stat.plot_statistic_part3(ax_stat_tmp3, ax_single,
+                              myalpha=1, myfontsize=myfontsize)
+
     stat.manage_axGrid(ax_stat_tmp0, row, col)
+    stat.manage_axGrid(ax_stat_tmp1, row, col)
+    stat.manage_axGrid(ax_stat_tmp2, row, col)
+    stat.manage_axGrid(ax_stat_tmp3, row2, col2)
+
     fig_stat_tmp0.suptitle(para.statnote)
+    fig_stat_tmp1.suptitle(para.statnote_part1)
+    fig_stat_tmp2.suptitle(para.statnote_part2)
+    fig_stat_tmp3.suptitle(para.statnote)
+
     stat.save_bunchStatistic(fig_stat_tmp0, part=0)
-
-    if stat.version == 'new':
-        stat.plot_statistic_part1(ax_stat_tmp1,
-                                  myalpha=1,
-                                  myfontsize=myfontsize)
-        stat.plot_statistic_part2(ax_stat_tmp2,
-                                  myalpha=1,
-                                  myfontsize=myfontsize)
-        stat.plot_statistic_part3(ax_stat_tmp3,
-                                  myalpha=1,
-                                  myfontsize=myfontsize)
-
-        stat.manage_axGrid(ax_stat_tmp1, row, col)
-        stat.manage_axGrid(ax_stat_tmp2, row, col)
-        stat.manage_axGrid(ax_stat_tmp3, row2, col2)
-
-        fig_stat_tmp1.suptitle(para.statnote_part1)
-        fig_stat_tmp2.suptitle(para.statnote_part2)
-        fig_stat_tmp3.suptitle(para.statnote)
-
-        stat.save_bunchStatistic(fig_stat_tmp1, part=1)
-        stat.save_bunchStatistic(fig_stat_tmp2, part=2)
-        stat.save_bunchStatistic(fig_stat_tmp3, part=3)
+    stat.save_bunchStatistic(fig_stat_tmp1, part=1)
+    stat.save_bunchStatistic(fig_stat_tmp2, part=2)
+    stat.save_bunchStatistic(fig_stat_tmp3, part=3)
 
     plt.close(fig_stat_tmp0)
     plt.close(fig_stat_tmp1)
     plt.close(fig_stat_tmp2)
     plt.close(fig_stat_tmp3)
+
+    for i_single in range(30):
+        fig_single[i_single].savefig(
+            stat.save_bunchStatisticPath_single+'_'+single_name[i_single], dpi=300)
+        plt.close(fig_single[i_single])
 
     print('File has been drawn: {0}'.format(stat.stat_file))
 
@@ -90,6 +103,8 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
 def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
                         para, myfigsize, myfontsize):
     matplotlib.rcParams['agg.path.chunksize'] = 10000
+    plt.rcParams.update({'figure.max_open_warning': 0})
+
     if para.nbunch > 1:
         fig_stat0, ax_stat0 = plt.subplots(row, col, figsize=myfigsize)
         plt.xticks(fontsize=myfontsize)
@@ -112,46 +127,62 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
         fig_stat0.subplots_adjust(top=0.87)
         fig_stat3.subplots_adjust(top=0.86, hspace=0.13)
 
+        fig_single = []
+        ax_single = []
+        single_name = ['x-average', 'x-sigma', 'x-emit', 'y-average', 'y-sigma', 'y-emit', 'x-fft', 'y-fft',  'loss', 'px-average', 'px-sigma', 'z-average', 'py-average', 'py-sigma', 'z-sigma', 'pz-average',
+                       'pz-sigma', 'loss-percent', 'beta-x', 'beta-y', 'invariant-x', 'alpha-x', 'alpha-y', 'invariant-y', 'gamma-x', 'gamma-y', 'xz-average', 'xy-average', 'yz-average', 'xzDevideSigmaxSigmaZ']
+        for i_single in range(30):
+            fig_tmp, ax_tmp = plt.subplots(figsize=(8, 6))
+            plt.xticks(fontsize=15)
+            plt.yticks(fontsize=15)
+            fig_single.append(fig_tmp)
+            ax_single.append(ax_tmp)
+
         for i in range(para.nbunch):
             stat = Statistic(home, yearMonDay, hourMinSec, para.particle, i,
                              para.nux, para.nuy)
 
             stat.load_statistic()
 
-            stat.plot_statistic_part0(ax_stat0,
+            stat.plot_statistic_part0(ax_stat0, ax_single,
                                       myalpha=0.5,
                                       myfontsize=myfontsize)
-            if stat.version == 'new':
-                stat.plot_statistic_part1(ax_stat1,
-                                          myalpha=0.5,
-                                          myfontsize=myfontsize)
-                stat.plot_statistic_part2(ax_stat2,
-                                          myalpha=0.5,
-                                          myfontsize=myfontsize)
-                stat.plot_statistic_part3(ax_stat3,
-                                          myalpha=0.5,
-                                          myfontsize=myfontsize)
+
+            stat.plot_statistic_part1(ax_stat1, ax_single,
+                                      myalpha=0.5,
+                                      myfontsize=myfontsize)
+            stat.plot_statistic_part2(ax_stat2, ax_single,
+                                      myalpha=0.5,
+                                      myfontsize=myfontsize)
+            stat.plot_statistic_part3(ax_stat3, ax_single,
+                                      myalpha=0.5,
+                                      myfontsize=myfontsize)
 
         stat.manage_axGrid(ax_stat0, row, col)
+        stat.manage_axGrid(ax_stat1, row, col)
+        stat.manage_axGrid(ax_stat2, row, col)
+        stat.manage_axGrid(ax_stat3, row2, col2)
+
         fig_stat0.suptitle(para.statnote)
+        fig_stat1.suptitle(para.statnote_part1)
+        fig_stat2.suptitle(para.statnote_part2)
+        fig_stat3.suptitle(para.statnote)
+
         stat.save_beamStatistic(fig_stat0, part=0)
-        if stat.version == 'new':
-            stat.manage_axGrid(ax_stat1, row, col)
-            stat.manage_axGrid(ax_stat2, row, col)
-            stat.manage_axGrid(ax_stat3, row2, col2)
-
-            fig_stat1.suptitle(para.statnote_part1)
-            fig_stat2.suptitle(para.statnote_part2)
-            fig_stat3.suptitle(para.statnote)
-
-            stat.save_beamStatistic(fig_stat1, part=1)
-            stat.save_beamStatistic(fig_stat2, part=2)
-            stat.save_beamStatistic(fig_stat3, part=3)
+        stat.save_beamStatistic(fig_stat1, part=1)
+        stat.save_beamStatistic(fig_stat2, part=2)
+        stat.save_beamStatistic(fig_stat3, part=3)
 
         plt.close(fig_stat0)
         plt.close(fig_stat1)
         plt.close(fig_stat2)
         plt.close(fig_stat3)
+
+        for i_single in range(30):
+            fig_single[i_single].savefig(
+                stat.save_bunchStatisticPath_single+'_'+single_name[i_single], dpi=300)
+            plt.close(fig_single[i_single])
+
         print('File has been drawn: beam {0}'.format(stat.particle))
 
 
@@ -622,8 +653,8 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2021_1118'
-    hourMinSec = '0926_30'
+    yearMonDay = '2021_1124'
+    hourMinSec = '1704_33'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
