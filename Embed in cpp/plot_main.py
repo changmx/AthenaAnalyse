@@ -39,6 +39,9 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
     fig_stat_tmp3, ax_stat_tmp3 = plt.subplots(row2, col2, figsize=myfigsize)
     plt.xticks(fontsize=myfontsize)
     plt.yticks(fontsize=myfontsize)
+    fig_stat_tmp4, ax_stat_tmp4 = plt.subplots(row2, col2, figsize=myfigsize)
+    plt.xticks(fontsize=myfontsize)
+    plt.yticks(fontsize=myfontsize)
 
     fig_stat_tmp0.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
     fig_stat_tmp1.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
@@ -49,9 +52,16 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
 
     fig_single = []
     ax_single = []
-    single_name = ['x-average', 'x-sigma', 'x-emit', 'y-average', 'y-sigma', 'y-emit', 'x-fft', 'y-fft',  'loss', 'px-average', 'px-sigma', 'z-average', 'py-average', 'py-sigma', 'z-sigma', 'pz-average',
-                   'pz-sigma', 'loss-percent', 'beta-x', 'beta-y', 'invariant-x', 'alpha-x', 'alpha-y', 'invariant-y', 'gamma-x', 'gamma-y', 'xz-average', 'xy-average', 'yz-average', 'xzDevideSigmaxSigmaZ']
-    for i_single in range(30):
+    single_name = [
+        'x-average', 'x-sigma', 'x-emit', 'y-average', 'y-sigma', 'y-emit',
+        'x-fft', 'y-fft', 'loss', 'px-average', 'px-sigma', 'z-average',
+        'py-average', 'py-sigma', 'z-sigma', 'pz-average', 'pz-sigma',
+        'loss-percent', 'beta-x', 'beta-y', 'invariant-x', 'alpha-x',
+        'alpha-y', 'invariant-y', 'gamma-x', 'gamma-y', 'xz-average',
+        'xy-average', 'yz-average', 'xzDevideSigmaxSigmaZ', 'x-skewness',
+        'x-kurtosis', 'y-skewness', 'y-kurtosis'
+    ]
+    for i_single in range(34):
         fig_tmp, ax_tmp = plt.subplots(figsize=(8, 6))
         plt.xticks(fontsize=15)
         plt.yticks(fontsize=15)
@@ -63,38 +73,55 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
 
     stat.load_statistic()
 
-    stat.plot_statistic_part0(ax_stat_tmp0, ax_single,
-                              myalpha=1, myfontsize=myfontsize)
-    stat.plot_statistic_part1(ax_stat_tmp1, ax_single,
-                              myalpha=1, myfontsize=myfontsize)
-    stat.plot_statistic_part2(ax_stat_tmp2, ax_single,
-                              myalpha=1, myfontsize=myfontsize)
-    stat.plot_statistic_part3(ax_stat_tmp3, ax_single,
-                              myalpha=1, myfontsize=myfontsize)
+    stat.plot_statistic_part0(ax_stat_tmp0,
+                              ax_single,
+                              myalpha=1,
+                              myfontsize=myfontsize)
+    stat.plot_statistic_part1(ax_stat_tmp1,
+                              ax_single,
+                              myalpha=1,
+                              myfontsize=myfontsize)
+    stat.plot_statistic_part2(ax_stat_tmp2,
+                              ax_single,
+                              myalpha=1,
+                              myfontsize=myfontsize)
+    stat.plot_statistic_part3(ax_stat_tmp3,
+                              ax_single,
+                              myalpha=1,
+                              myfontsize=myfontsize)
+    stat.plot_statistic_part4(ax_stat_tmp4,
+                              ax_single,
+                              myalpha=1,
+                              myfontsize=myfontsize)
 
     stat.manage_axGrid(ax_stat_tmp0, row, col)
     stat.manage_axGrid(ax_stat_tmp1, row, col)
     stat.manage_axGrid(ax_stat_tmp2, row, col)
     stat.manage_axGrid(ax_stat_tmp3, row2, col2)
+    stat.manage_axGrid(ax_stat_tmp4, row2, col2)
 
     fig_stat_tmp0.suptitle(para.statnote)
     fig_stat_tmp1.suptitle(para.statnote_part1)
     fig_stat_tmp2.suptitle(para.statnote_part2)
     fig_stat_tmp3.suptitle(para.statnote)
+    fig_stat_tmp4.suptitle(para.statnote)
 
     stat.save_bunchStatistic(fig_stat_tmp0, part=0)
     stat.save_bunchStatistic(fig_stat_tmp1, part=1)
     stat.save_bunchStatistic(fig_stat_tmp2, part=2)
     stat.save_bunchStatistic(fig_stat_tmp3, part=3)
+    stat.save_bunchStatistic(fig_stat_tmp4, part=4)
 
     plt.close(fig_stat_tmp0)
     plt.close(fig_stat_tmp1)
     plt.close(fig_stat_tmp2)
     plt.close(fig_stat_tmp3)
+    plt.close(fig_stat_tmp4)
 
-    for i_single in range(30):
-        fig_single[i_single].savefig(
-            stat.save_bunchStatisticPath_single+'_'+single_name[i_single], dpi=300)
+    for i_single in range(34):
+        fig_single[i_single].savefig(stat.save_bunchStatisticPath_single +
+                                     '_' + single_name[i_single],
+                                     dpi=300)
         plt.close(fig_single[i_single])
 
     print('File has been drawn: {0}'.format(stat.stat_file))
@@ -118,6 +145,9 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
         fig_stat3, ax_stat3 = plt.subplots(row2, col2, figsize=myfigsize)
         plt.xticks(fontsize=myfontsize)
         plt.yticks(fontsize=myfontsize)
+        fig_stat4, ax_stat4 = plt.subplots(row2, col2, figsize=myfigsize)
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
 
         fig_stat0.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
         fig_stat1.subplots_adjust(left=0.05, right=0.96, bottom=0.05)
@@ -129,9 +159,16 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
 
         fig_single = []
         ax_single = []
-        single_name = ['x-average', 'x-sigma', 'x-emit', 'y-average', 'y-sigma', 'y-emit', 'x-fft', 'y-fft',  'loss', 'px-average', 'px-sigma', 'z-average', 'py-average', 'py-sigma', 'z-sigma', 'pz-average',
-                       'pz-sigma', 'loss-percent', 'beta-x', 'beta-y', 'invariant-x', 'alpha-x', 'alpha-y', 'invariant-y', 'gamma-x', 'gamma-y', 'xz-average', 'xy-average', 'yz-average', 'xzDevideSigmaxSigmaZ']
-        for i_single in range(30):
+        single_name = [
+            'x-average', 'x-sigma', 'x-emit', 'y-average', 'y-sigma', 'y-emit',
+            'x-fft', 'y-fft', 'loss', 'px-average', 'px-sigma', 'z-average',
+            'py-average', 'py-sigma', 'z-sigma', 'pz-average', 'pz-sigma',
+            'loss-percent', 'beta-x', 'beta-y', 'invariant-x', 'alpha-x',
+            'alpha-y', 'invariant-y', 'gamma-x', 'gamma-y', 'xz-average',
+            'xy-average', 'yz-average', 'xzDevideSigmaxSigmaZ', 'x-skewness',
+            'x-kurtosis', 'y-skewness', 'y-kurtosis'
+        ]
+        for i_single in range(34):
             fig_tmp, ax_tmp = plt.subplots(figsize=(8, 6))
             plt.xticks(fontsize=15)
             plt.yticks(fontsize=15)
@@ -144,17 +181,25 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
 
             stat.load_statistic()
 
-            stat.plot_statistic_part0(ax_stat0, ax_single,
+            stat.plot_statistic_part0(ax_stat0,
+                                      ax_single,
                                       myalpha=0.5,
                                       myfontsize=myfontsize)
 
-            stat.plot_statistic_part1(ax_stat1, ax_single,
+            stat.plot_statistic_part1(ax_stat1,
+                                      ax_single,
                                       myalpha=0.5,
                                       myfontsize=myfontsize)
-            stat.plot_statistic_part2(ax_stat2, ax_single,
+            stat.plot_statistic_part2(ax_stat2,
+                                      ax_single,
                                       myalpha=0.5,
                                       myfontsize=myfontsize)
-            stat.plot_statistic_part3(ax_stat3, ax_single,
+            stat.plot_statistic_part3(ax_stat3,
+                                      ax_single,
+                                      myalpha=0.5,
+                                      myfontsize=myfontsize)
+            stat.plot_statistic_part4(ax_stat4,
+                                      ax_single,
                                       myalpha=0.5,
                                       myfontsize=myfontsize)
 
@@ -162,25 +207,30 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
         stat.manage_axGrid(ax_stat1, row, col)
         stat.manage_axGrid(ax_stat2, row, col)
         stat.manage_axGrid(ax_stat3, row2, col2)
+        stat.manage_axGrid(ax_stat4, row2, col2)
 
         fig_stat0.suptitle(para.statnote)
         fig_stat1.suptitle(para.statnote_part1)
         fig_stat2.suptitle(para.statnote_part2)
         fig_stat3.suptitle(para.statnote)
+        fig_stat4.suptitle(para.statnote)
 
         stat.save_beamStatistic(fig_stat0, part=0)
         stat.save_beamStatistic(fig_stat1, part=1)
         stat.save_beamStatistic(fig_stat2, part=2)
         stat.save_beamStatistic(fig_stat3, part=3)
+        stat.save_beamStatistic(fig_stat4, part=4)
 
         plt.close(fig_stat0)
         plt.close(fig_stat1)
         plt.close(fig_stat2)
         plt.close(fig_stat3)
+        plt.close(fig_stat4)
 
-        for i_single in range(30):
-            fig_single[i_single].savefig(
-                stat.save_bunchStatisticPath_single+'_'+single_name[i_single], dpi=300)
+        for i_single in range(34):
+            fig_single[i_single].savefig(stat.save_bunchStatisticPath_single +
+                                         '_' + single_name[i_single],
+                                         dpi=300)
             plt.close(fig_single[i_single])
 
         print('File has been drawn: beam {0}'.format(stat.particle))
@@ -653,8 +703,8 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2021_1124'
-    hourMinSec = '1704_33'
+    yearMonDay = '2021_1209'
+    hourMinSec = '0929_52'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
