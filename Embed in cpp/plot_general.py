@@ -154,10 +154,11 @@ def plot_save_single_figure(ax, x, y, xlabel, ylabel, label=None, alpha=1, fonts
     if 'ystyle' in kwargs:
         if kwargs['ystyle'] == 'sci':
             ax.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    if 'xstyle' in kwargs:
+        if kwargs['xstyle'] == 'sci':
+            ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
     if 'vline' in kwargs:
         ax.axvline(x=kwargs['vline'], ymin=0, ymax=1,
                    color='red', linestyle="--")
-
-
 if __name__ == '__main__':
     pass

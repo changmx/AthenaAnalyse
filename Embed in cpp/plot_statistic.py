@@ -120,6 +120,7 @@ class Statistic:
                                     'Turn',
                                     r'$\overline{\mathrm{x}}\ (\mathrm{m})$',
                                     ystyle='sci',
+                                    xstyle='sci',
                                     fontsize=15,
                                     alpha=myalpha)
 
@@ -135,6 +136,7 @@ class Statistic:
                                     'Turn',
                                     r'$\sigma_x\ (\mathrm{m})$',
                                     ystyle='sci',
+                                    xstyle='sci',
                                     fontsize=15,
                                     alpha=myalpha)
 
@@ -151,6 +153,7 @@ class Statistic:
                 'Turn',
                 r'$\epsilon_x\ (\mathrm{m}\cdot\mathrm{rad})$',
                 ystyle='sci',
+                xstyle='sci',
                 fontsize=15,
                 alpha=myalpha)
 
@@ -166,6 +169,7 @@ class Statistic:
                                     'Turn',
                                     r'$\overline{\mathrm{y}}\ (\mathrm{m})$',
                                     ystyle='sci',
+                                    xstyle='sci',
                                     fontsize=15,
                                     alpha=myalpha)
 
@@ -181,6 +185,7 @@ class Statistic:
                                     'Turn',
                                     r'$\sigma_y\ (\mathrm{m})$',
                                     ystyle='sci',
+                                    xstyle='sci',
                                     fontsize=15,
                                     alpha=myalpha)
 
@@ -197,6 +202,7 @@ class Statistic:
                 'Turn',
                 r'$\epsilon_y\ (\mathrm{m}\cdot\mathrm{rad})$',
                 ystyle='sci',
+                xstyle='sci',
                 fontsize=15,
                 alpha=myalpha)
 
@@ -254,6 +260,7 @@ class Statistic:
                                     'Turn',
                                     'Particle loss',
                                     fontsize=15,
+                                    xstyle='sci',
                                     alpha=myalpha)
 
             for i in range(3):
@@ -283,6 +290,7 @@ class Statistic:
                     'Turn',
                     r'$\overline{\mathrm{x^{\prime}}}\ (\mathrm{rad})$',
                     ystyle='sci',
+                    xstyle='sci',
                     fontsize=15,
                     alpha=myalpha)
 
@@ -299,6 +307,7 @@ class Statistic:
                     'Turn',
                     r'$\sigma_{x^{\prime}}\ (\mathrm{rad})$',
                     ystyle='sci',
+                    xstyle='sci',
                     fontsize=15,
                     alpha=myalpha)
 
@@ -315,6 +324,7 @@ class Statistic:
                     'Turn',
                     r'$\overline{\mathrm{z}}\ (\mathrm{m})$',
                     ystyle='sci',
+                    xstyle='sci',
                     fontsize=15,
                     alpha=myalpha)
 
@@ -332,6 +342,7 @@ class Statistic:
                     'Turn',
                     r'$\overline{\mathrm{y^{\prime}}}\ (\mathrm{rad})$',
                     ystyle='sci',
+                    xstyle='sci',
                     fontsize=15,
                     alpha=myalpha)
 
@@ -348,6 +359,7 @@ class Statistic:
                     'Turn',
                     r'$\sigma_{y^{\prime}}\ (\mathrm{rad})$',
                     ystyle='sci',
+                    xstyle='sci',
                     fontsize=15,
                     alpha=myalpha)
 
@@ -363,6 +375,7 @@ class Statistic:
                                         'Turn',
                                         r'$\sigma_z\ (\mathrm{m})$',
                                         ystyle='sci',
+                                        xstyle='sci',
                                         fontsize=15,
                                         alpha=myalpha)
 
@@ -378,6 +391,7 @@ class Statistic:
                                         'Turn',
                                         r'$\overline{\mathrm{dp}}$',
                                         ystyle='sci',
+                                        xstyle='sci',
                                         fontsize=15,
                                         alpha=myalpha)
 
@@ -392,6 +406,7 @@ class Statistic:
                                         'Turn',
                                         r'$\delta_p$',
                                         ystyle='sci',
+                                        xstyle='sci',
                                         fontsize=15,
                                         alpha=myalpha)
 
@@ -407,6 +422,7 @@ class Statistic:
                                         'Turn',
                                         'Percentage of particle loss (%)',
                                         fontsize=15,
+                                        xstyle='sci',
                                         alpha=myalpha)
 
                 for i in range(3):
@@ -434,6 +450,7 @@ class Statistic:
                                         'Turn',
                                         r'$\mathrm{\beta_x}\ (\mathrm{m})$',
                                         ystyle='sci',
+                                        xstyle='sci',
                                         fontsize=15,
                                         alpha=myalpha)
 
@@ -449,6 +466,7 @@ class Statistic:
                                         'Turn',
                                         r'$\mathrm{\beta_y}\ (\mathrm{m})$',
                                         ystyle='sci',
+                                        xstyle='sci',
                                         fontsize=15,
                                         alpha=myalpha)
 
@@ -465,6 +483,7 @@ class Statistic:
                     'Turn',
                     r'$\mathrm{\gamma_x\beta_x}-{\alpha_x}^2$',
                     fontsize=15,
+                    xstyle='sci',
                     alpha=myalpha)
 
                 ax[1, 0].plot(self.turn,
@@ -479,6 +498,7 @@ class Statistic:
                                         'Turn',
                                         r'$\mathrm{\alpha_x}$',
                                         ystyle='sci',
+                                        xstyle='sci',
                                         fontsize=15,
                                         alpha=myalpha)
 
@@ -494,6 +514,7 @@ class Statistic:
                                         'Turn',
                                         r'$\mathrm{\alpha_y}$',
                                         ystyle='sci',
+                                        xstyle='sci',
                                         fontsize=15,
                                         alpha=myalpha)
 
@@ -510,6 +531,7 @@ class Statistic:
                     'Turn',
                     r'$\mathrm{\gamma_y\beta_y}-{\alpha_y}^2$',
                     fontsize=15,
+                    xstyle='sci',
                     alpha=myalpha)
 
                 ax[2, 0].plot(self.turn,
@@ -525,6 +547,7 @@ class Statistic:
                     'Turn',
                     r'$\mathrm{\gamma_x}\ (\mathrm{m^{-1}})$',
                     fontsize=15,
+                    xstyle='sci',
                     alpha=myalpha)
 
                 ax[2, 1].plot(self.turn,
@@ -540,6 +563,7 @@ class Statistic:
                     'Turn',
                     r'$\mathrm{\gamma_y}\ (\mathrm{m^{-1}})$',
                     fontsize=15,
+                    xstyle='sci',
                     alpha=myalpha)
 
                 ax[2, 2].plot(self.turn,
@@ -575,6 +599,7 @@ class Statistic:
                     'Turn',
                     r'$\overline{\mathrm{xz}}\ (\mathrm{m^2})$',
                     ystyle='sci',
+                    xstyle='sci',
                     fontsize=15,
                     alpha=myalpha)
 
@@ -592,6 +617,7 @@ class Statistic:
                     'Turn',
                     r'$\overline{\mathrm{xy}}\ (\mathrm{m^2})$',
                     ystyle='sci',
+                    xstyle='sci',
                     fontsize=15,
                     alpha=myalpha)
 
@@ -609,6 +635,7 @@ class Statistic:
                     'Turn',
                     r'$\overline{\mathrm{yz}}\ (\mathrm{m^2})$',
                     ystyle='sci',
+                    xstyle='sci',
                     fontsize=15,
                     alpha=myalpha)
 
@@ -626,6 +653,7 @@ class Statistic:
                     'Turn',
                     r'$\overline{\mathrm{xz/\sigma_x\sigma_z}}$',
                     ystyle='sci',
+                    xstyle='sci',
                     fontsize=15,
                     alpha=myalpha)
 
@@ -654,6 +682,7 @@ class Statistic:
                                             'Turn',
                                             'x skewness',
                                             ystyle='sci',
+                                            xstyle='sci',
                                             fontsize=15,
                                             alpha=myalpha)
 
@@ -668,6 +697,7 @@ class Statistic:
                                             'Turn',
                                             'x kurtosis',
                                             fontsize=15,
+                                            xstyle='sci',
                                             alpha=myalpha)
 
                     ax[1, 0].plot(self.turn,
@@ -681,6 +711,7 @@ class Statistic:
                                             'Turn',
                                             'y skewness',
                                             ystyle='sci',
+                                            xstyle='sci',
                                             fontsize=15,
                                             alpha=myalpha)
 
@@ -694,6 +725,7 @@ class Statistic:
                                             self.yKurtosis,
                                             'Turn',
                                             'y kurtosis',
+                                            xstyle='sci',
                                             fontsize=15,
                                             alpha=myalpha)
 
