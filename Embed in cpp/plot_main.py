@@ -173,6 +173,7 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
             plt.xticks(fontsize=15)
             plt.yticks(fontsize=15)
             fig_single.append(fig_tmp)
+            ax_tmp.grid()
             ax_single.append(ax_tmp)
 
         for i in range(para.nbunch):
@@ -228,7 +229,7 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
         plt.close(fig_stat4)
 
         for i_single in range(34):
-            fig_single[i_single].savefig(stat.save_bunchStatisticPath_single +
+            fig_single[i_single].savefig(stat.save_beamStatisticPath_single +
                                          '_' + single_name[i_single],
                                          dpi=300)
             plt.close(fig_single[i_single])
