@@ -137,7 +137,19 @@ def myhexbin(ax,
     return he
 
 
-def plot_save_single_figure(ax, x, y, xlabel, ylabel, label=None, alpha=1, fontsize=10, figsize=(8, 6), isgrid=True, yscale='linear', dpi=300, **kwargs):
+def plot_save_single_figure(ax,
+                            x,
+                            y,
+                            xlabel,
+                            ylabel,
+                            label=None,
+                            alpha=1,
+                            fontsize=10,
+                            figsize=(8, 6),
+                            isgrid=True,
+                            yscale='linear',
+                            dpi=300,
+                            **kwargs):
 
     ax.plot(x, y, label=label, alpha=alpha)
 
@@ -148,7 +160,7 @@ def plot_save_single_figure(ax, x, y, xlabel, ylabel, label=None, alpha=1, fonts
     # plt.yticks(fontsize=fontsize)
 
     if label is not None:
-        ax.legend(fontsize=fontsize)
+        ax.legend(loc='best', fontsize=fontsize)
     if isgrid:
         ax.grid()
     if 'ystyle' in kwargs:
@@ -158,7 +170,12 @@ def plot_save_single_figure(ax, x, y, xlabel, ylabel, label=None, alpha=1, fonts
         if kwargs['xstyle'] == 'sci':
             ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
     if 'vline' in kwargs:
-        ax.axvline(x=kwargs['vline'], ymin=0, ymax=1,
-                   color='red', linestyle="--")
+        ax.axvline(x=kwargs['vline'],
+                   ymin=0,
+                   ymax=1,
+                   color='red',
+                   linestyle="--")
+
+
 if __name__ == '__main__':
     pass
