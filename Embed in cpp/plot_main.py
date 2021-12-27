@@ -307,7 +307,7 @@ def plot_luminosity_main(home,
     plt.xticks(fontsize=myfontsize)
     plt.yticks(fontsize=myfontsize)
 
-    myxlabel = ['Turn', 'Turn', 'Super period']
+    myxlabel = [particle[0] + ' turn', particle[1] + ' turn', 'Super period']
     for i in range(3):
         fig_tmp, ax_tmp = plt.subplots(1, figsize=(8, 6))
         plt.xticks(fontsize=myfontsize)
