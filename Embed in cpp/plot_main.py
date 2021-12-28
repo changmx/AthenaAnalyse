@@ -69,7 +69,8 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
         ax_single.append(ax_tmp)
 
     stat = Statistic(home, yearMonDay, hourMinSec, para.particle, bunchid,
-                     para.nux, para.nuy)
+                     para.nux, para.nuy, para.sigmax, para.sigmay,
+                     para.sigmapx, para.sigmapy)
 
     stat.load_statistic()
 
@@ -178,7 +179,8 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
 
         for i in range(para.nbunch):
             stat = Statistic(home, yearMonDay, hourMinSec, para.particle, i,
-                             para.nux, para.nuy)
+                             para.nux, para.nuy, para.sigmax, para.sigmay,
+                             para.sigmapx, para.sigmapy)
 
             stat.load_statistic()
 

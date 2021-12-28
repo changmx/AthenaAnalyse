@@ -51,12 +51,24 @@ class Luminosity:
             print("file doesn't exist: {0}".format(self.lumi_file))
 
     def plot_luminosity(self, ax, isLabel, myalpha):
+        mymarker = 'o'
+        mymarker_size = 0.1
+        mymarker_linewidth = 0.001
         if self.is_lumiExist:
             mylabel = 'super period' if self.particle == 'suPeriod' else self.particle
             if isLabel:
-                ax.plot(self.lumiTurn, self.lumi, label=mylabel, alpha=myalpha)
+                ax.scatter(self.lumiTurn,
+                           self.lumi,
+                           label=mylabel,
+                           marker=mymarker,
+                           s=mymarker_size,
+                           linewidth=mymarker_linewidth)
             else:
-                ax.plot(self.lumiTurn, self.lumi, alpha=myalpha)
+                ax.scatter(self.lumiTurn,
+                           self.lumi,
+                           marker=mymarker,
+                           s=mymarker_size,
+                           linewidth=mymarker_linewidth)
 
     def save_lumi(self, figure, mydpi=300):
         figure.savefig(self.save_lumiPath, dpi=mydpi)

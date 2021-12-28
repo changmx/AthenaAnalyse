@@ -151,7 +151,16 @@ def plot_save_single_figure(ax,
                             dpi=300,
                             **kwargs):
 
-    ax.plot(x, y, label=label, alpha=alpha)
+    marker = 'o'
+    marker_size = 0.1
+    marker_linewidth = 0.001
+    ax.scatter(x,
+               y,
+               label=label,
+               alpha=alpha,
+               marker=marker,
+               s=marker_size,
+               linewidth=marker_linewidth)
 
     ax.set_xlabel(xlabel, fontsize=fontsize)
     ax.set_ylabel(ylabel, fontsize=fontsize)
@@ -160,7 +169,50 @@ def plot_save_single_figure(ax,
     # plt.yticks(fontsize=fontsize)
 
     if label is not None:
-        ax.legend(loc='best', fontsize=fontsize)
+        ax.legend(loc='best', fontsize=fontsize, markerscale=1 / marker_size)
+    if isgrid:
+        ax.grid()
+    if 'ystyle' in kwargs:
+        if kwargs['ystyle'] == 'sci':
+            ax.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+    if 'xstyle' in kwargs:
+        if kwargs['xstyle'] == 'sci':
+            ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
+    if 'vline' in kwargs:
+        ax.axvline(x=kwargs['vline'],
+                   ymin=0,
+                   ymax=1,
+                   color='red',
+                   linestyle="--")
+
+
+def plot_save_single_line_figure(ax,
+                                 x,
+                                 y,
+                                 xlabel,
+                                 ylabel,
+                                 label=None,
+                                 alpha=1,
+                                 fontsize=10,
+                                 figsize=(8, 6),
+                                 isgrid=True,
+                                 yscale='linear',
+                                 dpi=300,
+                                 **kwargs):
+
+    mylinewidth = 0.2
+    ax.plot(x, y, label=label, alpha=alpha, linewidth=mylinewidth)
+
+    ax.set_xlabel(xlabel, fontsize=fontsize)
+    ax.set_ylabel(ylabel, fontsize=fontsize)
+    ax.set_yscale(yscale)
+    # plt.xticks(fontsize=fontsize)
+    # plt.yticks(fontsize=fontsize)
+
+    if label is not None:
+        leg = ax.legend(loc='best', fontsize=fontsize)
+        for legobj in leg.legendHandles:
+            legobj.set_linewidth(1)
     if isgrid:
         ax.grid()
     if 'ystyle' in kwargs:
