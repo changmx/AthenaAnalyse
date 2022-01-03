@@ -319,7 +319,7 @@ def plot_luminosity_main(home,
 
         lumi = Luminosity(home, yearMonDay, hourMinSec, particle[i],
                           myfontsize)
-        lumi.load_luminosity(skip[i])
+        lumi.load_luminosity(skip[i] + 1)
         lumi.plot_luminosity(ax_tmp, isLabel=False, myalpha=1)
         lumi.plot_luminosity(ax_lumi[i], isLabel=True, myalpha=1)
 
