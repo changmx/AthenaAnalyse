@@ -48,6 +48,7 @@ class Parameter:
             self.chromaticity_y = para_list['Chromaticity y']
             self.sigmaz = para_list['Sigma z']
             self.sigmapz = para_list['DeltaP']
+            self.dist = para_list['Initial distribution'][0]
 
             if 'isFixAndSaveCoordinate' in para_list:
                 self.fixXStart = para_list['isFixAndSaveCoordinate'][1][
