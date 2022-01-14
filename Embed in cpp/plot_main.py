@@ -350,125 +350,42 @@ def plot_luminosity_main(home,
     timestat.end('lumi')
 
 
-def plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para, myfigsize,
-                         myfontsize, i, myqueue):
+def plot_tune_oneProcess(tune, para, order, myfigsize, myfontsize, cpuid):
     '''
     使用多线程同时处理不同束团的tune信息
-
-    之前在tune.load()函数之后使用多线程，即同时处理一个束团的不同phase_turn的数据，发现这样很慢。
-    目前认为原因是在执行tune.load()之后，tune对象里数据量太大，传递这些数据给不同线程太耗时间，导致并行效果很差。
-    因此改为并行处理不同束团，这样在不同线程内部加载数据文件，就可以省去传递数据所耗时间。
     '''
 
-    tune = Tune(home, yearMonDay, hourMinSec, para.particle, i, para.nux,
-                para.nuy)
-    tune.load()
+    for index in tune.fileIndex[cpuid]:
+        nuX, nuY = load(tune.filePath[index])
 
-    existFirst = 0
-    for j in range(len(tune.file)):
-        if tune.isExist[j]:
-            existFirst += 1
-            xmin = min(tune.nuX[j])
-            ymin = min(tune.nuY[j])
-            xmax = max(tune.nuX[j])
-            ymax = max(tune.nuY[j])
-            if xmax == xmin:
-                xmin = xmin - (xmin - 0) * 0.2
-                xmax = xmax + (1 - xmax) * 0.2
-            if ymax == ymin:
-                ymin = ymin - (ymin - 0) * 0.2
-                ymax = ymax + (1 - ymax) * 0.2
+        fig, ax = plt.subplots(1, figsize=myfigsize)
+        fig.subplots_adjust(right=1)
+        plt.xticks(fontsize=myfontsize)
+        plt.yticks(fontsize=myfontsize)
 
-            xgap = abs(xmax - xmin)
-            ygap = abs(ymax - ymin)
+        plot_phase_hexbin(tune,
+                          fig,
+                          ax,
+                          nuX,
+                          nuY,
+                          order,
+                          myalpha=0.8,
+                          mygridsize=200,
+                          myfontsize=myfontsize)
 
-            if para.tuneshift_direction > 0:
-                axmin = xmin - xgap * 0.3
-                aymin = ymin - ygap * 0.3
-                axmax = xmax + xgap * 0.7
-                aymax = ymax + ygap * 0.7
-            else:
-                axmin = xmin - xgap * 0.7
-                aymin = ymin - ygap * 0.7
-                axmax = xmax + xgap * 0.3
-                aymax = ymax + ygap * 0.3
+        ax.scatter(para.nux,
+                   para.nuy,
+                   marker='x',
+                   color='black',
+                   s=50,
+                   zorder=order)
 
-            axmin = 0 if axmin < 0 else axmin
-            aymin = 0 if aymin < 0 else aymin
-            axmax = 1 if axmax > 1 else axmax
-            aymax = 1 if aymax > 1 else aymax
+        ax.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
+        ax.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
 
-            if existFirst == 1:
-                tune.xlim = [axmin, axmax]
-                tune.ylim = [aymin, aymax]
-
-            tune.xlim[0] = axmin if xmin < tune.xlim[0] else tune.xlim[0]
-            tune.ylim[0] = aymin if ymin < tune.ylim[0] else tune.ylim[0]
-            tune.xlim[1] = axmax if xmax > tune.xlim[1] else tune.xlim[1]
-            tune.ylim[1] = aymax if ymax > tune.ylim[1] else tune.ylim[1]
-
-            # fig_tmp1, ax_tmp1 = plt.subplots(1, figsize=myfigsize)
-            # fig_tmp1.subplots_adjust(left=0.1, right=0.96, bottom=0.08)
-            # plt.xticks(fontsize=myfontsize)
-            # plt.yticks(fontsize=myfontsize)
-
-            fig_tmp2, ax_tmp2 = plt.subplots(1, figsize=myfigsize)
-            fig_tmp2.subplots_adjust(right=1)
-            plt.xticks(fontsize=myfontsize)
-            plt.yticks(fontsize=myfontsize)
-
-            # tune.plot_scatter(fig_tmp1,
-            #                   ax_tmp1,
-            #                   j,
-            #                   resonanceOrder=order,
-            #                   myalpha=0.5,
-            #                   mysize=1,
-            #                   myfontsize=myfontsize)
-            # ax_tmp1.scatter(para.nux,
-            #                 para.nuy,
-            #                 marker='x',
-            #                 color='black',
-            #                 s=100,
-            #                 zorder=order)
-
-            # ax_tmp1.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
-            # ax_tmp1.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
-
-            # fig_tmp1.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
-            #     para.statnote, para.particle, i, tune.tune_turn[j]),
-            #                   fontsize=10)
-
-            # tune.save_scatter(fig_tmp1, j)
-            # plt.close(fig_tmp1)
-
-            # ax_tmp1.clear()
-            # ax_tmp1.tick_params(top=False, right=False)
-
-            tune.plot_hexbin(fig_tmp2,
-                             ax_tmp2,
-                             j,
-                             resonanceOrder=order,
-                             myalpha=0.8,
-                             mygridsize=200,
-                             myfontsize=myfontsize)
-            ax_tmp2.scatter(para.nux,
-                            para.nuy,
-                            marker='x',
-                            color='black',
-                            s=50,
-                            zorder=order)
-
-            ax_tmp2.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
-            ax_tmp2.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
-
-            # fig_tmp2.suptitle('{0:s}\n{1:s} bunch{2:d} turn {3:s}'.format(
-            #     para.statnote, para.particle, i, tune.tune_turn[j]),
-            #                   fontsize=10)
-            # ax_tmp2.tick_params(top=False, right=False)
-
-            tune.save_hexbin(fig_tmp2, j)
-            plt.close(fig_tmp2)
-            print('File has been drawn: {0}'.format(tune.file[j]))
+        save_hexbin(fig, tune.savePath_hexbin[index])
+        plt.close(fig)
+        print('File has been drawn: {0}'.format(tune.filePath[index]))
 
 
 def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
@@ -476,37 +393,36 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
     timestat.start('tune')
     print('\nStart drawing {0:s} tune spread data'.format(para.particle))
     order = 10
+    tune = Tune(home, yearMonDay, hourMinSec, para.particle, para.nbunch,
+                para.nux, para.nuy, para.tuneshift_direction, ncpu)
+    tune.get_limit()
+    tune.allocate_file()
 
-    if ncpu == 1:
-        for i in range(para.nbunch):
-            plot_tune_oneProcess(order, home, yearMonDay, hourMinSec, para,
-                                 myfigsize, myfontsize, i, 'no queue')
-    else:
-        ps = []
-        for i in range(para.nbunch):
-            p = Process(target=plot_tune_oneProcess,
-                        args=(order, home, yearMonDay, hourMinSec, para,
-                              myfigsize, myfontsize, i, 'queue'))
-            ps.append(p)
-        for i in range(para.nbunch):
-            ps[i].start()
-            print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
-                  format(os.cpu_count(), i, para.nbunch))
-            time.sleep(1)
-        for i in range(para.nbunch):
-            ps[i].join()
-        # mymanager = Manager()
-        # myqueue = mymanager.Queue(ncpu)
-        # mypool = Pool(processes=ncpu)
-        # for i in range(para.nbunch):
-        #     mypool.apply_async(plot_tune_oneProcess,
-        #                        (order, home, yearMonDay, hourMinSec, para,
-        #                         myfigsize, myfontsize, i, xlim, ylim, myqueue))
-        #     print(
-        #         'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
-        #         .format(ncpu, i, para.nbunch))
-        # mypool.close()
-        # mypool.join()
+    ps = []
+    for cpuid in range(ncpu):
+        p = Process(target=plot_tune_oneProcess,
+                    args=(tune, para, order, myfigsize, myfontsize, cpuid))
+        ps.append(p)
+    for cpuid in range(ncpu):
+        ps[cpuid].start()
+        print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.format(
+            os.cpu_count(), cpuid, ncpu))
+        time.sleep(0.01)
+    for cpuid in range(ncpu):
+        ps[cpuid].join()
+
+    # mymanager = Manager()
+    # myqueue = mymanager.Queue(ncpu)
+    # mypool = Pool(processes=ncpu)
+    # for i in range(para.nbunch):
+    #     mypool.apply_async(plot_tune_oneProcess,
+    #                        (order, home, yearMonDay, hourMinSec, para,
+    #                         myfigsize, myfontsize, i, xlim, ylim, myqueue))
+    #     print(
+    #         'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
+    #         .format(ncpu, i, para.nbunch))
+    # mypool.close()
+    # mypool.join()
     timestat.end('tune')
 
 
@@ -682,11 +598,11 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
 if __name__ == '__main__':
     home = ''
     if socket.gethostname() == 'DESKTOP-T722QRP':
-        home = os.sep.join(['D:', 'bb2021'])
+        home = os.sep.join(['D:', 'bb2022'])
     elif socket.gethostname() == 'zts-gpu':
-        home = os.sep.join(['/home', 'changmx', 'bb2021'])
+        home = os.sep.join(['/home', 'changmx', 'bb2022'])
     elif socket.gethostname() == 'sdgx-server01':
-        home = os.sep.join(['/raid', 'home', 'changmx', 'bb2021'])
+        home = os.sep.join(['/raid', 'home', 'changmx', 'bb2022'])
     else:
         print(
             'We do not support current machine now, please add hostname: {0} to home path list.}'
@@ -706,8 +622,8 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2021_1209'
-    hourMinSec = '0929_52'
+    yearMonDay = '2022_0110'
+    hourMinSec = '1822_54'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
