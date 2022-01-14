@@ -7,7 +7,7 @@ import platform
 import sys
 import socket
 
-from matplotlib.pyplot import legend
+from matplotlib.pyplot import legend, title
 from plot_distribution import Distribution
 import time
 import matplotlib as mpl
@@ -426,52 +426,73 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
     timestat.end('tune')
 
 
-def plot_distribution_oneProcess(bunchid, home, yearMonDay, hourMinSec, para,
-                                 myfigsize, myqueue):
-    dist = Distribution(home,
-                        yearMonDay,
-                        hourMinSec,
-                        para.particle,
-                        bunchid,
-                        dist='gaussian')
+def plot_distribution_oneProcess(dist, para, myfigsize, myfontsize, cpuid):
+    '''
+    使用多线程同时处理不同束团的dist信息
+    '''
 
-    dist.load_plot_save(para, myfigsize=myfigsize, mysize=200, mybins=300)
+    for index in dist.fileIndex[cpuid]:
+        title = '{0}, {1} {2}\n'.format(dist.bunchLabel[index], dist.turnUnit,
+                                        dist.dist_turn[index])
+
+        title += r'$\sigma_x={0:e}, \sigma_{{x^\prime}}={1:e}, \sigma_y={2:e}, \sigma_{{y^\prime}}={3:e}, \sigma_z={4:e}, \delta_p={5:e}$'.format(
+            para.sigmax, para.sigmapx, para.sigmay, para.sigmapy, para.sigmaz,
+            para.sigmapz)
+        x, px, y, py, z, pz = load(dist.filePath[index])
+
+        plot_save(dist,
+                  para,
+                  x,
+                  px,
+                  y,
+                  py,
+                  z,
+                  pz,
+                  myfigsize,
+                  myfontsize,
+                  dist.bunchLabel[index],
+                  title,
+                  dist.savePath[index],
+                  dist.savePath_single[index],
+                  mysize=200,
+                  mybins=300)
+
+        print('File has been drawn: {0}'.format(dist.filePath[index]))
 
 
-def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize, ncpu,
-                           timestat):
+def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
+                           myfontsize, ncpu, timestat):
     timestat.start('dist')
     print('\nStart drawing {0:s} distribution data'.format(para.particle))
-    if ncpu == 1:
-        for i in range(para.nbunch):
-            plot_distribution_oneProcess(i, home, yearMonDay, hourMinSec, para,
-                                         myfigsize, 'no queue')
-    else:
-        ps = []
-        for i in range(para.nbunch):
-            p = Process(target=plot_distribution_oneProcess,
-                        args=(i, home, yearMonDay, hourMinSec, para, myfigsize,
-                              'queue'))
-            ps.append(p)
-        for i in range(para.nbunch):
-            ps[i].start()
-            print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
-                  format(os.cpu_count(), i, para.nbunch))
-            time.sleep(1)
-        for i in range(para.nbunch):
-            ps[i].join()
-        # mymanager = Manager()
-        # myqueue = mymanager.Queue(ncpu)
-        # mypool = Pool(processes=ncpu)
-        # for i in range(para.nbunch):
-        #     mypool.apply_async(
-        #         plot_distribution_oneProcess,
-        #         (i, home, yearMonDay, hourMinSec, para, myfigsize, myqueue))
-        #     print(
-        #         'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
-        #         .format(ncpu, i, para.nbunch))
-        # mypool.close()
-        # mypool.join()
+    dist = Distribution(home, yearMonDay, hourMinSec, para.particle,
+                        para.nbunch, para.dist, ncpu)
+    dist.allocate_file()
+
+    ps = []
+    for cpuid in range(dist.ntask):
+        p = Process(target=plot_distribution_oneProcess,
+                    args=(dist, para, myfigsize, myfontsize, cpuid))
+        ps.append(p)
+    for cpuid in range(dist.ntask):
+        ps[cpuid].start()
+        print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.format(
+            os.cpu_count(), cpuid, dist.ntask))
+        time.sleep(0.01)
+    for cpuid in range(dist.ntask):
+        ps[cpuid].join()
+
+    # mymanager = Manager()
+    # myqueue = mymanager.Queue(ncpu)
+    # mypool = Pool(processes=ncpu)
+    # for i in range(para.nbunch):
+    #     mypool.apply_async(
+    #         plot_distribution_oneProcess,
+    #         (i, home, yearMonDay, hourMinSec, para, myfigsize, myqueue))
+    #     print(
+    #         'Process pool size: {0:d}, task {1:d}/{2:d} has been added asynchronously'
+    #         .format(ncpu, i, para.nbunch))
+    # mypool.close()
+    # mypool.join()
     timestat.end('dist')
 
 
@@ -530,6 +551,7 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     my_fontsize_lumi = 12
     my_fontsize_tune = 12
     my_fontsize_fma = 12
+    my_fontsize_dist = 15
 
     my_fma_scattersize = 1
     my_fma_distTurnStep = 25
@@ -564,10 +586,12 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
 
         if kind == 'all' or kind == 'dist':
             plot_distribution_main(home, yearMonDay, hourMinSec, beam1,
-                                   my_figsize1, ncpu, runningTime)
+                                   my_figsize1, my_fontsize_dist, ncpu,
+                                   runningTime)
 
             plot_distribution_main(home, yearMonDay, hourMinSec, beam2,
-                                   my_figsize1, ncpu, runningTime)
+                                   my_figsize1, my_fontsize_dist, ncpu,
+                                   runningTime)
 
         if kind == 'all' or kind == 'tune':
             plot_tune_main(home, yearMonDay, hourMinSec, beam1,
