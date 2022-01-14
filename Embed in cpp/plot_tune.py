@@ -86,6 +86,7 @@ class Tune:
         #     print(self.filePath[i])
         #     print(self.savePath_scatter[i])
         self.nfile = len(self.filePath)
+        self.ntask = self.nfile if self.nfile < self.ncpu else self.ncpu
         print('{0:d} files will be drawn'.format(self.nfile))
 
     def get_limit(self):

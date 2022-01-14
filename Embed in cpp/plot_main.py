@@ -399,16 +399,16 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
     tune.allocate_file()
 
     ps = []
-    for cpuid in range(ncpu):
+    for cpuid in range(tune.ntask):
         p = Process(target=plot_tune_oneProcess,
                     args=(tune, para, order, myfigsize, myfontsize, cpuid))
         ps.append(p)
-    for cpuid in range(ncpu):
+    for cpuid in range(tune.ntask):
         ps[cpuid].start()
         print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.format(
-            os.cpu_count(), cpuid, ncpu))
+            os.cpu_count(), cpuid, tune.ntask))
         time.sleep(0.01)
-    for cpuid in range(ncpu):
+    for cpuid in range(tune.ntask):
         ps[cpuid].join()
 
     # mymanager = Manager()
