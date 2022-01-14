@@ -89,7 +89,7 @@ class Tune:
         self.ntask = self.nfile if self.nfile < self.ncpu else self.ncpu
         print('{0:d} files will be drawn'.format(self.nfile))
 
-    def get_limit(self):
+    def get_phase_limit(self):
         if self.xlim == [0, 1] or self.ylim == [0, 1]:
             if len(self.filePath) > 0:
                 print('Cal limit by file: ', self.filePath[0])
@@ -160,7 +160,7 @@ class Tune:
         print('xlim: ', self.xlim)
         print('ylim: ', self.ylim)
 
-    def allocate_file(self):
+    def allocate_phase_file(self):
         self.fileIndex = []
         for i in range(self.ncpu):
             self.fileIndex.append([])
@@ -169,7 +169,7 @@ class Tune:
         # print(self.fileIndex)
 
 
-def load(filePath):
+def load_phase(filePath):
     nuX, nuY, tag = np.loadtxt(filePath,
                                delimiter=',',
                                skiprows=1,
@@ -190,16 +190,16 @@ def load(filePath):
     return nuX, nuY
 
 
-def plot_scatter(tune,
-                 fig,
-                 ax,
-                 nuX,
-                 nuY,
-                 resonanceOrder,
-                 myalpha,
-                 mysize,
-                 resonanceKind='all',
-                 myfontsize=10):
+def plot_phase_scatter(tune,
+                       fig,
+                       ax,
+                       nuX,
+                       nuY,
+                       resonanceOrder,
+                       myalpha,
+                       mysize,
+                       resonanceKind='all',
+                       myfontsize=10):
     sc = ax.scatter(nuX,
                     nuY,
                     alpha=myalpha,
@@ -242,11 +242,11 @@ def plot_phase_hexbin(tune,
                                 resonanceKind, myfontsize)
 
 
-def save_scatter(figure, savepath, mydpi=300):
+def save_phase_scatter(figure, savepath, mydpi=300):
     # print(savepath)
     figure.savefig(savepath, dpi=mydpi)
 
 
-def save_hexbin(figure, savepath, mydpi=300):
+def save_phase_hexbin(figure, savepath, mydpi=300):
     # print(savepath)
     figure.savefig(savepath, dpi=mydpi)

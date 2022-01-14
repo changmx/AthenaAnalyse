@@ -356,7 +356,7 @@ def plot_tune_oneProcess(tune, para, order, myfigsize, myfontsize, cpuid):
     '''
 
     for index in tune.fileIndex[cpuid]:
-        nuX, nuY = load(tune.filePath[index])
+        nuX, nuY = load_phase(tune.filePath[index])
 
         fig, ax = plt.subplots(1, figsize=myfigsize)
         fig.subplots_adjust(right=1)
@@ -383,7 +383,7 @@ def plot_tune_oneProcess(tune, para, order, myfigsize, myfontsize, cpuid):
         ax.set_xlabel(r'$\nu_x$', fontsize=myfontsize)
         ax.set_ylabel(r'$\nu_y$', fontsize=myfontsize)
 
-        save_hexbin(fig, tune.savePath_hexbin[index])
+        save_phase_hexbin(fig, tune.savePath_hexbin[index])
         plt.close(fig)
         print('File has been drawn: {0}'.format(tune.filePath[index]))
 
@@ -395,8 +395,8 @@ def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
     order = 10
     tune = Tune(home, yearMonDay, hourMinSec, para.particle, para.nbunch,
                 para.nux, para.nuy, para.tuneshift_direction, ncpu)
-    tune.get_limit()
-    tune.allocate_file()
+    tune.get_phase_limit()
+    tune.allocate_phase_file()
 
     ps = []
     for cpuid in range(tune.ntask):
@@ -438,24 +438,24 @@ def plot_distribution_oneProcess(dist, para, myfigsize, myfontsize, cpuid):
         title += r'$\sigma_x={0:e}, \sigma_{{x^\prime}}={1:e}, \sigma_y={2:e}, \sigma_{{y^\prime}}={3:e}, \sigma_z={4:e}, \delta_p={5:e}$'.format(
             para.sigmax, para.sigmapx, para.sigmay, para.sigmapy, para.sigmaz,
             para.sigmapz)
-        x, px, y, py, z, pz = load(dist.filePath[index])
+        x, px, y, py, z, pz = load_dist(dist.filePath[index])
 
-        plot_save(dist,
-                  para,
-                  x,
-                  px,
-                  y,
-                  py,
-                  z,
-                  pz,
-                  myfigsize,
-                  myfontsize,
-                  dist.bunchLabel[index],
-                  title,
-                  dist.savePath[index],
-                  dist.savePath_single[index],
-                  mysize=200,
-                  mybins=300)
+        plot_dist_save(dist,
+                       para,
+                       x,
+                       px,
+                       y,
+                       py,
+                       z,
+                       pz,
+                       myfigsize,
+                       myfontsize,
+                       dist.bunchLabel[index],
+                       title,
+                       dist.savePath[index],
+                       dist.savePath_single[index],
+                       mysize=200,
+                       mybins=300)
 
         print('File has been drawn: {0}'.format(dist.filePath[index]))
 
@@ -466,7 +466,7 @@ def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
     print('\nStart drawing {0:s} distribution data'.format(para.particle))
     dist = Distribution(home, yearMonDay, hourMinSec, para.particle,
                         para.nbunch, para.dist, ncpu)
-    dist.allocate_file()
+    dist.allocate_dist_file()
 
     ps = []
     for cpuid in range(dist.ntask):

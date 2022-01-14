@@ -68,14 +68,14 @@ class Distribution:
                         os.makedirs(savePath_single)
 
                     savePath = os.sep.join([
-                        savePath, self.hourMinSec + '_dist_' + self.particle +
-                        "_bunch" + str(bunchid) + '_' + self.turnUnit + '_' +
-                        dist_turn[i]
+                        savePath,
+                        self.hourMinSec + '_dist_' + self.particle + "_bunch" +
+                        str(bunchid) + '_' + self.turnUnit + '_' + dist_turn[i]
                     ])
                     savePath_single = os.sep.join([
-                        savePath_single, self.hourMinSec + '_dist_' +
-                        self.particle + "_bunch" + str(bunchid) + '_' +
-                        self.turnUnit + '_' + dist_turn[i]
+                        savePath_single,
+                        self.hourMinSec + '_dist_' + self.particle + "_bunch" +
+                        str(bunchid) + '_' + self.turnUnit + '_' + dist_turn[i]
                     ])
 
                     self.filePath.append(filePath[i])
@@ -91,7 +91,7 @@ class Distribution:
         self.ntask = self.nfile if self.nfile < self.ncpu else self.ncpu
         print('{0:d} files will be drawn'.format(self.nfile))
 
-    def allocate_file(self):
+    def allocate_dist_file(self):
         self.fileIndex = []
         for i in range(self.ntask):
             self.fileIndex.append([])
@@ -100,7 +100,7 @@ class Distribution:
         # print(self.fileIndex)
 
 
-def load(filePath):
+def load_dist(filePath):
     x, px, y, py, z, pz, tag = np.loadtxt(filePath,
                                           delimiter=',',
                                           skiprows=1,
@@ -121,7 +121,7 @@ def load(filePath):
     return x, px, y, py, z, pz
 
 
-def plot_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
+def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
               mybunchlabel, title, savePath, savePath_single, mysize, mybins):
     # plt.rcParams.update({'figure.max_open_warning': 0})
     row = 3
