@@ -60,6 +60,7 @@ class Tune:
                 ])
 
             filePath = glob.glob(filePath + '*')
+            filePath.sort()
             # print(filePath)
             tune_turn = []
 
@@ -92,6 +93,7 @@ class Tune:
     def get_phase_limit(self):
         if self.xlim == [0, 1] or self.ylim == [0, 1]:
             if len(self.filePath) > 0:
+
                 print('Cal limit by file: ', self.filePath[0])
                 nuX, nuY, tag = np.loadtxt(self.filePath[0],
                                            delimiter=',',
