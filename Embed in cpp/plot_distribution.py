@@ -16,13 +16,13 @@ class Distribution:
     Load and plot particles distribution
     '''
 
-    def __init__(self, home, yearMonDay, hourMinSec, particle, nbunch, dist,
-                 ncpu) -> None:
+    def __init__(self, home, yearMonDay, hourMinSec, particle, bunchidList,
+                 dist, ncpu) -> None:
         self.home = home
         self.yearMonDay = yearMonDay
         self.hourMinSec = hourMinSec
         self.particle = particle
-        self.nbunch = nbunch
+        self.bunchid = bunchidList
         self.dist = dist
         self.ncpu = ncpu
 
@@ -33,7 +33,7 @@ class Distribution:
         self.savePath = []
         self.savePath_single = []
 
-        for bunchid in range(self.nbunch):
+        for bunchid in self.bunchid:
             filePath = self.hourMinSec + '_' + self.dist + '_' + self.particle + '_bunch' + str(
                 bunchid)
             filePath = os.sep.join([
@@ -122,7 +122,8 @@ def load_dist(filePath):
 
 
 def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
-              mybunchlabel, title, savePath, savePath_single, mysize, mybins):
+                   mybunchlabel, title, savePath, savePath_single, mysize,
+                   mybins):
     # plt.rcParams.update({'figure.max_open_warning': 0})
     row = 3
     col = 4

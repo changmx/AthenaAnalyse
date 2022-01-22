@@ -22,7 +22,7 @@ class Tune:
                  yearMonDay,
                  hourMinSec,
                  particle,
-                 nbunch,
+                 bunchidList,
                  nux,
                  nuy,
                  tuneshift_direction,
@@ -33,7 +33,7 @@ class Tune:
         self.yearMonDay = yearMonDay
         self.hourMinSec = hourMinSec
         self.particle = particle
-        self.nbunch = nbunch
+        self.bunchid = bunchidList
         self.nux = nux
         self.nuy = nuy
         self.tuneshift_direction = tuneshift_direction
@@ -45,7 +45,7 @@ class Tune:
         self.savePath_scatter = []
         self.savePath_hexbin = []
 
-        for bunchid in range(self.nbunch):
+        for bunchid in self.bunchid:
             filePath = self.hourMinSec + '_' + self.particle + '_bunch' + str(
                 bunchid) + '_phase_'
             if self.yearMonDay > '2021_0913':

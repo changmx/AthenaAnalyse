@@ -388,13 +388,20 @@ def plot_tune_oneProcess(tune, para, order, myfigsize, myfontsize, cpuid):
         print('File has been drawn: {0}'.format(tune.filePath[index]))
 
 
-def plot_tune_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
-                   ncpu, timestat):
+def plot_tune_main(home,
+                   yearMonDay,
+                   hourMinSec,
+                   para,
+                   myfigsize,
+                   myfontsize,
+                   ncpu,
+                   timestat,
+                   bunchid=[0]):
     timestat.start('tune')
     print('\nStart drawing {0:s} tune spread data'.format(para.particle))
     order = 10
-    tune = Tune(home, yearMonDay, hourMinSec, para.particle, para.nbunch,
-                para.nux, para.nuy, para.tuneshift_direction, ncpu)
+    tune = Tune(home, yearMonDay, hourMinSec, para.particle, bunchid, para.nux,
+                para.nuy, para.tuneshift_direction, ncpu)
     tune.get_phase_limit()
     tune.allocate_phase_file()
 
@@ -460,12 +467,19 @@ def plot_distribution_oneProcess(dist, para, myfigsize, myfontsize, cpuid):
         print('File has been drawn: {0}'.format(dist.filePath[index]))
 
 
-def plot_distribution_main(home, yearMonDay, hourMinSec, para, myfigsize,
-                           myfontsize, ncpu, timestat):
+def plot_distribution_main(home,
+                           yearMonDay,
+                           hourMinSec,
+                           para,
+                           myfigsize,
+                           myfontsize,
+                           ncpu,
+                           timestat,
+                           bunchid=[0]):
     timestat.start('dist')
     print('\nStart drawing {0:s} distribution data'.format(para.particle))
-    dist = Distribution(home, yearMonDay, hourMinSec, para.particle,
-                        para.nbunch, para.dist, ncpu)
+    dist = Distribution(home, yearMonDay, hourMinSec, para.particle, bunchid,
+                        para.dist, ncpu)
     dist.allocate_dist_file()
 
     ps = []
@@ -561,6 +575,12 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     elif platform.system() == 'Windows':
         my_fma_dist_isZip = False
 
+    tune_beam1_bunchid = [0]
+    tune_beam2_bunchid = [0]
+
+    dist_beam1_bunchid = [0]
+    dist_beam2_bunchid = [0]
+
     # beam1.print()
     # beam2.print()
 
@@ -587,20 +607,20 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
         if kind == 'all' or kind == 'dist':
             plot_distribution_main(home, yearMonDay, hourMinSec, beam1,
                                    my_figsize1, my_fontsize_dist, ncpu,
-                                   runningTime)
+                                   runningTime, dist_beam1_bunchid)
 
             plot_distribution_main(home, yearMonDay, hourMinSec, beam2,
                                    my_figsize1, my_fontsize_dist, ncpu,
-                                   runningTime)
+                                   runningTime, dist_beam2_bunchid)
 
         if kind == 'all' or kind == 'tune':
             plot_tune_main(home, yearMonDay, hourMinSec, beam1,
                            my_figsize_tune, my_fontsize_tune, ncpu,
-                           runningTime)
+                           runningTime, tune_beam1_bunchid)
 
             plot_tune_main(home, yearMonDay, hourMinSec, beam2,
                            my_figsize_tune, my_fontsize_tune, ncpu,
-                           runningTime)
+                           runningTime, tune_beam2_bunchid)
 
         if kind == 'all' or kind == 'fma' or kind == 'fma-fma' or kind == 'fma-dist':
             plot_fma_main(home, yearMonDay, hourMinSec, beam1, my_figsize_fma,
