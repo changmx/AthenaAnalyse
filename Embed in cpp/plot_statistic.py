@@ -1,3 +1,4 @@
+from pickle import NEXT_BUFFER
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
@@ -12,8 +13,9 @@ class Statistic:
     """
     Load and plot bunch statistic data
     """
+
     def __init__(self, home, yearMonDay, hourMinSec, particle, bunchid, nux,
-                 nuy, sigmax, sigmay, sigmapx, sigmapy):
+                 nuy, sigmax, sigmay, sigmapx, sigmapy, nbunch_opp):
         self.marker = 'o'
         self.marker_size = 0.1
         self.marker_linewidth = 0.001
@@ -29,6 +31,7 @@ class Statistic:
         self.inisigmay = sigmay
         self.inisigmapx = sigmapx
         self.inisigmapy = sigmapy
+        self.nbunch_opp = nbunch_opp
         self.version = 'new' if self.yearMonDay > '2021_0816' else 'old'
 
         self.stat_file = self.hourMinSec + '_' + self.particle + '_bunch' + str(
@@ -37,6 +40,7 @@ class Statistic:
             self.home, 'statLumiPara', self.yearMonDay, self.hourMinSec,
             self.stat_file
         ])
+        self.turn_unit = 'Super period' if self.nbunch_opp > 1 else 'Turn'
 
         # print(self.stat_file)
 
@@ -84,6 +88,7 @@ class Statistic:
                 usecols=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                          16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28),
                 unpack=True)
+            self.turn /= self.nbunch_opp
             self.xAverage /= self.inisigmax
             self.yAverage /= self.inisigmay
             self.pxAverage /= self.inisigmapx
@@ -132,7 +137,7 @@ class Statistic:
             plot_save_single_figure(ax_single[0],
                                     self.turn,
                                     self.xAverage,
-                                    'Turn',
+                                    self.turn_unit,
                                     r'$\overline{\mathrm{x}}/\sigma_x$',
                                     label=self.bunchLabel,
                                     xstyle='sci',
@@ -152,7 +157,7 @@ class Statistic:
             plot_save_single_figure(ax_single[1],
                                     self.turn,
                                     self.sigmax,
-                                    'Turn',
+                                    self.turn_unit,
                                     r'$\sigma_x\ (\mathrm{m})$',
                                     label=self.bunchLabel,
                                     ystyle='sci',
@@ -173,7 +178,7 @@ class Statistic:
                 ax_single[2],
                 self.turn,
                 self.xEmit,
-                'Turn',
+                self.turn_unit,
                 r'$\epsilon_x\ (\mathrm{m}\cdot\mathrm{rad})$',
                 label=self.bunchLabel,
                 ystyle='sci',
@@ -193,7 +198,7 @@ class Statistic:
             plot_save_single_figure(ax_single[3],
                                     self.turn,
                                     self.yAverage,
-                                    'Turn',
+                                    self.turn_unit,
                                     r'$\overline{\mathrm{y}}/\sigma_y$',
                                     label=self.bunchLabel,
                                     xstyle='sci',
@@ -213,7 +218,7 @@ class Statistic:
             plot_save_single_figure(ax_single[4],
                                     self.turn,
                                     self.sigmay,
-                                    'Turn',
+                                    self.turn_unit,
                                     r'$\sigma_y\ (\mathrm{m})$',
                                     label=self.bunchLabel,
                                     ystyle='sci',
@@ -234,7 +239,7 @@ class Statistic:
                 ax_single[5],
                 self.turn,
                 self.yEmit,
-                'Turn',
+                self.turn_unit,
                 r'$\epsilon_y\ (\mathrm{m}\cdot\mathrm{rad})$',
                 label=self.bunchLabel,
                 ystyle='sci',
@@ -303,7 +308,7 @@ class Statistic:
             plot_save_single_line_figure(ax_single[8],
                                          self.turn,
                                          self.beamloss,
-                                         'Turn',
+                                         self.turn_unit,
                                          'Particle loss',
                                          label=self.bunchLabel,
                                          fontsize=15,
@@ -341,7 +346,7 @@ class Statistic:
                     ax_single[9],
                     self.turn,
                     self.pxAverage,
-                    'Turn',
+                    self.turn_unit,
                     r'$\overline{\mathrm{x^{\prime}}}/\sigma_{\mathrm{x^{\prime}}}$',
                     label=self.bunchLabel,
                     xstyle='sci',
@@ -362,7 +367,7 @@ class Statistic:
                     ax_single[10],
                     self.turn,
                     self.sigmapx,
-                    'Turn',
+                    self.turn_unit,
                     r'$\sigma_{x^{\prime}}\ (\mathrm{rad})$',
                     label=self.bunchLabel,
                     ystyle='sci',
@@ -383,7 +388,7 @@ class Statistic:
                     ax_single[11],
                     self.turn,
                     self.zAverage,
-                    'Turn',
+                    self.turn_unit,
                     r'$\overline{\mathrm{z}}\ (\mathrm{m})$',
                     label=self.bunchLabel,
                     ystyle='sci',
@@ -405,7 +410,7 @@ class Statistic:
                     ax_single[12],
                     self.turn,
                     self.pyAverage,
-                    'Turn',
+                    self.turn_unit,
                     r'$\overline{\mathrm{y^{\prime}}}/\sigma_{\mathrm{y^{\prime}}}$',
                     label=self.bunchLabel,
                     xstyle='sci',
@@ -426,7 +431,7 @@ class Statistic:
                     ax_single[13],
                     self.turn,
                     self.sigmapy,
-                    'Turn',
+                    self.turn_unit,
                     r'$\sigma_{y^{\prime}}\ (\mathrm{rad})$',
                     label=self.bunchLabel,
                     ystyle='sci',
@@ -446,7 +451,7 @@ class Statistic:
                 plot_save_single_figure(ax_single[14],
                                         self.turn,
                                         self.sigmaz,
-                                        'Turn',
+                                        self.turn_unit,
                                         r'$\sigma_z\ (\mathrm{m})$',
                                         label=self.bunchLabel,
                                         ystyle='sci',
@@ -466,7 +471,7 @@ class Statistic:
                 plot_save_single_figure(ax_single[15],
                                         self.turn,
                                         self.pzAverage,
-                                        'Turn',
+                                        self.turn_unit,
                                         r'$\overline{\mathrm{dp}}$',
                                         label=self.bunchLabel,
                                         ystyle='sci',
@@ -485,7 +490,7 @@ class Statistic:
                 plot_save_single_figure(ax_single[16],
                                         self.turn,
                                         self.sigmapz,
-                                        'Turn',
+                                        self.turn_unit,
                                         r'$\delta_p$',
                                         label=self.bunchLabel,
                                         ystyle='sci',
@@ -502,7 +507,7 @@ class Statistic:
                 plot_save_single_figure(ax_single[17],
                                         self.turn,
                                         self.lossPercent,
-                                        'Turn',
+                                        self.turn_unit,
                                         'Percentage of particle loss (%)',
                                         label=self.bunchLabel,
                                         fontsize=15,
@@ -536,7 +541,7 @@ class Statistic:
                 plot_save_single_figure(ax_single[18],
                                         self.turn,
                                         self.betax,
-                                        'Turn',
+                                        self.turn_unit,
                                         r'$\mathrm{\beta_x}\ (\mathrm{m})$',
                                         label=self.bunchLabel,
                                         ystyle='sci',
@@ -556,7 +561,7 @@ class Statistic:
                 plot_save_single_figure(ax_single[19],
                                         self.turn,
                                         self.betay,
-                                        'Turn',
+                                        self.turn_unit,
                                         r'$\mathrm{\beta_y}\ (\mathrm{m})$',
                                         label=self.bunchLabel,
                                         ystyle='sci',
@@ -574,7 +579,7 @@ class Statistic:
                     ax_single[20],
                     self.turn,
                     self.invariantx,
-                    'Turn',
+                    self.turn_unit,
                     r'$\mathrm{\gamma_x\beta_x}-{\alpha_x}^2$',
                     label=self.bunchLabel,
                     fontsize=15,
@@ -593,7 +598,7 @@ class Statistic:
                 plot_save_single_figure(ax_single[21],
                                         self.turn,
                                         self.alphax,
-                                        'Turn',
+                                        self.turn_unit,
                                         r'$\mathrm{\alpha_x}$',
                                         label=self.bunchLabel,
                                         ystyle='sci',
@@ -613,7 +618,7 @@ class Statistic:
                 plot_save_single_figure(ax_single[22],
                                         self.turn,
                                         self.alphay,
-                                        'Turn',
+                                        self.turn_unit,
                                         r'$\mathrm{\alpha_y}$',
                                         label=self.bunchLabel,
                                         ystyle='sci',
@@ -631,7 +636,7 @@ class Statistic:
                     ax_single[23],
                     self.turn,
                     self.invarianty,
-                    'Turn',
+                    self.turn_unit,
                     r'$\mathrm{\gamma_y\beta_y}-{\alpha_y}^2$',
                     label=self.bunchLabel,
                     fontsize=15,
@@ -651,7 +656,7 @@ class Statistic:
                     ax_single[24],
                     self.turn,
                     self.gammax,
-                    'Turn',
+                    self.turn_unit,
                     r'$\mathrm{\gamma_x}\ (\mathrm{m^{-1}})$',
                     label=self.bunchLabel,
                     fontsize=15,
@@ -671,7 +676,7 @@ class Statistic:
                     ax_single[25],
                     self.turn,
                     self.gammay,
-                    'Turn',
+                    self.turn_unit,
                     r'$\mathrm{\gamma_y}\ (\mathrm{m^{-1}})$',
                     label=self.bunchLabel,
                     fontsize=15,
@@ -715,7 +720,7 @@ class Statistic:
                     ax_single[26],
                     self.turn,
                     self.xzAverage,
-                    'Turn',
+                    self.turn_unit,
                     r'$\overline{\mathrm{xz}}\ (\mathrm{m^2})$',
                     label=self.bunchLabel,
                     ystyle='sci',
@@ -737,7 +742,7 @@ class Statistic:
                     ax_single[27],
                     self.turn,
                     self.xyAverage,
-                    'Turn',
+                    self.turn_unit,
                     r'$\overline{\mathrm{xy}}\ (\mathrm{m^2})$',
                     label=self.bunchLabel,
                     ystyle='sci',
@@ -759,7 +764,7 @@ class Statistic:
                     ax_single[28],
                     self.turn,
                     self.yzAverage,
-                    'Turn',
+                    self.turn_unit,
                     r'$\overline{\mathrm{yz}}\ (\mathrm{m^2})$',
                     label=self.bunchLabel,
                     ystyle='sci',
@@ -781,7 +786,7 @@ class Statistic:
                     ax_single[29],
                     self.turn,
                     self.xzDevideSigmaxSigmaZ,
-                    'Turn',
+                    self.turn_unit,
                     r'$\overline{\mathrm{xz/\sigma_x\sigma_z}}$',
                     label=self.bunchLabel,
                     ystyle='sci',
@@ -816,7 +821,7 @@ class Statistic:
                     plot_save_single_figure(ax_single[30],
                                             self.turn,
                                             self.xSkewness,
-                                            'Turn',
+                                            self.turn_unit,
                                             'x skewness',
                                             label=self.bunchLabel,
                                             ystyle='sci',
@@ -835,7 +840,7 @@ class Statistic:
                     plot_save_single_figure(ax_single[31],
                                             self.turn,
                                             self.xKurtosis,
-                                            'Turn',
+                                            self.turn_unit,
                                             'x kurtosis',
                                             label=self.bunchLabel,
                                             fontsize=15,
@@ -853,7 +858,7 @@ class Statistic:
                     plot_save_single_figure(ax_single[32],
                                             self.turn,
                                             self.ySkewness,
-                                            'Turn',
+                                            self.turn_unit,
                                             'y skewness',
                                             label=self.bunchLabel,
                                             ystyle='sci',
@@ -872,7 +877,7 @@ class Statistic:
                     plot_save_single_figure(ax_single[33],
                                             self.turn,
                                             self.yKurtosis,
-                                            'Turn',
+                                            self.turn_unit,
                                             'y kurtosis',
                                             label=self.bunchLabel,
                                             xstyle='sci',

@@ -23,8 +23,8 @@ from plot_footprint import *
 
 
 def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
-                                    yearMonDay, hourMinSec, para, myfigsize,
-                                    myfontsize, myqueue):
+                                    yearMonDay, hourMinSec, para, nbunch_opp,
+                                    myfigsize, myfontsize, myqueue):
     matplotlib.rcParams['agg.path.chunksize'] = 10000
     plt.rcParams.update({'figure.max_open_warning': 0})
     fig_stat_tmp0, ax_stat_tmp0 = plt.subplots(row, col, figsize=myfigsize)
@@ -70,7 +70,7 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
 
     stat = Statistic(home, yearMonDay, hourMinSec, para.particle, bunchid,
                      para.nux, para.nuy, para.sigmax, para.sigmay,
-                     para.sigmapx, para.sigmapy)
+                     para.sigmapx, para.sigmapy, nbunch_opp)
 
     stat.load_statistic()
 
@@ -129,7 +129,7 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
 
 
 def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
-                        para, myfigsize, myfontsize):
+                        para, nbunch_opp, myfigsize, myfontsize):
     matplotlib.rcParams['agg.path.chunksize'] = 10000
     plt.rcParams.update({'figure.max_open_warning': 0})
 
@@ -180,7 +180,7 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
         for i in range(para.nbunch):
             stat = Statistic(home, yearMonDay, hourMinSec, para.particle, i,
                              para.nux, para.nuy, para.sigmax, para.sigmay,
-                             para.sigmapx, para.sigmapy)
+                             para.sigmapx, para.sigmapy, nbunch_opp)
 
             stat.load_statistic()
 
@@ -239,8 +239,8 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
         print('File has been drawn: beam {0}'.format(stat.particle))
 
 
-def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize,
-                        myfontsize, ncpu, timestat):
+def plot_statistic_main(home, yearMonDay, hourMinSec, para, nbunch_opp,
+                        myfigsize, myfontsize, ncpu, timestat):
     timestat.start('stat')
     print('\nStart drawing {0:s} statistic data'.format(para.particle))
     row = 3
@@ -252,14 +252,15 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize,
         for i in range(para.nbunch):
             plot_statistic_bunch_oneProcess(i, row, col, row2, col2, home,
                                             yearMonDay, hourMinSec, para,
-                                            myfigsize, myfontsize, 'no queue')
+                                            nbunch_opp, myfigsize, myfontsize,
+                                            'no queue')
     else:
         ps = []
         for i in range(para.nbunch):
             p = Process(target=plot_statistic_bunch_oneProcess,
                         args=(i, row, col, row2, col2, home, yearMonDay,
-                              hourMinSec, para, myfigsize, myfontsize,
-                              'queue'))
+                              hourMinSec, para, nbunch_opp, myfigsize,
+                              myfontsize, 'queue'))
             ps.append(p)
         for i in range(para.nbunch):
             ps[i].start()
@@ -284,7 +285,7 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, myfigsize,
         # mypool.join()
 
     plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
-                        para, myfigsize, myfontsize)
+                        para, nbunch_opp, myfigsize, myfontsize)
     timestat.end('stat')
 
 
@@ -593,12 +594,12 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     for kind in type:
         if kind == 'all' or kind == 'stat':
             plot_statistic_main(home, yearMonDay, hourMinSec, beam1,
-                                my_figsize1, my_fontsize_stat, ncpu,
-                                runningTime)
+                                beam2.nbunch, my_figsize1, my_fontsize_stat,
+                                ncpu, runningTime)
 
             plot_statistic_main(home, yearMonDay, hourMinSec, beam2,
-                                my_figsize1, my_fontsize_stat, ncpu,
-                                runningTime)
+                                beam1.nbunch, my_figsize1, my_fontsize_stat,
+                                ncpu, runningTime)
 
         if kind == 'all' or kind == 'lumi':
             plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
