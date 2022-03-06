@@ -1,7 +1,7 @@
 '''
 Author: 常铭轩
 Date: 2022-02-24 17:44:03
-LastEditTime: 2022-02-24 22:00:52
+LastEditTime: 2022-02-28 13:35:19
 LastEditors: Please set LastEditors
 Description: 从文件中读取数据做fft，同时绘制理论effective tune
 '''
@@ -66,25 +66,38 @@ if __name__ == '__main__':
     ax_p.set_ylabel('Amplitude', fontsize=myfontsize)
     ax_p.grid()
 
+    bbox_props = dict(boxstyle='round', fc='w', alpha=0.8)
+    text_pos = -0.02
+    text_y = 1e-8
     for i in range(len(nu_p_eff)):
         mylable = r'$\nu_p^{eff}$' if i == 0 else None
         ax_e.axvline(x=nu_p_eff[i],
-                     ymin=0.3,
-                     ymax=0.92,
+                     ymin=0.2,
+                     ymax=0.78,
                      color='red',
                      linestyle="--",
                      linewidth=1.5,
                      label=mylable)
+        if nu_p_eff[i] > 0.5:
+            ax_e.text(nu_p_eff[i] + text_pos,
+                      text_y,
+                      '{0:.3f}'.format(nu_p_eff[i]),
+                      bbox=bbox_props)
     for i in range(len(nu_p_minus)):
         mylable = r'$1-\nu_p^{eff}$' if i == 0 else None
         ax_e.axvline(x=nu_p_minus[i],
-                     ymin=0.3,
-                     ymax=0.92,
+                     ymin=0.2,
+                     ymax=0.78,
                      color='orange',
                      linestyle="--",
                      linewidth=1.5,
                      label=mylable)
-    ax_e.legend(fontsize=12, loc='lower left', framealpha=0)
+        if nu_p_minus[i] > 0.5:
+            ax_e.text(nu_p_minus[i] + text_pos,
+                      text_y,
+                      '{0:.3f}'.format(nu_p_minus[i]),
+                      bbox=bbox_props)
+    ax_e.legend(fontsize=12, loc='upper right', framealpha=0)
     fig_e.savefig(
         r'D:\OneDrive\文档\Simulation of beam\article\figure\fft_e_4e7p.png',
         dpi=300)
@@ -92,22 +105,32 @@ if __name__ == '__main__':
     for i in range(len(nu_e_eff)):
         mylable = r'$\nu_e^{eff}$' if i == 0 else None
         ax_p.axvline(x=nu_e_eff[i],
-                     ymin=0.3,
+                     ymin=0.2,
                      ymax=0.78,
                      color='red',
                      linestyle="--",
                      linewidth=1.5,
                      label=mylable)
+        if nu_e_eff[i] < 0.5:
+            ax_p.text(nu_e_eff[i] + text_pos,
+                      text_y,
+                      '{0:.3f}'.format(nu_e_eff[i]),
+                      bbox=bbox_props)
     for i in range(len(nu_e_minus)):
         mylable = r'$1-\nu_e^{eff}$' if i == 0 else None
         ax_p.axvline(x=nu_e_minus[i],
-                     ymin=0.3,
+                     ymin=0.2,
                      ymax=0.78,
                      color='orange',
                      linestyle="--",
                      linewidth=1.5,
                      label=mylable)
-    ax_p.legend(fontsize=12, loc='upper left', framealpha=0)
+        if nu_e_minus[i] < 0.5:
+            ax_p.text(nu_e_minus[i] + text_pos,
+                      text_y,
+                      '{0:.3f}'.format(nu_e_minus[i]),
+                      bbox=bbox_props)
+    ax_p.legend(fontsize=12, loc='upper right', framealpha=0)
     fig_p.savefig(
         r'D:\OneDrive\文档\Simulation of beam\article\figure\fft_p_4e7p.png',
         dpi=300)
