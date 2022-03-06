@@ -1,3 +1,11 @@
+'''
+Author: your name
+Date: 2022-02-26 14:50:40
+LastEditTime: 2022-03-01 16:10:57
+LastEditors: Please set LastEditors
+Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+FilePath: \AthenaAnalyse\PhysicalAnalyse\cal_effective_tune.py
+'''
 import numpy as np
 
 
@@ -12,6 +20,6 @@ def cal_effective_tune(nu_opp, Nbunch, Nbunch_opp):
 
 
 if __name__ == '__main__':
-    nueff, numinus = cal_effective_tune(0.318, 4, 7)
+    nueff, numinus = cal_effective_tune(0.624, 5, 3)
     print(nueff)
     print(numinus)
