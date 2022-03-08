@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-03-07 08:45:46
-LastEditTime: 2022-03-07 14:04:37
+LastEditTime: 2022-03-07 19:23:41
 LastEditors: Please set LastEditors
 Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 FilePath: \AthenaAnalyse\DataAnalyse\plot_bblimit_compensate.py
@@ -93,7 +93,7 @@ if __name__ == '__main__':
 
     # plt.legend(fontsize=myfontsize, framealpha=0)
     plt.savefig(
-        r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\compensate.png',
+        r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\bblimit_compensate.png',
         dpi=300)
 
     # plt.show()
