@@ -179,23 +179,27 @@ if __name__ == '__main__':
     # # ax[0, 2].set_title('3e vs. 5p', fontsize=myfontsize)
     # # ax[0, 3].set_title('4e vs. 7p', fontsize=myfontsize)
 
-    ax_x[0, 0].set_ylabel(r'$\overline{\mathrm{x}}$ ($\mathrm{\mu m}$)',
-                          fontsize=myfontsize)
-    ax_x[1, 0].set_ylabel(r'$\overline{\mathrm{x}}$ ($\mathrm{\mu m}$)',
-                          fontsize=myfontsize)
+    # ax_x[0, 0].set_ylabel(r'$\overline{\mathrm{x}}$ ($\mathrm{\mu m}$)',
+    #                       fontsize=myfontsize)
+    # ax_x[1, 0].set_ylabel(r'$\overline{\mathrm{x}}$ ($\mathrm{\mu m}$)',
+    #                       fontsize=myfontsize)
 
-    ax_x[1, 0].set_xlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
-    ax_x[1, 1].set_xlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
+    # ax_x[1, 0].set_xlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
+    # ax_x[1, 1].set_xlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
 
-    ax_sigmax[0, 0].set_ylabel(r'$\sigma_x$ ($\mathrm{\mu m}$)',
-                               fontsize=myfontsize)
-    ax_sigmax[1, 0].set_ylabel(r'$\sigma_x$ ($\mathrm{\mu m}$)',
-                               fontsize=myfontsize)
+    # ax_sigmax[0, 0].set_ylabel(r'$\sigma_x$ ($\mathrm{\mu m}$)',
+    #                            fontsize=myfontsize)
+    # ax_sigmax[1, 0].set_ylabel(r'$\sigma_x$ ($\mathrm{\mu m}$)',
+    #                            fontsize=myfontsize)
 
-    ax_sigmax[1, 0].set_xlabel(r'Super period ($\times 10^4$)',
-                               fontsize=myfontsize)
-    ax_sigmax[1, 1].set_xlabel(r'Super period ($\times 10^4$)',
-                               fontsize=myfontsize)
+    # ax_sigmax[1, 0].set_xlabel(r'Super period ($\times 10^4$)',
+    #                            fontsize=myfontsize)
+    # ax_sigmax[1, 1].set_xlabel(r'Super period ($\times 10^4$)',
+    #                            fontsize=myfontsize)
+    fig_x.supxlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
+    fig_x.supylabel(r'$\overline{\mathrm{x}}$ ($\mathrm{\mu m}$)', fontsize=myfontsize)
+    fig_sigmax.supxlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
+    fig_sigmax.supylabel(r'$\sigma_x$ ($\mathrm{\mu m}$)', fontsize=myfontsize)
     # ax[1, 2].set_xlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
     # ax[1, 3].set_xlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
 

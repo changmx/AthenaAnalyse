@@ -1,7 +1,7 @@
 '''
 Author: your name
 Date: 2022-03-08 09:47:16
-LastEditTime: 2022-03-08 15:49:14
+LastEditTime: 2022-03-08 16:30:31
 LastEditors: Please set LastEditors
 Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 FilePath: \AthenaAnalyse\DataAnalyse\plot_offset_lumiCompare.py
@@ -56,7 +56,7 @@ def read_plot_lumi(ax,
     plt.xticks(fontsize=myfontsize)
     plt.yticks(fontsize=myfontsize)
 
-    ax.tick_params(axis='x', direction='in')
+    ax.tick_params(axis='x', direction='in', length=0)
 
     ax.grid(zorder=10)
 
@@ -185,18 +185,21 @@ if __name__ == '__main__':
 
     ax[0, 0].set_ylim((0.3, 2.5))
 
-    ax[0, 0].set_title(r'$\Delta x = 0.2\sigma_x$', pad=3, fontsize=myfontsize)
-    ax[0, 1].set_title(r'$\Delta x = 0.4\sigma_x$', pad=3, fontsize=myfontsize)
-    ax[0, 2].set_title(r'$\Delta x = 0.6\sigma_x$', pad=3, fontsize=myfontsize)
-    ax[1, 0].set_title(r'$\Delta x = 0.8\sigma_x$', pad=3, fontsize=myfontsize)
-    ax[1, 1].set_title(r'$\Delta x = 1.0\sigma_x$', pad=3, fontsize=myfontsize)
-    ax[1, 2].set_title(r'$\Delta x = 1.5\sigma_x$', pad=3, fontsize=myfontsize)
-    ax[2, 0].set_title(r'$\Delta x = 2.0\sigma_x$', pad=3, fontsize=myfontsize)
-    ax[2, 1].set_title(r'$\Delta x = 2.5\sigma_x$', pad=3, fontsize=myfontsize)
-    ax[2, 2].set_title(r'$\Delta x = 3.0\sigma_x$', pad=3, fontsize=myfontsize)
+    ax[0, 0].set_title(r'$\Delta x = 0.2\sigma_x$', pad=4, fontsize=myfontsize)
+    ax[0, 1].set_title(r'$\Delta x = 0.4\sigma_x$', pad=4, fontsize=myfontsize)
+    ax[0, 2].set_title(r'$\Delta x = 0.6\sigma_x$', pad=4, fontsize=myfontsize)
+    ax[1, 0].set_title(r'$\Delta x = 0.8\sigma_x$', pad=4, fontsize=myfontsize)
+    ax[1, 1].set_title(r'$\Delta x = 1.0\sigma_x$', pad=4, fontsize=myfontsize)
+    ax[1, 2].set_title(r'$\Delta x = 1.5\sigma_x$', pad=4, fontsize=myfontsize)
+    ax[2, 0].set_title(r'$\Delta x = 2.0\sigma_x$', pad=4, fontsize=myfontsize)
+    ax[2, 1].set_title(r'$\Delta x = 2.5\sigma_x$', pad=4, fontsize=myfontsize)
+    ax[2, 2].set_title(r'$\Delta x = 3.0\sigma_x$', pad=4, fontsize=myfontsize)
 
-    ax[2, 0].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
-    ax[2, 1].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
-    ax[2, 2].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
+    # ax[2, 0].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
+    # ax[2, 1].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
+    # ax[2, 2].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
+    fig.supxlabel(r'Turn ($\times 10^4$)', fontsize=9.5)
+    fig.supylabel(r'Luminosity $(\times 10^{33} \mathrm{cm^{-2}s^{-1}})$',
+                  fontsize=9.5)
     plt.savefig(r'D:\OneDrive\模拟数据2\offset_compare.png', dpi=300)
     # plt.show()
