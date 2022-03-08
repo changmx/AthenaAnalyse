@@ -142,7 +142,7 @@ class Parameter:
             self.gammay)
 
         self.luminote = '{0:s}\n'.format(filename)
-        self.luminote += 'N{0} = {1:.2E}, N{2} = {3:.2E}\n'.format(
+        self.luminote += 'N{0} = {1:.4E}, N{2} = {3:.4E}\n'.format(
             self.particle, self.Nreal, beam2.particle, beam2.Nreal)
         self.luminote += 'Nturn superiod = {0:d}, Nturn {1} = {2:d}, Nturn {3} = {4:d}'.format(
             self.superiod, self.particle, self.turn, beam2.particle,
