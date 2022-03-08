@@ -32,49 +32,77 @@ def plot_x_sigmax(path_e, path_p, ax_x, ax_sigmax, ax_row, ax_col,
     sigmax_e *= 1e6
     sigmax_p *= 1e6
 
-    myalpha = 0.2
+    myalpha_p = 0.6
+    myalpha_e = 0.6
     mymarkersize = 0.1
     mymarkertype = 'o'
     mylinewidth = 0.1
 
-    color1 = 'skyblue'
-    color2 = 'lightcoral'
-    color3 = 'skyblue'
-    color4 = 'lightcoral'
+    color_p = 'tab:blue'
+    color_e = 'tab:orange'
 
-    ax_x[ax_row, ax_col].scatter(turn_e,
-                                 x_e,
-                                 alpha=myalpha,
-                                 s=mymarkersize,
-                                 marker=mymarkertype,
-                                 linewidth=mylinewidth,
-                                 label='electron',
-                                 c=color1)
-    ax_x[ax_row, ax_col].scatter(turn_p,
-                                 x_p,
-                                 alpha=myalpha,
-                                 s=mymarkersize,
-                                 marker=mymarkertype,
-                                 linewidth=mylinewidth,
-                                 label='proton',
-                                 c=color2)
+    ax_x[ax_row, ax_col].plot(turn_p,
+                              x_p,
+                              alpha=myalpha_p,
+                              linewidth=mylinewidth,
+                              label='proton',
+                              c=color_p,
+                              zorder=10)
+    ax_x[ax_row, ax_col].plot(turn_e,
+                              x_e,
+                              alpha=myalpha_e,
+                              linewidth=mylinewidth,
+                              label='electron',
+                              c=color_e,
+                              zorder=15)
 
-    ax_sigmax[ax_row, ax_col].scatter(turn_e,
-                                      sigmax_e,
-                                      alpha=myalpha,
-                                      s=mymarkersize,
-                                      marker=mymarkertype,
-                                      linewidth=mylinewidth,
-                                      label='electron',
-                                      c=color3)
-    ax_sigmax[ax_row, ax_col].scatter(turn_p,
-                                      sigmax_p,
-                                      alpha=myalpha,
-                                      s=mymarkersize,
-                                      marker=mymarkertype,
-                                      linewidth=mylinewidth,
-                                      label='proton',
-                                      c=color4)
+    ax_sigmax[ax_row, ax_col].plot(turn_p,
+                                   sigmax_p,
+                                   alpha=myalpha_p,
+                                   linewidth=mylinewidth,
+                                   label='proton',
+                                   c=color_p,
+                                   zorder=10)
+    ax_sigmax[ax_row, ax_col].plot(turn_e,
+                                   sigmax_e,
+                                   alpha=myalpha_e,
+                                   linewidth=mylinewidth,
+                                   label='electron',
+                                   c=color_e,
+                                   zorder=15)
+    # ax_x[ax_row, ax_col].scatter(turn_e,
+    #                              x_e,
+    #                              alpha=myalpha,
+    #                              s=mymarkersize,
+    #                              marker=mymarkertype,
+    #                              linewidth=mylinewidth,
+    #                              label='electron',
+    #                              c=color1)
+    # ax_x[ax_row, ax_col].scatter(turn_p,
+    #                              x_p,
+    #                              alpha=myalpha,
+    #                              s=mymarkersize,
+    #                              marker=mymarkertype,
+    #                              linewidth=mylinewidth,
+    #                              label='proton',
+    #                              c=color2)
+
+    # ax_sigmax[ax_row, ax_col].scatter(turn_e,
+    #                                   sigmax_e,
+    #                                   alpha=myalpha,
+    #                                   s=mymarkersize,
+    #                                   marker=mymarkertype,
+    #                                   linewidth=mylinewidth,
+    #                                   label='electron',
+    #                                   c=color3)
+    # ax_sigmax[ax_row, ax_col].scatter(turn_p,
+    #                                   sigmax_p,
+    #                                   alpha=myalpha,
+    #                                   s=mymarkersize,
+    #                                   marker=mymarkertype,
+    #                                   linewidth=mylinewidth,
+    #                                   label='proton',
+    #                                   c=color4)
 
     plt.sca(ax_x[ax_row, ax_col])
     plt.xticks(fontsize=myfontsize)
