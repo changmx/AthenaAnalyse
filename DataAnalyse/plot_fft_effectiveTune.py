@@ -10,6 +10,10 @@ from cProfile import label
 from turtle import color
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+
+mpl.rcParams['mathtext.fontset'] = 'stix'
+mpl.rcParams['font.family'] = 'STIXGeneral'
 
 
 def plot_x_fft(path, ax):
@@ -39,8 +43,8 @@ if __name__ == '__main__':
     nu_e_eff, nu_e_minus = cal_effective_tune(0.624, 7, 4)
     nu_p_eff, nu_p_minus = cal_effective_tune(0.317, 4, 7)
 
-    path_4e7p_electron = r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\1Ne-1Np-稳定-1538_11\1538_11_electron_bunch0_statistic.csv'
-    path_4e7p_proton = r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\1Ne-1Np-稳定-1538_11\1538_11_proton_bunch0_statistic.csv'
+    path_4e7p_electron = r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\1Ne-1.0Np-稳定-1538_11\1538_11_electron_bunch0_statistic.csv'
+    path_4e7p_proton = r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\1Ne-1.0Np-稳定-1538_11\1538_11_proton_bunch0_statistic.csv'
 
     myfontsize = 12
 
@@ -67,7 +71,7 @@ if __name__ == '__main__':
     ax_p.grid()
 
     bbox_props = dict(boxstyle='round', fc='w', alpha=0.8)
-    text_pos = -0.02
+    text_pos = -0.017
     text_y = 1e-8
     for i in range(len(nu_p_eff)):
         mylable = r'$\nu_p^{eff}$' if i == 0 else None
