@@ -10,6 +10,10 @@ FilePath: \AthenaAnalyse\DataAnalyse\plot_offset_lumiCompare.py
 from sqlite3 import Row
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+
+mpl.rcParams['mathtext.fontset'] = 'stix'
+mpl.rcParams['font.family'] = 'STIXGeneral'
 
 
 def read_plot_lumi(ax,
@@ -22,26 +26,29 @@ def read_plot_lumi(ax,
                    mylinewidth=1,
                    mycolor='tab:blue',
                    myfontsize=12,
-                   myzorder=20):
+                   myzorder=20,
+                   plottype='scatter'):
     turn, lumi = np.loadtxt(path,
                             delimiter=',',
                             skiprows=skiprows,
                             usecols=(0, 1),
                             unpack=True)
 
-    ax.scatter(turn[turnScale[0]:turnScale[1]] / 1e4,
-               lumi[turnScale[0]:turnScale[1]] / 1e33,
-               marker=mymarker,
-               s=mymarkersize,
-               alpha=myalpha,
-               linewidth=mylinewidth,
-               c=mycolor,
-               zorder=myzorder)
-    # ax.plot(turn[turnScale[0]:turnScale[1]] / 1e4,
-    #         lumi[turnScale[0]:turnScale[1]] / 1e33,
-    #         linewidth=mylinewidth,
-    #         alpha=myalpha,
-    #         c=mycolor)
+    if plottype == 'scatter':
+        ax.scatter(turn[turnScale[0]:turnScale[1]] / 1e4,
+                   lumi[turnScale[0]:turnScale[1]] / 1e33,
+                   marker=mymarker,
+                   s=mymarkersize,
+                   alpha=myalpha,
+                   linewidth=mylinewidth,
+                   c=mycolor,
+                   zorder=myzorder)
+    elif plottype == 'plot':
+        ax.plot(turn[turnScale[0]:turnScale[1]] / 1e4,
+                lumi[turnScale[0]:turnScale[1]] / 1e33,
+                linewidth=mylinewidth,
+                alpha=myalpha,
+                c=mycolor)
 
     y_major_locator = plt.MultipleLocator(0.5)
     y_minor_locator = plt.MultipleLocator(0.1)
@@ -63,7 +70,8 @@ def read_plot_lumi(ax,
 
 if __name__ == '__main__':
 
-    myfontsize = 8
+    myfontsize = 12
+    myfontsize_sub = 10
 
     path_1e1p_offset_lumi = []
     path_4e7p_offset_oneBunch_lumi = []
@@ -137,6 +145,18 @@ if __name__ == '__main__':
     path_4e7p_offset_allBunch_lumi.append(
         r'D:\OneDrive\模拟数据2\offset_4e7p_多束团offset\质子-水平0.2所有-稳定-1028_14\1028_14_luminosity_electron_350000turns.csv'
     )
+    path_4e7p_offset_allBunch_lumi.append(
+        r'D:\OneDrive\模拟数据2\offset_4e7p_多束团offset\质子-水平0.4所有-不稳定-亮度降至2.1e33-0850_31\0850_31_luminosity_electron_350000turns.csv'
+    )
+    path_4e7p_offset_allBunch_lumi.append(
+        r'D:\OneDrive\模拟数据2\offset_4e7p_多束团offset\质子-水平0.6所有-不稳定-亮度降至1.1e33-0239_39\0239_39_luminosity_electron_350000turns.csv'
+    )
+    path_4e7p_offset_allBunch_lumi.append(
+        r'D:\OneDrive\模拟数据2\offset_4e7p_多束团offset\质子-水平0.8所有-不稳定-亮度降至1.2e33-0853_14\0853_14_luminosity_electron_350000turns.csv'
+    )
+    path_4e7p_offset_allBunch_lumi.append(
+        r'D:\OneDrive\模拟数据2\offset_4e7p_多束团offset\质子-水平1.0所有-不稳定-亮度降至1.2e33-1902_11\1902_11_luminosity_electron_350000turns.csv'
+    )
     ######## 4e vs. 7p, all bunch with offset, end ##########
 
     for i in range(3):
@@ -150,7 +170,8 @@ if __name__ == '__main__':
                                mylinewidth=0.1,
                                mycolor='tab:orange',
                                myalpha=0.2,
-                               myfontsize=myfontsize)
+                               myfontsize=myfontsize_sub,
+                               plottype='scatter')
             if index < len(path_4e7p_offset_oneBunch_lumi):
                 read_plot_lumi(ax[i, j],
                                path_4e7p_offset_oneBunch_lumi[index],
@@ -160,46 +181,47 @@ if __name__ == '__main__':
                                mylinewidth=0.1,
                                mycolor='tab:blue',
                                myalpha=0.2,
-                               myfontsize=myfontsize)
-            if index < len(path_4e7p_offset_allBunch_lumi):
-                read_plot_lumi(ax[i, j],
-                               path_4e7p_offset_allBunch_lumi[index],
-                               [0, 200000],
-                               skiprows=8,
-                               mymarkersize=0.1,
-                               mylinewidth=0.1,
-                               mycolor='tab:purple',
-                               myalpha=0.02,
-                               myfontsize=myfontsize)
+                               myfontsize=myfontsize_sub,
+                               plottype='scatter')
+    #         if index < len(path_4e7p_offset_allBunch_lumi):
+    #             read_plot_lumi(ax[i, j],
+    #                            path_4e7p_offset_allBunch_lumi[index],
+    #                            [0, 200000],
+    #                            skiprows=8,
+    #                            mymarkersize=0.1,
+    #                            mylinewidth=0.1,
+    #                            mycolor='tab:green',
+    #                            myalpha=0.02,
+    #                            myfontsize=myfontsize)
 
-    read_plot_lumi(
-        ax[2, 2],
-        r'D:\OneDrive\模拟数据2\offset_4e7p_多束团offset\质子-水平3.0所有-不稳定-亮度降至1.0e33-0903_49\0903_49_luminosity_electron_350000turns.csv',
-        [0, 200000],
-        skiprows=8,
-        mymarkersize=0.01,
-        mylinewidth=0.1,
-        mycolor='tab:green',
-        myalpha=0.1,
-        myfontsize=myfontsize)
+    # read_plot_lumi(
+    #     ax[2, 2],
+    #     r'D:\OneDrive\模拟数据2\offset_4e7p_多束团offset\质子-水平3.0所有-不稳定-亮度降至1.0e33-0903_49\0903_49_luminosity_electron_350000turns.csv',
+    #     [0, 200000],
+    #     skiprows=8,
+    #     mymarkersize=0.01,
+    #     mylinewidth=0.1,
+    #     mycolor='tab:green',
+    #     myalpha=0.1,
+    #     myfontsize=myfontsize)
 
     ax[0, 0].set_ylim((0.3, 2.5))
 
-    ax[0, 0].set_title(r'$\Delta x = 0.2\sigma_x$', pad=4, fontsize=myfontsize)
-    ax[0, 1].set_title(r'$\Delta x = 0.4\sigma_x$', pad=4, fontsize=myfontsize)
-    ax[0, 2].set_title(r'$\Delta x = 0.6\sigma_x$', pad=4, fontsize=myfontsize)
-    ax[1, 0].set_title(r'$\Delta x = 0.8\sigma_x$', pad=4, fontsize=myfontsize)
-    ax[1, 1].set_title(r'$\Delta x = 1.0\sigma_x$', pad=4, fontsize=myfontsize)
-    ax[1, 2].set_title(r'$\Delta x = 1.5\sigma_x$', pad=4, fontsize=myfontsize)
-    ax[2, 0].set_title(r'$\Delta x = 2.0\sigma_x$', pad=4, fontsize=myfontsize)
-    ax[2, 1].set_title(r'$\Delta x = 2.5\sigma_x$', pad=4, fontsize=myfontsize)
-    ax[2, 2].set_title(r'$\Delta x = 3.0\sigma_x$', pad=4, fontsize=myfontsize)
+    ax[0, 0].set_title(r'$\Delta x = 0.2\sigma_x$', pad=4, fontsize=myfontsize_sub)
+    ax[0, 1].set_title(r'$\Delta x = 0.4\sigma_x$', pad=4, fontsize=myfontsize_sub)
+    ax[0, 2].set_title(r'$\Delta x = 0.6\sigma_x$', pad=4, fontsize=myfontsize_sub)
+    ax[1, 0].set_title(r'$\Delta x = 0.8\sigma_x$', pad=4, fontsize=myfontsize_sub)
+    ax[1, 1].set_title(r'$\Delta x = 1.0\sigma_x$', pad=4, fontsize=myfontsize_sub)
+    ax[1, 2].set_title(r'$\Delta x = 1.5\sigma_x$', pad=4, fontsize=myfontsize_sub)
+    ax[2, 0].set_title(r'$\Delta x = 2.0\sigma_x$', pad=4, fontsize=myfontsize_sub)
+    ax[2, 1].set_title(r'$\Delta x = 2.5\sigma_x$', pad=4, fontsize=myfontsize_sub)
+    ax[2, 2].set_title(r'$\Delta x = 3.0\sigma_x$', pad=4, fontsize=myfontsize_sub)
 
     # ax[2, 0].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
     # ax[2, 1].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
     # ax[2, 2].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
-    fig.supxlabel(r'Turn ($\times 10^4$)', fontsize=9.5)
+    fig.supxlabel(r'Electron turns ($\times 10^4$)', fontsize=myfontsize)
     fig.supylabel(r'Luminosity $(\times 10^{33} \mathrm{cm^{-2}s^{-1}})$',
-                  fontsize=9.5)
+                  fontsize=myfontsize)
     plt.savefig(r'D:\OneDrive\模拟数据2\offset_compare.png', dpi=300)
     # plt.show()
