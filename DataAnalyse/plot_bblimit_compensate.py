@@ -11,6 +11,11 @@ from turtle import color
 import numpy as np
 import matplotlib.pyplot as plt
 
+import matplotlib as mpl
+
+mpl.rcParams['mathtext.fontset'] = 'stix'
+mpl.rcParams['font.family'] = 'STIXGeneral'
+
 
 def plot_resonance_region(ax):
     x = np.arange(0, 200, 1)
@@ -64,32 +69,32 @@ if __name__ == '__main__':
     # ax.scatter(126, 65, c='black', marker='x', label='(0.58, 0.315)')
     # ax.scatter(198, 65, c='tab:red', marker='x')
     # ax.scatter(126, 155, c='tab:green', marker='x')
-    plot_text(ax, 124, 63, r'$\nu_1$', fontsize=10, color='black')
-    plot_text(ax, 49, 63, r'$\nu_2$', fontsize=10, color='black')
-    plot_text(ax, 196, 63, r'$\nu_3$', fontsize=10, color='tab:red')
-    plot_text(ax, 124, 153, r'$\nu_4$', fontsize=10, color='tab:green')
-    plot_text(ax, 49, 153, r'$\nu_5$', fontsize=10, color='black')
+    plot_text(ax, 124, 63, r'$\nu_1$', fontsize=12, color='black')
+    plot_text(ax, 49, 63, r'$\nu_2$', fontsize=12, color='black')
+    plot_text(ax, 195, 63, r'$\nu_3$', fontsize=12, color='tab:red')
+    plot_text(ax, 124, 153, r'$\nu_4$', fontsize=12, color='tab:green')
+    plot_text(ax, 49, 153, r'$\nu_5$', fontsize=12, color='black')
     # plot_text(ax, 110, 50, r'(0.58, 0.315)', color='tab:orange')
 
     plot_resonance_region(ax)
     plot_axis(ax)
 
-    plot_text(ax, x=15, y=20, text='resonance region', rotation=-47)
+    plot_text(ax, x=20, y=27, text='resonance region', rotation=-47.5)
 
-    plot_array(ax, (55, 65), (123, 65), arrayColor='tab:blue', arrayAlpha=1)
-    plot_text(ax, x=59, y=70, text='intensity decrease', color='black')
+    plot_array(ax, (56, 65), (122, 65), arrayColor='tab:blue', arrayAlpha=1)
+    plot_text(ax, x=67, y=70, text='intensity decrease', color='black')
 
-    plot_array(ax, (129, 68), (195, 68), arrayColor='tab:red')
-    plot_array(ax, (195, 62), (129.8, 62), arrayColor='tab:red')
+    plot_array(ax, (131, 68), (192.5, 68), arrayColor='tab:red')
+    plot_array(ax, (193, 62), (131.5, 62), arrayColor='tab:red')
 
-    plot_text(ax, x=132, y=73, text='intensity decrease')
-    plot_text(ax, x=135, y=52, text=r'compensating $\nu_e$')
+    plot_text(ax, x=139, y=73, text='intensity decrease')
+    plot_text(ax, x=141, y=52, text=r'compensating $\nu_e$')
 
-    plot_array(ax, (126.3, 151), (126.3, 70), arrayColor='tab:green')
-    plot_array(ax, (55, 154), (123, 154), arrayColor='tab:green')
+    plot_array(ax, (126.3, 151), (126.3, 71), arrayColor='tab:green')
+    plot_array(ax, (56, 154), (122, 154), arrayColor='tab:green')
 
-    plot_text(ax, x=59, y=159, text='intensity decrease')
-    plot_text(ax, x=132, y=120, text=r'compensating $\nu_p^{eff}$')
+    plot_text(ax, x=67, y=159, text='intensity decrease')
+    plot_text(ax, x=139, y=120, text=r'compensating $\nu_p^{eff}$')
 
     # plt.legend(fontsize=myfontsize, framealpha=0)
     plt.savefig(
