@@ -2,6 +2,10 @@ from cProfile import label
 from turtle import color
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+
+mpl.rcParams['mathtext.fontset'] = 'stix'
+mpl.rcParams['font.family'] = 'STIXGeneral'
 
 
 def get_lumi_loss(path,
@@ -141,7 +145,7 @@ if __name__ == '__main__':
         r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\1Ne-0.95Np-稳定-1507_31\1507_31_luminosity_electron_350000turns.csv'
     )
     path_1Ne_xNp.append(
-        r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\1Ne-1Np-稳定-1538_11\1538_11_luminosity_electron_350000turns.csv'
+        r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\1Ne-1.0Np-稳定-1538_11\1538_11_luminosity_electron_350000turns.csv'
     )
     path_1Ne_xNp.append(
         r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\1Ne-1.1Np-稳定-2224_18\2224_18_luminosity_electron_350000turns.csv'
@@ -247,7 +251,7 @@ if __name__ == '__main__':
         r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\0.8Ne-1Np-稳定-0712_07/0712_07_luminosity_proton_200000turns.csv'
     )
     path_xNe_1Np.append(
-        r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\1Ne-1Np-稳定-1538_11/1538_11_luminosity_proton_200000turns.csv'
+        r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\1Ne-1.0Np-稳定-1538_11/1538_11_luminosity_proton_200000turns.csv'
     )
     path_xNe_1Np.append(
         r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\4e-7p-多束团对撞\1.5Ne-1Np-稳定-0955_12/0955_12_luminosity_proton_200000turns.csv'
@@ -325,8 +329,11 @@ if __name__ == '__main__':
         r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\单束团对撞-质束束极限-2022-01\1Ne-1.4Np-稳定-1735_20\1735_20_luminosity_suPeriod_500000turns.csv'
     )
     path_1Ne_1Np_change_Np.append(
-        r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\单束团对撞-质束束极限-2022-01\1Ne-1.5Np-不稳定-1735_34\1735_34_luminosity_suPeriod_500000turns.csv'
+        r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\单束团对撞-质束束极限-2022-01\1Ne-1.5Np-不稳定后达到稳定-1017_49\1017_49_luminosity_suPeriod_1000000turns.csv'
     )
+    # path_1Ne_1Np_change_Np.append(
+    #     r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\单束团对撞-质束束极限-2022-01\1Ne-1.5Np-不稳定-1735_34\1735_34_luminosity_suPeriod_500000turns.csv'
+    # )
     path_1Ne_1Np_change_Np.append(
         r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\单束团对撞-质束束极限-2022-01\1Ne-1.6Np-不稳定-1735_52\1735_52_luminosity_suPeriod_500000turns.csv'
     )
@@ -345,8 +352,11 @@ if __name__ == '__main__':
 
     ###### 1e-1p 不稳定
     path_1Ne_1Np_instability.append(
-        r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\单束团对撞-质束束极限-2022-01\1Ne-1.5Np-不稳定-1735_34\1735_34_luminosity_suPeriod_500000turns.csv'
+        r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\单束团对撞-质束束极限-2022-01\1Ne-1.5Np-不稳定后达到稳定-1017_49\1017_49_luminosity_suPeriod_1000000turns.csv'
     )
+    # path_1Ne_1Np_instability.append(
+    #     r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\单束团对撞-质束束极限-2022-01\1Ne-1.5Np-不稳定-1735_34\1735_34_luminosity_suPeriod_500000turns.csv'
+    # )
     path_1Ne_1Np_instability.append(
         r'D:\OneDrive\模拟数据\使用相同分布计算单束团与多束团束束极限-2021-12-09\单束团对撞-质束束极限-2022-01\1Ne-1.6Np-不稳定-1735_52\1735_52_luminosity_suPeriod_500000turns.csv'
     )
@@ -577,15 +587,14 @@ if __name__ == '__main__':
     #                     arrowprops=arrowprops_1Ne_xNp)
 
     ax_1Ne_xNp.set_yscale('log')
-    ax_1Ne_xNp.set_xlabel(
-        r'Number of proton particles $(N_p/N_{p_0})$',
-        fontsize=myfontsize)
+    ax_1Ne_xNp.set_xlabel(r'Number of proton particles $(N_p/N_{p_0})$',
+                          fontsize=myfontsize)
     ax_1Ne_xNp.set_ylabel(r'Luminosity loss rate', fontsize=myfontsize)
 
     ax_1Ne_xNp.legend(fontsize=myfontsize)
 
     ax_1Ne_xNp.set_ylim((1e-4, 1))
-    ax_1Ne_xNp.set_xlim((0, 2.1))
+    ax_1Ne_xNp.set_xlim((-0.05, 2.1))
     x_major_locator = plt.MultipleLocator(0.2)
     ax_1Ne_xNp.xaxis.set_major_locator(x_major_locator)
     plt.xticks(fontsize=myfontsize)
@@ -623,9 +632,8 @@ if __name__ == '__main__':
                     color='tab:orange',
                     label='1e vs. 1p')
     ax_xNe_1Np.set_yscale('log')
-    ax_xNe_1Np.set_xlabel(
-        r'Number of electron particles $(N_e/N_{e_0})$',
-        fontsize=myfontsize)
+    ax_xNe_1Np.set_xlabel(r'Number of electron particles $(N_e/N_{e_0})$',
+                          fontsize=myfontsize)
     ax_xNe_1Np.set_ylabel(r'Luminosity loss rate', fontsize=myfontsize)
 
     ax_xNe_1Np.legend(fontsize=myfontsize)
