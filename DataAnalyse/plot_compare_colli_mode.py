@@ -1,5 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+
+mpl.rcParams['mathtext.fontset'] = 'stix'
+mpl.rcParams['font.family'] = 'STIXGeneral'
+
 '''
 日期：2022年2月23日创建
 
@@ -196,9 +201,10 @@ if __name__ == '__main__':
     #                            fontsize=myfontsize)
     # ax_sigmax[1, 1].set_xlabel(r'Super period ($\times 10^4$)',
     #                            fontsize=myfontsize)
-    fig_x.supxlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
-    fig_x.supylabel(r'$\overline{\mathrm{x}}$ ($\mathrm{\mu m}$)', fontsize=myfontsize)
-    fig_sigmax.supxlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
+    fig_x.supxlabel(r'Super-periods ($\times 10^4$)', fontsize=myfontsize)
+    fig_x.supylabel(r'$\overline{x}$ ($\mathrm{\mu m}$)',
+                    fontsize=myfontsize)
+    fig_sigmax.supxlabel(r'Super-periods ($\times 10^4$)', fontsize=myfontsize)
     fig_sigmax.supylabel(r'$\sigma_x$ ($\mathrm{\mu m}$)', fontsize=myfontsize)
     # ax[1, 2].set_xlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
     # ax[1, 3].set_xlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
