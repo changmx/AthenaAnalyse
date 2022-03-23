@@ -401,8 +401,18 @@ def plot_tune_main(home,
     timestat.start('tune')
     print('\nStart drawing {0:s} tune spread data'.format(para.particle))
     order = 10
-    tune = Tune(home, yearMonDay, hourMinSec, para.particle, bunchid, para.nux,
-                para.nuy, para.tuneshift_direction, ncpu)
+    tune = Tune(home,
+                yearMonDay,
+                hourMinSec,
+                para.particle,
+                bunchid,
+                para.nux,
+                para.nuy,
+                para.tuneshift_direction,
+                ncpu,
+                xlim=[0, 1],
+                ylim=[0, 1])
+    print(tune.particle, tune.xlim, tune.ylim)
     tune.get_phase_limit()
     tune.allocate_phase_file()
 
@@ -667,8 +677,8 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2022_0110'
-    hourMinSec = '1822_54'
+    yearMonDay = '2022_0322'
+    hourMinSec = '1037_02'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
