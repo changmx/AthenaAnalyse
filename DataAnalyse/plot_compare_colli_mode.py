@@ -155,7 +155,7 @@ if __name__ == '__main__':
     path_4e7p_e = r'D:\OneDrive\模拟数据2\4e-7p\Qe=0.58,0.56-稳定-sp=10w-1516_46\1516_46_electron_bunch0_statistic.csv'
     path_4e7p_p = r'D:\OneDrive\模拟数据2\4e-7p\Qe=0.58,0.56-稳定-sp=10w-1516_46\1516_46_proton_bunch0_statistic.csv'
 
-    myfontsize = 12
+    myfontsize = 15
     fig_x, ax_x = plt.subplots(2, 2, figsize=(8, 6), sharex=True)
     fig_sigmax, ax_sigmax = plt.subplots(2, 2, figsize=(8, 6), sharex=True)
     # fig.subplots_adjust(left=0.1, right=0.925, top=0.89)
