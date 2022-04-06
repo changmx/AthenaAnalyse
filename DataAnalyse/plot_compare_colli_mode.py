@@ -4,7 +4,6 @@ import matplotlib as mpl
 
 mpl.rcParams['mathtext.fontset'] = 'stix'
 mpl.rcParams['font.family'] = 'STIXGeneral'
-
 '''
 日期：2022年2月23日创建
 
@@ -179,6 +178,16 @@ if __name__ == '__main__':
     ax_sigmax[1, 0].set_ylim(80, 250)
     ax_sigmax[1, 1].set_ylim(80, 140)
 
+    ax_x[0, 0].tick_params(axis='both', direction='in')
+    ax_x[0, 1].tick_params(axis='both', direction='in')
+    ax_x[1, 0].tick_params(axis='both', direction='in')
+    ax_x[1, 1].tick_params(axis='both', direction='in')
+
+    ax_sigmax[0, 0].tick_params(axis='both', direction='in')
+    ax_sigmax[0, 1].tick_params(axis='both', direction='in')
+    ax_sigmax[1, 0].tick_params(axis='both', direction='in')
+    ax_sigmax[1, 1].tick_params(axis='both', direction='in')
+
     # ax[0, 0].set_title('1e vs. 2p', fontsize=myfontsize)
     # ax[0, 1].set_title('2e vs. 3p', fontsize=myfontsize)
     # # ax[0, 2].set_title('3e vs. 5p', fontsize=myfontsize)
@@ -202,8 +211,7 @@ if __name__ == '__main__':
     # ax_sigmax[1, 1].set_xlabel(r'Super period ($\times 10^4$)',
     #                            fontsize=myfontsize)
     fig_x.supxlabel(r'Super-periods ($\times 10^4$)', fontsize=myfontsize)
-    fig_x.supylabel(r'$\overline{x}$ ($\mathrm{\mu m}$)',
-                    fontsize=myfontsize)
+    fig_x.supylabel(r'$\overline{x}$ ($\mathrm{\mu m}$)', fontsize=myfontsize)
     fig_sigmax.supxlabel(r'Super-periods ($\times 10^4$)', fontsize=myfontsize)
     fig_sigmax.supylabel(r'$\sigma_x$ ($\mathrm{\mu m}$)', fontsize=myfontsize)
     # ax[1, 2].set_xlabel(r'Super period ($\times 10^4$)', fontsize=myfontsize)
