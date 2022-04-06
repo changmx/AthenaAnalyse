@@ -319,6 +319,20 @@ def plot_proton_compare(fig, ax, myfontsize, myfontsize_sub):
                        pad=4,
                        fontsize=myfontsize_sub)
 
+    x_major_locator = plt.MultipleLocator(10)
+    y_major_locator = plt.MultipleLocator(0.5)
+    ax[0, 0].xaxis.set_major_locator(x_major_locator)
+    ax[0, 0].yaxis.set_major_locator(y_major_locator)
+
+    ax[0, 0].tick_params(axis='both', which='both', direction='in', left=False)
+    ax[0, 1].tick_params(axis='both', which='both', direction='in', left=False)
+    ax[0, 2].tick_params(axis='both', which='both', direction='in', left=False)
+    ax[1, 0].tick_params(axis='both', which='both', direction='in', left=False)
+    ax[1, 1].tick_params(axis='both', which='both', direction='in', left=False)
+    ax[1, 2].tick_params(axis='both', which='both', direction='in', left=False)
+    ax[2, 0].tick_params(axis='both', which='both', direction='in', left=False)
+    ax[2, 1].tick_params(axis='both', which='both', direction='in', left=False)
+    ax[2, 2].tick_params(axis='both', which='both', direction='in', left=False)
     # ax[2, 0].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
     # ax[2, 1].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
     # ax[2, 2].set_xlabel(r'Turn ($\times 10^4$)', fontsize=myfontsize)
@@ -548,7 +562,10 @@ def plot_electron_compare_largeSigam(fig, ax, myfontsize, myfontsize_sub):
     ax[1, 1].set_title(r'$\Delta x = 15\sigma_x$',
                        pad=4,
                        fontsize=myfontsize_sub)
-
+    ax[0, 0].tick_params(axis='both', which='both', direction='in', left=False)
+    ax[0, 1].tick_params(axis='both', which='both', direction='in', left=False)
+    ax[1, 0].tick_params(axis='both', which='both', direction='in', left=False)
+    ax[1, 1].tick_params(axis='both', which='both', direction='in', left=False)
     fig.supxlabel(r'Proton turns', fontsize=myfontsize)
     fig.supylabel(r'Luminosity $(\times 10^{33} \mathrm{cm^{-2}s^{-1}})$',
                   fontsize=myfontsize)
@@ -560,9 +577,8 @@ if __name__ == '__main__':
     myfontsize = 12
     myfontsize_sub = 10
 
-    # fig_p, ax_p = plt.subplots(3, 3, sharex=True, sharey=True)
-    # # plt.rcParams['xtick.direction'] = 'in' # in; out; inout
-    # plot_proton_compare(fig_p, ax_p, myfontsize, myfontsize_sub)
+    fig_p, ax_p = plt.subplots(3, 3, sharex=True, sharey=True)
+    plot_proton_compare(fig_p, ax_p, myfontsize, myfontsize_sub)
 
     # fig_e, ax_e = plt.subplots(3, 3, sharex=True, sharey=True)
     # plot_electron_compare(fig_e, ax_e, myfontsize, myfontsize_sub)
