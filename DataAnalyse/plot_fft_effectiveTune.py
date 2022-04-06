@@ -58,6 +58,9 @@ if __name__ == '__main__':
     plot_x_fft(path_4e7p_electron, ax_e)
     plot_x_fft(path_4e7p_proton, ax_p)
 
+    ax_e.tick_params(axis='both', which='both', direction='in')
+    ax_p.tick_params(axis='both', which='both', direction='in')
+
     ax_e.set_xlim((0.5, 1))
     ax_e.set_ylim((1e-9, 1e-2))
     ax_e.set_xlabel(r'$\nu_e$', fontsize=myfontsize)
