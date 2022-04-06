@@ -104,8 +104,9 @@ def plot_x_mian():
     ax.set_xlabel('Proton turns', fontsize=myfontsize)
     ax.set_ylabel(r'$\overline{x}/\sigma_x$', fontsize=myfontsize)
 
+    ax.tick_params(axis='both', direction='in')
     plt.savefig(r'D:\OneDrive\模拟数据2\offset_decoherence_x.png', dpi=300)
-    # plt.show()
+    plt.show()
 
 
 def plot_emitx_main():
@@ -128,37 +129,37 @@ def plot_emitx_main():
                path_p_4e7p_offset_1sigmax_bunch0,
                turnScale=turnScale,
                myfontsize=myfontsize,
-               label='proton bunch0')
+               label='proton bunch 0')
     plot_emitx(ax,
                path_p_4e7p_offset_1sigmax_bunch1,
                turnScale=turnScale,
                myfontsize=myfontsize,
-               label='proton bunch1')
+               label='proton bunch 1')
     plot_emitx(ax,
                path_p_4e7p_offset_1sigmax_bunch2,
                turnScale=turnScale,
                myfontsize=myfontsize,
-               label='proton bunch2')
+               label='proton bunch 2')
     plot_emitx(ax,
                path_p_4e7p_offset_1sigmax_bunch3,
                turnScale=turnScale,
                myfontsize=myfontsize,
-               label='proton bunch3')
+               label='proton bunch 3')
     plot_emitx(ax,
                path_p_4e7p_offset_1sigmax_bunch4,
                turnScale=turnScale,
                myfontsize=myfontsize,
-               label='proton bunch4')
+               label='proton bunch 4')
     plot_emitx(ax,
                path_p_4e7p_offset_1sigmax_bunch5,
                turnScale=turnScale,
                myfontsize=myfontsize,
-               label='proton bunch5')
+               label='proton bunch 5')
     plot_emitx(ax,
                path_p_4e7p_offset_1sigmax_bunch6,
                turnScale=turnScale,
                myfontsize=myfontsize,
-               label='proton bunch6')
+               label='proton bunch 6')
 
     ax.hlines(300e-9,
               turnScale[0],
@@ -172,10 +173,10 @@ def plot_emitx_main():
 
     ax.set_ylim((295e-9, 400e-9))
     ax.set_xlabel('Proton turns', fontsize=myfontsize)
-    ax.set_ylabel(r'$\epsilon_x\ (\m\cdot rad)$', fontsize=myfontsize)
-
+    ax.set_ylabel(r'$\epsilon_x\ (\mathrm{m\cdot rad})$', fontsize=myfontsize)
+    ax.tick_params(axis='both', direction='in')
     plt.savefig(r'D:\OneDrive\模拟数据2\offset_decoherence_emitx.png', dpi=300)
-    # plt.show()
+    plt.show()
 
 
 if __name__ == '__main__':
