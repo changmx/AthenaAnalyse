@@ -1,4 +1,5 @@
 from cProfile import label
+from shutil import which
 from turtle import color
 import numpy as np
 import matplotlib.pyplot as plt
@@ -43,7 +44,7 @@ def plot_lumi_loss(x, y):
     ax.set_yscale('log')
     ax.set_xlabel(r'Number of proton particles $(\mathrm{N_p/N_{p0}})$',
                   fontsize=myfontsize)
-    ax.set_ylabel(r'Luminosity loss rate $(\mathrm{-(L-L_0)/L_0})$',
+    ax.set_ylabel(r'Luminosity degradation rate $(\mathrm{-(L-L_0)/L_0})$',
                   fontsize=myfontsize)
     plt.xticks(fontsize=myfontsize)
     plt.yticks(fontsize=myfontsize)
@@ -589,7 +590,7 @@ if __name__ == '__main__':
     ax_1Ne_xNp.set_yscale('log')
     ax_1Ne_xNp.set_xlabel(r'Number of proton particles $(N_p/N_{p_0})$',
                           fontsize=myfontsize)
-    ax_1Ne_xNp.set_ylabel(r'Luminosity loss rate', fontsize=myfontsize)
+    ax_1Ne_xNp.set_ylabel(r'Luminosity degradation rate', fontsize=myfontsize)
 
     ax_1Ne_xNp.legend(fontsize=myfontsize)
 
@@ -597,6 +598,7 @@ if __name__ == '__main__':
     ax_1Ne_xNp.set_xlim((-0.05, 2.1))
     x_major_locator = plt.MultipleLocator(0.2)
     ax_1Ne_xNp.xaxis.set_major_locator(x_major_locator)
+    ax_1Ne_xNp.tick_params(axis='both', which='both', direction='in')
     plt.xticks(fontsize=myfontsize)
     plt.yticks(fontsize=myfontsize)
 
@@ -634,10 +636,11 @@ if __name__ == '__main__':
     ax_xNe_1Np.set_yscale('log')
     ax_xNe_1Np.set_xlabel(r'Number of electron particles $(N_e/N_{e_0})$',
                           fontsize=myfontsize)
-    ax_xNe_1Np.set_ylabel(r'Luminosity loss rate', fontsize=myfontsize)
+    ax_xNe_1Np.set_ylabel(r'Luminosity degradation rate', fontsize=myfontsize)
 
     ax_xNe_1Np.legend(fontsize=myfontsize)
     # ax_xNe_1Np.set_ylim((1e-3, 0))
+    ax_xNe_1Np.tick_params(axis='both', which='both', direction='in')
     plt.xticks(fontsize=myfontsize)
     plt.yticks(fontsize=myfontsize)
 
