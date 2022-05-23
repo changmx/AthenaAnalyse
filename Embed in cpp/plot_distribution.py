@@ -123,7 +123,7 @@ def load_dist(filePath):
 
 def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                    mybunchlabel, title, savePath, savePath_single, mysize,
-                   mybins):
+                   mybins, isPlotSingle):
     # plt.rcParams.update({'figure.max_open_warning': 0})
     row = 3
     col = 4
@@ -135,11 +135,17 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
         'x-px', 'y-py', 'z-pz', 'x-y', 'z-x', 'z-y', 'count-x', 'count-px',
         'count-y', 'count-py', 'count-z', 'count-pz'
     ]
+
     for i_single in range(12):
-        fig_tmp, ax_tmp = plt.subplots(figsize=(8, 6))
-        fig_tmp.subplots_adjust(left=0.15, right=0.925)
-        plt.xticks(fontsize=myfontsize)
-        plt.yticks(fontsize=myfontsize)
+        if isPlotSingle:
+            fig_tmp, ax_tmp = plt.subplots(figsize=(8, 6))
+            fig_tmp.subplots_adjust(left=0.15, right=0.925)
+            plt.xticks(fontsize=myfontsize)
+            plt.yticks(fontsize=myfontsize)
+        else:
+            fig_tmp = ''
+            ax_tmp = ''
+            
         fig_single.append(fig_tmp)
         ax_single.append(ax_tmp)
 
@@ -152,6 +158,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                      1,
                      r'$\rm x/\sigma_x$',
                      r'$\rm x^{\prime}/\sigma_{{x^{\prime}}}$',
+                     isPlotSingle,
                      ax_single=ax_single[0],
                      fig_single=fig_single[0])
     plot_dist_hexbin(fig,
@@ -163,6 +170,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                      1,
                      r'$\rm y/\sigma_y$',
                      r'$\rm y^{\prime}/\sigma_{{y^{\prime}}}$',
+                     isPlotSingle,
                      ax_single=ax_single[1],
                      fig_single=fig_single[1])
     plot_dist_hexbin(fig,
@@ -174,6 +182,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                      1,
                      r'$\rm z/\sigma_z$',
                      r'$\rm \delta_p/\sigma_{{\delta_p}}$',
+                     isPlotSingle,
                      ax_single=ax_single[2],
                      fig_single=fig_single[2])
 
@@ -186,6 +195,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                      1,
                      r'$\rm x/\sigma_x$',
                      r'$\rm y/\sigma_y$',
+                     isPlotSingle,
                      ax_single=ax_single[3],
                      fig_single=fig_single[3])
     plot_dist_hexbin(fig,
@@ -197,6 +207,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                      1,
                      r'$\rm z/\sigma_z$',
                      r'$\rm x/\sigma_x$',
+                     isPlotSingle,
                      ax_single=ax_single[4],
                      fig_single=fig_single[4])
     plot_dist_hexbin(fig,
@@ -208,6 +219,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                      1,
                      r'$\rm z/\sigma_z$',
                      r'$\rm y/\sigma_y$',
+                     isPlotSingle,
                      ax_single=ax_single[5],
                      fig_single=fig_single[5])
 
@@ -218,6 +230,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                    mybunchlabel,
                    r'$\rm x/\sigma_x$',
                    'Count',
+                   isPlotSingle,
                    ax_single=ax_single[6])
     plot_dist_hist(ax[0, 3],
                    px / para.sigmapx,
@@ -226,6 +239,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                    mybunchlabel,
                    r'$\rm x^{\prime}/\sigma_{{x^{\prime}}}$',
                    'Count',
+                   isPlotSingle,
                    ax_single=ax_single[7])
     plot_dist_hist(ax[1, 2],
                    y / para.sigmay,
@@ -234,6 +248,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                    mybunchlabel,
                    r'$\rm y/\sigma_y$',
                    'Count',
+                   isPlotSingle,
                    ax_single=ax_single[8])
     plot_dist_hist(ax[1, 3],
                    py / para.sigmapy,
@@ -242,6 +257,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                    mybunchlabel,
                    r'$\rm y^{\prime}/\sigma_{{y^{\prime}}}$',
                    'Count',
+                   isPlotSingle,
                    ax_single=ax_single[9])
     plot_dist_hist(ax[2, 2],
                    z / para.sigmaz,
@@ -250,6 +266,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                    mybunchlabel,
                    r'$\rm z/\sigma_z$',
                    'Count',
+                   isPlotSingle,
                    ax_single=ax_single[10])
     plot_dist_hist(ax[2, 3],
                    pz / para.sigmapz,
@@ -258,6 +275,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                    mybunchlabel,
                    r'$\rm \delta_p/\sigma_{{\delta_p}}$',
                    'Count',
+                   isPlotSingle,
                    ax_single=ax_single[11])
 
     fig.subplots_adjust(left=0.05,
@@ -271,15 +289,16 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
     fig.savefig(savePath, dpi=300)
     plt.close(fig)
 
-    for i_single in range(12):
-        fig_single[i_single].savefig(savePath_single + '_' +
-                                     single_name[i_single],
-                                     dpi=300)
-        plt.close(fig_single[i_single])
+    if isPlotSingle:
+        for i_single in range(12):
+            fig_single[i_single].savefig(savePath_single + '_' +
+                                         single_name[i_single],
+                                         dpi=300)
+            plt.close(fig_single[i_single])
 
 
 def plot_dist_hexbin(fig, ax, x, y, mysize, xscale, yscale, myxlabel, myylabel,
-                     **kwargs):
+                     isPlotSingle, **kwargs):
     scale = 6
     xmin = -scale * xscale
     xmax = scale * xscale
@@ -303,25 +322,26 @@ def plot_dist_hexbin(fig, ax, x, y, mysize, xscale, yscale, myxlabel, myylabel,
     # cb.set_label(r'$\mathrm{log_{10}(N)}$')
     # ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
     # ax.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
-    if 'ax_single' in kwargs:
-        kwargs['ax_single'].set(xlim=(xmin, xmax), ylim=(ymin, ymax))
-        hb_single = myhexbin(kwargs['ax_single'],
-                             x,
-                             y,
-                             gridsize=mysize,
-                             scattersize=1,
-                             norm=matplotlib.colors.LogNorm(),
-                             cmap='jet',
-                             alpha=1)
-        cb_single = kwargs['fig_single'].colorbar(hb_single,
-                                                  ax=kwargs['ax_single'])
-        kwargs['ax_single'].set_xlabel(myxlabel, fontsize=15)
-        kwargs['ax_single'].set_ylabel(myylabel, fontsize=15)
-        kwargs['ax_single'].grid()
+    if isPlotSingle:
+        if 'ax_single' in kwargs:
+            kwargs['ax_single'].set(xlim=(xmin, xmax), ylim=(ymin, ymax))
+            hb_single = myhexbin(kwargs['ax_single'],
+                                 x,
+                                 y,
+                                 gridsize=mysize,
+                                 scattersize=1,
+                                 norm=matplotlib.colors.LogNorm(),
+                                 cmap='jet',
+                                 alpha=1)
+            cb_single = kwargs['fig_single'].colorbar(hb_single,
+                                                      ax=kwargs['ax_single'])
+            kwargs['ax_single'].set_xlabel(myxlabel, fontsize=15)
+            kwargs['ax_single'].set_ylabel(myylabel, fontsize=15)
+            kwargs['ax_single'].grid()
 
 
 def plot_dist_hist(ax, x, mybins, xscale, mylabel, myxlabel, myylabel,
-                   **kwargs):
+                   isPlotSingle, **kwargs):
     scale = 6
     xmin = -scale * xscale
     xmax = scale * xscale
@@ -342,21 +362,22 @@ def plot_dist_hist(ax, x, mybins, xscale, mylabel, myxlabel, myylabel,
     ax.grid()
     ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1))
     # ax.legend()
-    if 'ax_single' in kwargs:
-        N_single, bins_single, patches_single = kwargs['ax_single'].hist(
-            x, density=True, bins=mybins, range=(xmin, xmax))
-        fracs_single = N_single / N_single.max()
-        norm_single = matplotlib.colors.Normalize(fracs.min(), fracs.max())
-        for thisfrac, thispatch in zip(fracs_single, patches_single):
-            color = plt.cm.viridis(norm(thisfrac))
-            thispatch.set_facecolor(color)
-        # ax.hist(x, bins=mybins, label=mylabel)
-        kwargs['ax_single'].set_xlabel(myxlabel, fontsize=15)
-        kwargs['ax_single'].set_ylabel(myylabel, fontsize=15)
-        # ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
-        kwargs['ax_single'].grid()
-        kwargs['ax_single'].yaxis.set_major_formatter(
-            matplotlib.ticker.PercentFormatter(xmax=1))
+    if isPlotSingle:
+        if 'ax_single' in kwargs:
+            N_single, bins_single, patches_single = kwargs['ax_single'].hist(
+                x, density=True, bins=mybins, range=(xmin, xmax))
+            fracs_single = N_single / N_single.max()
+            norm_single = matplotlib.colors.Normalize(fracs.min(), fracs.max())
+            for thisfrac, thispatch in zip(fracs_single, patches_single):
+                color = plt.cm.viridis(norm(thisfrac))
+                thispatch.set_facecolor(color)
+            # ax.hist(x, bins=mybins, label=mylabel)
+            kwargs['ax_single'].set_xlabel(myxlabel, fontsize=15)
+            kwargs['ax_single'].set_ylabel(myylabel, fontsize=15)
+            # ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
+            kwargs['ax_single'].grid()
+            kwargs['ax_single'].yaxis.set_major_formatter(
+                matplotlib.ticker.PercentFormatter(xmax=1))
 
 
 if __name__ == '__main__':

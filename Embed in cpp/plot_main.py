@@ -451,7 +451,8 @@ def plot_tune_main(home,
     timestat.end('tune')
 
 
-def plot_distribution_oneProcess(dist, para, myfigsize, myfontsize, cpuid):
+def plot_distribution_oneProcess(dist, para, myfigsize, myfontsize, cpuid,
+                                 isPlotSingle):
     '''
     使用多线程同时处理不同束团的dist信息
     '''
@@ -480,7 +481,8 @@ def plot_distribution_oneProcess(dist, para, myfigsize, myfontsize, cpuid):
                        dist.savePath[index],
                        dist.savePath_single[index],
                        mysize=200,
-                       mybins=300)
+                       mybins=300,
+                       isPlotSingle=isPlotSingle)
 
         print('File has been drawn: {0}'.format(dist.filePath[index]))
 
@@ -493,7 +495,8 @@ def plot_distribution_main(home,
                            myfontsize,
                            ncpu,
                            timestat,
-                           bunchid=[0]):
+                           bunchid=[0],
+                           isPlotSingle=False):
     timestat.start('dist')
     print('\nStart drawing {0:s} distribution data'.format(para.particle))
     dist = Distribution(home, yearMonDay, hourMinSec, para.particle, bunchid,
@@ -503,7 +506,8 @@ def plot_distribution_main(home,
     ps = []
     for cpuid in range(dist.ntask):
         p = Process(target=plot_distribution_oneProcess,
-                    args=(dist, para, myfigsize, myfontsize, cpuid))
+                    args=(dist, para, myfigsize, myfontsize, cpuid,
+                          isPlotSingle))
         ps.append(p)
     for cpuid in range(dist.ntask):
         ps[cpuid].start()
@@ -605,8 +609,11 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     beam1.gen_note_withPath(beam2)
     beam2.gen_note_withPath(beam1)
 
-    beam1_isPlotSingle = False
-    beam2_isPlotSingle = False
+    beam1_isPlotSingle_stat = False
+    beam2_isPlotSingle_stat = False
+
+    beam1_isPlotSingle_dist = False
+    beam2_isPlotSingle_dist = False
 
     # print(beam1.statnote)
     # print(beam2.statnote)
@@ -615,11 +622,11 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
         if kind == 'all' or kind == 'stat':
             plot_statistic_main(home, yearMonDay, hourMinSec, beam1,
                                 beam2.nbunch, my_figsize1, my_fontsize_stat,
-                                ncpu, runningTime, beam1_isPlotSingle)
+                                ncpu, runningTime, beam1_isPlotSingle_stat)
 
             plot_statistic_main(home, yearMonDay, hourMinSec, beam2,
                                 beam1.nbunch, my_figsize1, my_fontsize_stat,
-                                ncpu, runningTime, beam2_isPlotSingle)
+                                ncpu, runningTime, beam2_isPlotSingle_stat)
 
         if kind == 'all' or kind == 'lumi':
             plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
@@ -628,11 +635,13 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
         if kind == 'all' or kind == 'dist':
             plot_distribution_main(home, yearMonDay, hourMinSec, beam1,
                                    my_figsize1, my_fontsize_dist, ncpu,
-                                   runningTime, dist_beam1_bunchid)
+                                   runningTime, dist_beam1_bunchid,
+                                   beam1_isPlotSingle_dist)
 
             plot_distribution_main(home, yearMonDay, hourMinSec, beam2,
                                    my_figsize1, my_fontsize_dist, ncpu,
-                                   runningTime, dist_beam2_bunchid)
+                                   runningTime, dist_beam2_bunchid,
+                                   beam2_isPlotSingle_dist)
 
         if kind == 'all' or kind == 'tune':
             plot_tune_main(home, yearMonDay, hourMinSec, beam1,
@@ -688,7 +697,7 @@ if __name__ == '__main__':
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
     yearMonDay = '2022_0523'
-    hourMinSec = '1712_23'
+    hourMinSec = '1528_45'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
