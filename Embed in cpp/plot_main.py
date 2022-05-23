@@ -24,7 +24,8 @@ from plot_footprint import *
 
 def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
                                     yearMonDay, hourMinSec, para, nbunch_opp,
-                                    myfigsize, myfontsize, myqueue):
+                                    myfigsize, myfontsize, myqueue,
+                                    isPlotSingle):
     matplotlib.rcParams['agg.path.chunksize'] = 10000
     plt.rcParams.update({'figure.max_open_warning': 0})
     fig_stat_tmp0, ax_stat_tmp0 = plt.subplots(row, col, figsize=myfigsize)
@@ -61,16 +62,17 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
         'xy-average', 'yz-average', 'xzDevideSigmaxSigmaZ', 'x-skewness',
         'x-kurtosis', 'y-skewness', 'y-kurtosis'
     ]
-    for i_single in range(34):
-        fig_tmp, ax_tmp = plt.subplots(figsize=(8, 6))
-        plt.xticks(fontsize=15)
-        plt.yticks(fontsize=15)
-        fig_single.append(fig_tmp)
-        ax_single.append(ax_tmp)
+    if isPlotSingle:
+        for i_single in range(34):
+            fig_tmp, ax_tmp = plt.subplots(figsize=(8, 6))
+            plt.xticks(fontsize=15)
+            plt.yticks(fontsize=15)
+            fig_single.append(fig_tmp)
+            ax_single.append(ax_tmp)
 
     stat = Statistic(home, yearMonDay, hourMinSec, para.particle, bunchid,
                      para.nux, para.nuy, para.sigmax, para.sigmay,
-                     para.sigmapx, para.sigmapy, nbunch_opp)
+                     para.sigmapx, para.sigmapy, nbunch_opp, isPlotSingle)
 
     stat.load_statistic()
 
@@ -119,17 +121,18 @@ def plot_statistic_bunch_oneProcess(bunchid, row, col, row2, col2, home,
     plt.close(fig_stat_tmp3)
     plt.close(fig_stat_tmp4)
 
-    for i_single in range(34):
-        fig_single[i_single].savefig(stat.save_bunchStatisticPath_single +
-                                     '_' + single_name[i_single],
-                                     dpi=300)
-        plt.close(fig_single[i_single])
+    if isPlotSingle:
+        for i_single in range(34):
+            fig_single[i_single].savefig(stat.save_bunchStatisticPath_single +
+                                         '_' + single_name[i_single],
+                                         dpi=300)
+            plt.close(fig_single[i_single])
 
     print('File has been drawn: {0}'.format(stat.stat_file))
 
 
 def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
-                        para, nbunch_opp, myfigsize, myfontsize):
+                        para, nbunch_opp, myfigsize, myfontsize, isPlotSingle):
     matplotlib.rcParams['agg.path.chunksize'] = 10000
     plt.rcParams.update({'figure.max_open_warning': 0})
 
@@ -169,18 +172,20 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
             'xy-average', 'yz-average', 'xzDevideSigmaxSigmaZ', 'x-skewness',
             'x-kurtosis', 'y-skewness', 'y-kurtosis'
         ]
-        for i_single in range(34):
-            fig_tmp, ax_tmp = plt.subplots(figsize=(8, 6))
-            plt.xticks(fontsize=15)
-            plt.yticks(fontsize=15)
-            fig_single.append(fig_tmp)
-            ax_tmp.grid()
-            ax_single.append(ax_tmp)
+        if isPlotSingle:
+            for i_single in range(34):
+                fig_tmp, ax_tmp = plt.subplots(figsize=(8, 6))
+                plt.xticks(fontsize=15)
+                plt.yticks(fontsize=15)
+                fig_single.append(fig_tmp)
+                ax_tmp.grid()
+                ax_single.append(ax_tmp)
 
         for i in range(para.nbunch):
             stat = Statistic(home, yearMonDay, hourMinSec, para.particle, i,
                              para.nux, para.nuy, para.sigmax, para.sigmay,
-                             para.sigmapx, para.sigmapy, nbunch_opp)
+                             para.sigmapx, para.sigmapy, nbunch_opp,
+                             isPlotSingle)
 
             stat.load_statistic()
 
@@ -230,17 +235,19 @@ def plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
         plt.close(fig_stat3)
         plt.close(fig_stat4)
 
-        for i_single in range(34):
-            fig_single[i_single].savefig(stat.save_beamStatisticPath_single +
-                                         '_' + single_name[i_single],
-                                         dpi=300)
-            plt.close(fig_single[i_single])
+        if isPlotSingle:
+            for i_single in range(34):
+                fig_single[i_single].savefig(
+                    stat.save_beamStatisticPath_single + '_' +
+                    single_name[i_single],
+                    dpi=300)
+                plt.close(fig_single[i_single])
 
         print('File has been drawn: beam {0}'.format(stat.particle))
 
 
 def plot_statistic_main(home, yearMonDay, hourMinSec, para, nbunch_opp,
-                        myfigsize, myfontsize, ncpu, timestat):
+                        myfigsize, myfontsize, ncpu, timestat, isPlotSingle):
     timestat.start('stat')
     print('\nStart drawing {0:s} statistic data'.format(para.particle))
     row = 3
@@ -253,14 +260,14 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, nbunch_opp,
             plot_statistic_bunch_oneProcess(i, row, col, row2, col2, home,
                                             yearMonDay, hourMinSec, para,
                                             nbunch_opp, myfigsize, myfontsize,
-                                            'no queue')
+                                            'no queue', isPlotSingle)
     else:
         ps = []
         for i in range(para.nbunch):
             p = Process(target=plot_statistic_bunch_oneProcess,
                         args=(i, row, col, row2, col2, home, yearMonDay,
                               hourMinSec, para, nbunch_opp, myfigsize,
-                              myfontsize, 'queue'))
+                              myfontsize, 'queue', isPlotSingle))
             ps.append(p)
         for i in range(para.nbunch):
             ps[i].start()
@@ -285,7 +292,7 @@ def plot_statistic_main(home, yearMonDay, hourMinSec, para, nbunch_opp,
         # mypool.join()
 
     plot_statistic_beam(row, col, row2, col2, home, yearMonDay, hourMinSec,
-                        para, nbunch_opp, myfigsize, myfontsize)
+                        para, nbunch_opp, myfigsize, myfontsize, isPlotSingle)
     timestat.end('stat')
 
 
@@ -598,6 +605,9 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     beam1.gen_note_withPath(beam2)
     beam2.gen_note_withPath(beam1)
 
+    beam1_isPlotSingle = False
+    beam2_isPlotSingle = False
+
     # print(beam1.statnote)
     # print(beam2.statnote)
 
@@ -605,11 +615,11 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
         if kind == 'all' or kind == 'stat':
             plot_statistic_main(home, yearMonDay, hourMinSec, beam1,
                                 beam2.nbunch, my_figsize1, my_fontsize_stat,
-                                ncpu, runningTime)
+                                ncpu, runningTime, beam1_isPlotSingle)
 
             plot_statistic_main(home, yearMonDay, hourMinSec, beam2,
                                 beam1.nbunch, my_figsize1, my_fontsize_stat,
-                                ncpu, runningTime)
+                                ncpu, runningTime, beam2_isPlotSingle)
 
         if kind == 'all' or kind == 'lumi':
             plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
@@ -677,8 +687,8 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2022_0322'
-    hourMinSec = '1037_02'
+    yearMonDay = '2022_0523'
+    hourMinSec = '1712_23'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)

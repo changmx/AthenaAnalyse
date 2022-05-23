@@ -15,7 +15,8 @@ class Statistic:
     """
 
     def __init__(self, home, yearMonDay, hourMinSec, particle, bunchid, nux,
-                 nuy, sigmax, sigmay, sigmapx, sigmapy, nbunch_opp):
+                 nuy, sigmax, sigmay, sigmapx, sigmapy, nbunch_opp,
+                 isPlotSingle):
         self.marker = 'o'
         self.marker_size = 0.1
         self.marker_linewidth = 0.001
@@ -32,6 +33,7 @@ class Statistic:
         self.inisigmapx = sigmapx
         self.inisigmapy = sigmapy
         self.nbunch_opp = nbunch_opp
+        self.isPlotSingle = isPlotSingle
         self.version = 'new' if self.yearMonDay > '2021_0816' else 'old'
 
         self.stat_file = self.hourMinSec + '_' + self.particle + '_bunch' + str(
@@ -105,15 +107,13 @@ class Statistic:
         else:
             print("file doesn't exist: {0}".format(self.stat_file))
 
-    def plot_statistic_part0(
-            self,
-            ax,
-            ax_single,
-            myalpha,
-            myfontsize,
-            freqx=(0, 1),
-            freqy=(0, 1),
-    ):
+    def plot_statistic_part0(self,
+                             ax,
+                             ax_single,
+                             myalpha,
+                             myfontsize,
+                             freqx=(0, 1),
+                             freqy=(0, 1)):
         matplotlib.rcParams['agg.path.chunksize'] = 10000
         if self.is_statExist:
             if self.nux > 0.5:
@@ -134,16 +134,17 @@ class Statistic:
                              linewidth=self.marker_linewidth)
             ax[0, 0].set_ylabel(r'$\overline{\mathrm{x}}/\sigma_x$',
                                 fontsize=myfontsize)
-            plot_save_single_figure(ax_single[0],
-                                    self.turn,
-                                    self.xAverage,
-                                    self.turn_unit,
-                                    r'$\overline{\mathrm{x}}/\sigma_x$',
-                                    label=self.bunchLabel,
-                                    xstyle='sci',
-                                    ystyle='sci',
-                                    fontsize=15,
-                                    alpha=myalpha)
+            if self.isPlotSingle:
+                plot_save_single_figure(ax_single[0],
+                                        self.turn,
+                                        self.xAverage,
+                                        self.turn_unit,
+                                        r'$\overline{\mathrm{x}}/\sigma_x$',
+                                        label=self.bunchLabel,
+                                        xstyle='sci',
+                                        ystyle='sci',
+                                        fontsize=15,
+                                        alpha=myalpha)
 
             ax[0, 1].scatter(self.turn,
                              self.sigmax,
@@ -154,16 +155,17 @@ class Statistic:
                              linewidth=self.marker_linewidth)
             ax[0, 1].set_ylabel(r'$\sigma_x\ (\mathrm{m})$',
                                 fontsize=myfontsize)
-            plot_save_single_figure(ax_single[1],
-                                    self.turn,
-                                    self.sigmax,
-                                    self.turn_unit,
-                                    r'$\sigma_x\ (\mathrm{m})$',
-                                    label=self.bunchLabel,
-                                    ystyle='sci',
-                                    xstyle='sci',
-                                    fontsize=15,
-                                    alpha=myalpha)
+            if self.isPlotSingle:
+                plot_save_single_figure(ax_single[1],
+                                        self.turn,
+                                        self.sigmax,
+                                        self.turn_unit,
+                                        r'$\sigma_x\ (\mathrm{m})$',
+                                        label=self.bunchLabel,
+                                        ystyle='sci',
+                                        xstyle='sci',
+                                        fontsize=15,
+                                        alpha=myalpha)
 
             ax[0, 2].scatter(self.turn,
                              self.xEmit,
@@ -174,17 +176,18 @@ class Statistic:
                              linewidth=self.marker_linewidth)
             ax[0, 2].set_ylabel(r'$\epsilon_x\ (\mathrm{m}\cdot\mathrm{rad})$',
                                 fontsize=myfontsize)
-            plot_save_single_figure(
-                ax_single[2],
-                self.turn,
-                self.xEmit,
-                self.turn_unit,
-                r'$\epsilon_x\ (\mathrm{m}\cdot\mathrm{rad})$',
-                label=self.bunchLabel,
-                ystyle='sci',
-                xstyle='sci',
-                fontsize=15,
-                alpha=myalpha)
+            if self.isPlotSingle:
+                plot_save_single_figure(
+                    ax_single[2],
+                    self.turn,
+                    self.xEmit,
+                    self.turn_unit,
+                    r'$\epsilon_x\ (\mathrm{m}\cdot\mathrm{rad})$',
+                    label=self.bunchLabel,
+                    ystyle='sci',
+                    xstyle='sci',
+                    fontsize=15,
+                    alpha=myalpha)
 
             ax[1, 0].scatter(self.turn,
                              self.yAverage,
@@ -195,16 +198,17 @@ class Statistic:
                              linewidth=self.marker_linewidth)
             ax[1, 0].set_ylabel(r'$\overline{\mathrm{y}}/\sigma_y$',
                                 fontsize=myfontsize)
-            plot_save_single_figure(ax_single[3],
-                                    self.turn,
-                                    self.yAverage,
-                                    self.turn_unit,
-                                    r'$\overline{\mathrm{y}}/\sigma_y$',
-                                    label=self.bunchLabel,
-                                    xstyle='sci',
-                                    ystyle='sci',
-                                    fontsize=15,
-                                    alpha=myalpha)
+            if self.isPlotSingle:
+                plot_save_single_figure(ax_single[3],
+                                        self.turn,
+                                        self.yAverage,
+                                        self.turn_unit,
+                                        r'$\overline{\mathrm{y}}/\sigma_y$',
+                                        label=self.bunchLabel,
+                                        xstyle='sci',
+                                        ystyle='sci',
+                                        fontsize=15,
+                                        alpha=myalpha)
 
             ax[1, 1].scatter(self.turn,
                              self.sigmay,
@@ -215,16 +219,17 @@ class Statistic:
                              linewidth=self.marker_linewidth)
             ax[1, 1].set_ylabel(r'$\sigma_y\ (\mathrm{m})$',
                                 fontsize=myfontsize)
-            plot_save_single_figure(ax_single[4],
-                                    self.turn,
-                                    self.sigmay,
-                                    self.turn_unit,
-                                    r'$\sigma_y\ (\mathrm{m})$',
-                                    label=self.bunchLabel,
-                                    ystyle='sci',
-                                    xstyle='sci',
-                                    fontsize=15,
-                                    alpha=myalpha)
+            if self.isPlotSingle:
+                plot_save_single_figure(ax_single[4],
+                                        self.turn,
+                                        self.sigmay,
+                                        self.turn_unit,
+                                        r'$\sigma_y\ (\mathrm{m})$',
+                                        label=self.bunchLabel,
+                                        ystyle='sci',
+                                        xstyle='sci',
+                                        fontsize=15,
+                                        alpha=myalpha)
 
             ax[1, 2].scatter(self.turn,
                              self.yEmit,
@@ -235,17 +240,18 @@ class Statistic:
                              linewidth=self.marker_linewidth)
             ax[1, 2].set_ylabel(r'$\epsilon_y\ (\mathrm{m}\cdot\mathrm{rad})$',
                                 fontsize=myfontsize)
-            plot_save_single_figure(
-                ax_single[5],
-                self.turn,
-                self.yEmit,
-                self.turn_unit,
-                r'$\epsilon_y\ (\mathrm{m}\cdot\mathrm{rad})$',
-                label=self.bunchLabel,
-                ystyle='sci',
-                xstyle='sci',
-                fontsize=15,
-                alpha=myalpha)
+            if self.isPlotSingle:
+                plot_save_single_figure(
+                    ax_single[5],
+                    self.turn,
+                    self.yEmit,
+                    self.turn_unit,
+                    r'$\epsilon_y\ (\mathrm{m}\cdot\mathrm{rad})$',
+                    label=self.bunchLabel,
+                    ystyle='sci',
+                    xstyle='sci',
+                    fontsize=15,
+                    alpha=myalpha)
 
             freq_x = cal_freq_fft(self.turn.shape[0], 1, freqx[0], freqx[1])
             spec_x = cal_spctrum_fft(self.turn.shape[0], 1, freqx[0], freqx[1],
@@ -262,16 +268,17 @@ class Statistic:
                              ymax=1,
                              color='red',
                              linestyle="--")
-            plot_save_single_line_figure(ax_single[6],
-                                         freq_x,
-                                         spec_x,
-                                         r'$\nu_x$',
-                                         'Amplitude x',
-                                         label=self.bunchLabel,
-                                         fontsize=15,
-                                         yscale='log',
-                                         vline=self.nux,
-                                         alpha=myalpha)
+            if self.isPlotSingle:
+                plot_save_single_line_figure(ax_single[6],
+                                             freq_x,
+                                             spec_x,
+                                             r'$\nu_x$',
+                                             'Amplitude x',
+                                             label=self.bunchLabel,
+                                             fontsize=15,
+                                             yscale='log',
+                                             vline=self.nux,
+                                             alpha=myalpha)
 
             freq_y = cal_freq_fft(self.turn.shape[0], 1, freqy[0], freqy[1])
             spec_y = cal_spctrum_fft(self.turn.shape[0], 1, freqy[0], freqy[1],
@@ -289,31 +296,33 @@ class Statistic:
                              ymax=1,
                              color='red',
                              linestyle="--")
-            plot_save_single_line_figure(ax_single[7],
-                                         freq_y,
-                                         spec_y,
-                                         r'$\nu_y$',
-                                         'Amplitude y',
-                                         label=self.bunchLabel,
-                                         fontsize=15,
-                                         yscale='log',
-                                         vline=self.nuy,
-                                         alpha=myalpha)
+            if self.isPlotSingle:
+                plot_save_single_line_figure(ax_single[7],
+                                             freq_y,
+                                             spec_y,
+                                             r'$\nu_y$',
+                                             'Amplitude y',
+                                             label=self.bunchLabel,
+                                             fontsize=15,
+                                             yscale='log',
+                                             vline=self.nuy,
+                                             alpha=myalpha)
 
             ax[2, 2].plot(self.turn,
                           self.beamloss,
                           label=self.bunchLabel,
                           alpha=myalpha)
             ax[2, 2].set_ylabel('particle loss', fontsize=myfontsize)
-            plot_save_single_line_figure(ax_single[8],
-                                         self.turn,
-                                         self.beamloss,
-                                         self.turn_unit,
-                                         'Particle loss',
-                                         label=self.bunchLabel,
-                                         fontsize=15,
-                                         xstyle='sci',
-                                         alpha=myalpha)
+            if self.isPlotSingle:
+                plot_save_single_line_figure(ax_single[8],
+                                             self.turn,
+                                             self.beamloss,
+                                             self.turn_unit,
+                                             'Particle loss',
+                                             label=self.bunchLabel,
+                                             fontsize=15,
+                                             xstyle='sci',
+                                             alpha=myalpha)
 
             for i in range(3):
                 for j in range(3):
@@ -342,17 +351,18 @@ class Statistic:
                 ax[0, 0].set_ylabel(
                     r'$\overline{\mathrm{x^{\prime}}}/\sigma_{\mathrm{x^{\prime}}}$',
                     fontsize=myfontsize)
-                plot_save_single_figure(
-                    ax_single[9],
-                    self.turn,
-                    self.pxAverage,
-                    self.turn_unit,
-                    r'$\overline{\mathrm{x^{\prime}}}/\sigma_{\mathrm{x^{\prime}}}$',
-                    label=self.bunchLabel,
-                    xstyle='sci',
-                    ystyle='sci',
-                    fontsize=15,
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[9],
+                        self.turn,
+                        self.pxAverage,
+                        self.turn_unit,
+                        r'$\overline{\mathrm{x^{\prime}}}/\sigma_{\mathrm{x^{\prime}}}$',
+                        label=self.bunchLabel,
+                        xstyle='sci',
+                        ystyle='sci',
+                        fontsize=15,
+                        alpha=myalpha)
 
                 ax[0, 1].scatter(self.turn,
                                  self.sigmapx,
@@ -363,17 +373,18 @@ class Statistic:
                                  linewidth=self.marker_linewidth)
                 ax[0, 1].set_ylabel(r'$\sigma_{x^{\prime}}\ (\mathrm{rad})$',
                                     fontsize=myfontsize)
-                plot_save_single_figure(
-                    ax_single[10],
-                    self.turn,
-                    self.sigmapx,
-                    self.turn_unit,
-                    r'$\sigma_{x^{\prime}}\ (\mathrm{rad})$',
-                    label=self.bunchLabel,
-                    ystyle='sci',
-                    xstyle='sci',
-                    fontsize=15,
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[10],
+                        self.turn,
+                        self.sigmapx,
+                        self.turn_unit,
+                        r'$\sigma_{x^{\prime}}\ (\mathrm{rad})$',
+                        label=self.bunchLabel,
+                        ystyle='sci',
+                        xstyle='sci',
+                        fontsize=15,
+                        alpha=myalpha)
 
                 ax[0, 2].scatter(self.turn,
                                  self.zAverage,
@@ -384,17 +395,18 @@ class Statistic:
                                  linewidth=self.marker_linewidth)
                 ax[0, 2].set_ylabel(r'$\overline{\mathrm{z}}\ (\mathrm{m})$',
                                     fontsize=myfontsize)
-                plot_save_single_figure(
-                    ax_single[11],
-                    self.turn,
-                    self.zAverage,
-                    self.turn_unit,
-                    r'$\overline{\mathrm{z}}\ (\mathrm{m})$',
-                    label=self.bunchLabel,
-                    ystyle='sci',
-                    xstyle='sci',
-                    fontsize=15,
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[11],
+                        self.turn,
+                        self.zAverage,
+                        self.turn_unit,
+                        r'$\overline{\mathrm{z}}\ (\mathrm{m})$',
+                        label=self.bunchLabel,
+                        ystyle='sci',
+                        xstyle='sci',
+                        fontsize=15,
+                        alpha=myalpha)
 
                 ax[1, 0].scatter(self.turn,
                                  self.pyAverage,
@@ -406,17 +418,18 @@ class Statistic:
                 ax[1, 0].set_ylabel(
                     r'$\overline{\mathrm{y^{\prime}}}/\sigma_{\mathrm{y^{\prime}}}$',
                     fontsize=myfontsize)
-                plot_save_single_figure(
-                    ax_single[12],
-                    self.turn,
-                    self.pyAverage,
-                    self.turn_unit,
-                    r'$\overline{\mathrm{y^{\prime}}}/\sigma_{\mathrm{y^{\prime}}}$',
-                    label=self.bunchLabel,
-                    xstyle='sci',
-                    ystyle='sci',
-                    fontsize=15,
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[12],
+                        self.turn,
+                        self.pyAverage,
+                        self.turn_unit,
+                        r'$\overline{\mathrm{y^{\prime}}}/\sigma_{\mathrm{y^{\prime}}}$',
+                        label=self.bunchLabel,
+                        xstyle='sci',
+                        ystyle='sci',
+                        fontsize=15,
+                        alpha=myalpha)
 
                 ax[1, 1].scatter(self.turn,
                                  self.sigmapy,
@@ -427,17 +440,18 @@ class Statistic:
                                  linewidth=self.marker_linewidth)
                 ax[1, 1].set_ylabel(r'$\sigma_{y^{\prime}}\ (\mathrm{rad})$',
                                     fontsize=myfontsize)
-                plot_save_single_figure(
-                    ax_single[13],
-                    self.turn,
-                    self.sigmapy,
-                    self.turn_unit,
-                    r'$\sigma_{y^{\prime}}\ (\mathrm{rad})$',
-                    label=self.bunchLabel,
-                    ystyle='sci',
-                    xstyle='sci',
-                    fontsize=15,
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[13],
+                        self.turn,
+                        self.sigmapy,
+                        self.turn_unit,
+                        r'$\sigma_{y^{\prime}}\ (\mathrm{rad})$',
+                        label=self.bunchLabel,
+                        ystyle='sci',
+                        xstyle='sci',
+                        fontsize=15,
+                        alpha=myalpha)
 
                 ax[1, 2].scatter(self.turn,
                                  self.sigmaz,
@@ -448,16 +462,17 @@ class Statistic:
                                  linewidth=self.marker_linewidth)
                 ax[1, 2].set_ylabel(r'$\sigma_z\ (\mathrm{m})$',
                                     fontsize=myfontsize)
-                plot_save_single_figure(ax_single[14],
-                                        self.turn,
-                                        self.sigmaz,
-                                        self.turn_unit,
-                                        r'$\sigma_z\ (\mathrm{m})$',
-                                        label=self.bunchLabel,
-                                        ystyle='sci',
-                                        xstyle='sci',
-                                        fontsize=15,
-                                        alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(ax_single[14],
+                                            self.turn,
+                                            self.sigmaz,
+                                            self.turn_unit,
+                                            r'$\sigma_z\ (\mathrm{m})$',
+                                            label=self.bunchLabel,
+                                            ystyle='sci',
+                                            xstyle='sci',
+                                            fontsize=15,
+                                            alpha=myalpha)
 
                 ax[2, 0].scatter(self.turn,
                                  self.pzAverage,
@@ -468,16 +483,17 @@ class Statistic:
                                  linewidth=self.marker_linewidth)
                 ax[2, 0].set_ylabel(r'$\overline{\mathrm{dp}}$',
                                     fontsize=myfontsize)
-                plot_save_single_figure(ax_single[15],
-                                        self.turn,
-                                        self.pzAverage,
-                                        self.turn_unit,
-                                        r'$\overline{\mathrm{dp}}$',
-                                        label=self.bunchLabel,
-                                        ystyle='sci',
-                                        xstyle='sci',
-                                        fontsize=15,
-                                        alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(ax_single[15],
+                                            self.turn,
+                                            self.pzAverage,
+                                            self.turn_unit,
+                                            r'$\overline{\mathrm{dp}}$',
+                                            label=self.bunchLabel,
+                                            ystyle='sci',
+                                            xstyle='sci',
+                                            fontsize=15,
+                                            alpha=myalpha)
 
                 ax[2, 1].scatter(self.turn,
                                  self.sigmapz,
@@ -487,16 +503,17 @@ class Statistic:
                                  s=self.marker_size,
                                  linewidth=self.marker_linewidth)
                 ax[2, 1].set_ylabel(r'$\delta_p$', fontsize=myfontsize)
-                plot_save_single_figure(ax_single[16],
-                                        self.turn,
-                                        self.sigmapz,
-                                        self.turn_unit,
-                                        r'$\delta_p$',
-                                        label=self.bunchLabel,
-                                        ystyle='sci',
-                                        xstyle='sci',
-                                        fontsize=15,
-                                        alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(ax_single[16],
+                                            self.turn,
+                                            self.sigmapz,
+                                            self.turn_unit,
+                                            r'$\delta_p$',
+                                            label=self.bunchLabel,
+                                            ystyle='sci',
+                                            xstyle='sci',
+                                            fontsize=15,
+                                            alpha=myalpha)
 
                 ax[2, 2].plot(self.turn,
                               self.lossPercent,
@@ -504,15 +521,16 @@ class Statistic:
                               alpha=myalpha)
                 ax[2, 2].set_ylabel('Percentage of particle loss (%)',
                                     fontsize=myfontsize)
-                plot_save_single_figure(ax_single[17],
-                                        self.turn,
-                                        self.lossPercent,
-                                        self.turn_unit,
-                                        'Percentage of particle loss (%)',
-                                        label=self.bunchLabel,
-                                        fontsize=15,
-                                        xstyle='sci',
-                                        alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(ax_single[17],
+                                            self.turn,
+                                            self.lossPercent,
+                                            self.turn_unit,
+                                            'Percentage of particle loss (%)',
+                                            label=self.bunchLabel,
+                                            fontsize=15,
+                                            xstyle='sci',
+                                            alpha=myalpha)
 
                 for i in range(3):
                     for j in range(3):
@@ -538,16 +556,18 @@ class Statistic:
                                  linewidth=self.marker_linewidth)
                 ax[0, 0].set_ylabel(r'$\mathrm{\beta_x}\ (\mathrm{m})$',
                                     fontsize=myfontsize)
-                plot_save_single_figure(ax_single[18],
-                                        self.turn,
-                                        self.betax,
-                                        self.turn_unit,
-                                        r'$\mathrm{\beta_x}\ (\mathrm{m})$',
-                                        label=self.bunchLabel,
-                                        ystyle='sci',
-                                        xstyle='sci',
-                                        fontsize=15,
-                                        alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[18],
+                        self.turn,
+                        self.betax,
+                        self.turn_unit,
+                        r'$\mathrm{\beta_x}\ (\mathrm{m})$',
+                        label=self.bunchLabel,
+                        ystyle='sci',
+                        xstyle='sci',
+                        fontsize=15,
+                        alpha=myalpha)
 
                 ax[0, 1].scatter(self.turn,
                                  self.betay,
@@ -558,16 +578,18 @@ class Statistic:
                                  linewidth=self.marker_linewidth)
                 ax[0, 1].set_ylabel(r'$\mathrm{\beta_y}\ (\mathrm{m})$',
                                     fontsize=myfontsize)
-                plot_save_single_figure(ax_single[19],
-                                        self.turn,
-                                        self.betay,
-                                        self.turn_unit,
-                                        r'$\mathrm{\beta_y}\ (\mathrm{m})$',
-                                        label=self.bunchLabel,
-                                        ystyle='sci',
-                                        xstyle='sci',
-                                        fontsize=15,
-                                        alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[19],
+                        self.turn,
+                        self.betay,
+                        self.turn_unit,
+                        r'$\mathrm{\beta_y}\ (\mathrm{m})$',
+                        label=self.bunchLabel,
+                        ystyle='sci',
+                        xstyle='sci',
+                        fontsize=15,
+                        alpha=myalpha)
 
                 ax[0, 2].plot(self.turn,
                               self.invariantx,
@@ -575,16 +597,17 @@ class Statistic:
                               alpha=myalpha)
                 ax[0, 2].set_ylabel(r'$\mathrm{\gamma_x\beta_x}-{\alpha_x}^2$',
                                     fontsize=myfontsize)
-                plot_save_single_line_figure(
-                    ax_single[20],
-                    self.turn,
-                    self.invariantx,
-                    self.turn_unit,
-                    r'$\mathrm{\gamma_x\beta_x}-{\alpha_x}^2$',
-                    label=self.bunchLabel,
-                    fontsize=15,
-                    xstyle='sci',
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_line_figure(
+                        ax_single[20],
+                        self.turn,
+                        self.invariantx,
+                        self.turn_unit,
+                        r'$\mathrm{\gamma_x\beta_x}-{\alpha_x}^2$',
+                        label=self.bunchLabel,
+                        fontsize=15,
+                        xstyle='sci',
+                        alpha=myalpha)
 
                 ax[1, 0].scatter(self.turn,
                                  self.alphax,
@@ -595,16 +618,17 @@ class Statistic:
                                  linewidth=self.marker_linewidth)
                 ax[1, 0].set_ylabel(r'$\mathrm{\alpha_x}$',
                                     fontsize=myfontsize)
-                plot_save_single_figure(ax_single[21],
-                                        self.turn,
-                                        self.alphax,
-                                        self.turn_unit,
-                                        r'$\mathrm{\alpha_x}$',
-                                        label=self.bunchLabel,
-                                        ystyle='sci',
-                                        xstyle='sci',
-                                        fontsize=15,
-                                        alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(ax_single[21],
+                                            self.turn,
+                                            self.alphax,
+                                            self.turn_unit,
+                                            r'$\mathrm{\alpha_x}$',
+                                            label=self.bunchLabel,
+                                            ystyle='sci',
+                                            xstyle='sci',
+                                            fontsize=15,
+                                            alpha=myalpha)
 
                 ax[1, 1].scatter(self.turn,
                                  self.alphay,
@@ -615,16 +639,17 @@ class Statistic:
                                  linewidth=self.marker_linewidth)
                 ax[1, 1].set_ylabel(r'$\mathrm{\alpha_y}$',
                                     fontsize=myfontsize)
-                plot_save_single_figure(ax_single[22],
-                                        self.turn,
-                                        self.alphay,
-                                        self.turn_unit,
-                                        r'$\mathrm{\alpha_y}$',
-                                        label=self.bunchLabel,
-                                        ystyle='sci',
-                                        xstyle='sci',
-                                        fontsize=15,
-                                        alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(ax_single[22],
+                                            self.turn,
+                                            self.alphay,
+                                            self.turn_unit,
+                                            r'$\mathrm{\alpha_y}$',
+                                            label=self.bunchLabel,
+                                            ystyle='sci',
+                                            xstyle='sci',
+                                            fontsize=15,
+                                            alpha=myalpha)
 
                 ax[1, 2].plot(self.turn,
                               self.invarianty,
@@ -632,16 +657,17 @@ class Statistic:
                               alpha=myalpha)
                 ax[1, 2].set_ylabel(r'$\mathrm{\gamma_y\beta_y}-{\alpha_y}^2$',
                                     fontsize=myfontsize)
-                plot_save_single_line_figure(
-                    ax_single[23],
-                    self.turn,
-                    self.invarianty,
-                    self.turn_unit,
-                    r'$\mathrm{\gamma_y\beta_y}-{\alpha_y}^2$',
-                    label=self.bunchLabel,
-                    fontsize=15,
-                    xstyle='sci',
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_line_figure(
+                        ax_single[23],
+                        self.turn,
+                        self.invarianty,
+                        self.turn_unit,
+                        r'$\mathrm{\gamma_y\beta_y}-{\alpha_y}^2$',
+                        label=self.bunchLabel,
+                        fontsize=15,
+                        xstyle='sci',
+                        alpha=myalpha)
 
                 ax[2, 0].scatter(self.turn,
                                  self.gammax,
@@ -652,16 +678,17 @@ class Statistic:
                                  linewidth=self.marker_linewidth)
                 ax[2, 0].set_ylabel(r'$\mathrm{\gamma_x}\ (\mathrm{m^{-1}})$',
                                     fontsize=myfontsize)
-                plot_save_single_figure(
-                    ax_single[24],
-                    self.turn,
-                    self.gammax,
-                    self.turn_unit,
-                    r'$\mathrm{\gamma_x}\ (\mathrm{m^{-1}})$',
-                    label=self.bunchLabel,
-                    fontsize=15,
-                    xstyle='sci',
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[24],
+                        self.turn,
+                        self.gammax,
+                        self.turn_unit,
+                        r'$\mathrm{\gamma_x}\ (\mathrm{m^{-1}})$',
+                        label=self.bunchLabel,
+                        fontsize=15,
+                        xstyle='sci',
+                        alpha=myalpha)
 
                 ax[2, 1].scatter(self.turn,
                                  self.gammay,
@@ -672,16 +699,17 @@ class Statistic:
                                  linewidth=self.marker_linewidth)
                 ax[2, 1].set_ylabel(r'$\mathrm{\gamma_y}\ (\mathrm{m^{-1}})$',
                                     fontsize=myfontsize)
-                plot_save_single_figure(
-                    ax_single[25],
-                    self.turn,
-                    self.gammay,
-                    self.turn_unit,
-                    r'$\mathrm{\gamma_y}\ (\mathrm{m^{-1}})$',
-                    label=self.bunchLabel,
-                    fontsize=15,
-                    xstyle='sci',
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[25],
+                        self.turn,
+                        self.gammay,
+                        self.turn_unit,
+                        r'$\mathrm{\gamma_y}\ (\mathrm{m^{-1}})$',
+                        label=self.bunchLabel,
+                        fontsize=15,
+                        xstyle='sci',
+                        alpha=myalpha)
 
                 ax[2, 2].plot(self.turn,
                               self.beamloss,
@@ -716,17 +744,18 @@ class Statistic:
                 ax[0,
                    0].set_ylabel(r'$\overline{\mathrm{xz}}\ (\mathrm{m^2})$',
                                  fontsize=myfontsize)
-                plot_save_single_figure(
-                    ax_single[26],
-                    self.turn,
-                    self.xzAverage,
-                    self.turn_unit,
-                    r'$\overline{\mathrm{xz}}\ (\mathrm{m^2})$',
-                    label=self.bunchLabel,
-                    ystyle='sci',
-                    xstyle='sci',
-                    fontsize=15,
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[26],
+                        self.turn,
+                        self.xzAverage,
+                        self.turn_unit,
+                        r'$\overline{\mathrm{xz}}\ (\mathrm{m^2})$',
+                        label=self.bunchLabel,
+                        ystyle='sci',
+                        xstyle='sci',
+                        fontsize=15,
+                        alpha=myalpha)
 
                 ax[0, 1].scatter(self.turn,
                                  self.xyAverage,
@@ -738,17 +767,18 @@ class Statistic:
                 ax[0,
                    1].set_ylabel(r'$\overline{\mathrm{xy}}\ (\mathrm{m^2})$',
                                  fontsize=myfontsize)
-                plot_save_single_figure(
-                    ax_single[27],
-                    self.turn,
-                    self.xyAverage,
-                    self.turn_unit,
-                    r'$\overline{\mathrm{xy}}\ (\mathrm{m^2})$',
-                    label=self.bunchLabel,
-                    ystyle='sci',
-                    xstyle='sci',
-                    fontsize=15,
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[27],
+                        self.turn,
+                        self.xyAverage,
+                        self.turn_unit,
+                        r'$\overline{\mathrm{xy}}\ (\mathrm{m^2})$',
+                        label=self.bunchLabel,
+                        ystyle='sci',
+                        xstyle='sci',
+                        fontsize=15,
+                        alpha=myalpha)
 
                 ax[1, 0].scatter(self.turn,
                                  self.yzAverage,
@@ -760,17 +790,18 @@ class Statistic:
                 ax[1,
                    0].set_ylabel(r'$\overline{\mathrm{yz}}\ (\mathrm{m^2})$',
                                  fontsize=myfontsize)
-                plot_save_single_figure(
-                    ax_single[28],
-                    self.turn,
-                    self.yzAverage,
-                    self.turn_unit,
-                    r'$\overline{\mathrm{yz}}\ (\mathrm{m^2})$',
-                    label=self.bunchLabel,
-                    ystyle='sci',
-                    xstyle='sci',
-                    fontsize=15,
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[28],
+                        self.turn,
+                        self.yzAverage,
+                        self.turn_unit,
+                        r'$\overline{\mathrm{yz}}\ (\mathrm{m^2})$',
+                        label=self.bunchLabel,
+                        ystyle='sci',
+                        xstyle='sci',
+                        fontsize=15,
+                        alpha=myalpha)
 
                 ax[1, 1].scatter(self.turn,
                                  self.xzDevideSigmaxSigmaZ,
@@ -782,17 +813,18 @@ class Statistic:
                 ax[1, 1].set_ylabel(
                     r'$\overline{\mathrm{xz}}/\mathrm{\sigma_x\sigma_z}$',
                     fontsize=myfontsize)
-                plot_save_single_figure(
-                    ax_single[29],
-                    self.turn,
-                    self.xzDevideSigmaxSigmaZ,
-                    self.turn_unit,
-                    r'$\overline{\mathrm{xz/\sigma_x\sigma_z}}$',
-                    label=self.bunchLabel,
-                    ystyle='sci',
-                    xstyle='sci',
-                    fontsize=15,
-                    alpha=myalpha)
+                if self.isPlotSingle:
+                    plot_save_single_figure(
+                        ax_single[29],
+                        self.turn,
+                        self.xzDevideSigmaxSigmaZ,
+                        self.turn_unit,
+                        r'$\overline{\mathrm{xz/\sigma_x\sigma_z}}$',
+                        label=self.bunchLabel,
+                        ystyle='sci',
+                        xstyle='sci',
+                        fontsize=15,
+                        alpha=myalpha)
 
                 for i in range(2):
                     for j in range(2):
@@ -818,16 +850,17 @@ class Statistic:
                                      s=self.marker_size,
                                      linewidth=self.marker_linewidth)
                     ax[0, 0].set_ylabel('x skewness', fontsize=myfontsize)
-                    plot_save_single_figure(ax_single[30],
-                                            self.turn,
-                                            self.xSkewness,
-                                            self.turn_unit,
-                                            'x skewness',
-                                            label=self.bunchLabel,
-                                            ystyle='sci',
-                                            xstyle='sci',
-                                            fontsize=15,
-                                            alpha=myalpha)
+                    if self.isPlotSingle:
+                        plot_save_single_figure(ax_single[30],
+                                                self.turn,
+                                                self.xSkewness,
+                                                self.turn_unit,
+                                                'x skewness',
+                                                label=self.bunchLabel,
+                                                ystyle='sci',
+                                                xstyle='sci',
+                                                fontsize=15,
+                                                alpha=myalpha)
 
                     ax[0, 1].scatter(self.turn,
                                      self.xKurtosis,
@@ -837,15 +870,16 @@ class Statistic:
                                      s=self.marker_size,
                                      linewidth=self.marker_linewidth)
                     ax[0, 1].set_ylabel('x kurtosis', fontsize=myfontsize)
-                    plot_save_single_figure(ax_single[31],
-                                            self.turn,
-                                            self.xKurtosis,
-                                            self.turn_unit,
-                                            'x kurtosis',
-                                            label=self.bunchLabel,
-                                            fontsize=15,
-                                            xstyle='sci',
-                                            alpha=myalpha)
+                    if self.isPlotSingle:
+                        plot_save_single_figure(ax_single[31],
+                                                self.turn,
+                                                self.xKurtosis,
+                                                self.turn_unit,
+                                                'x kurtosis',
+                                                label=self.bunchLabel,
+                                                fontsize=15,
+                                                xstyle='sci',
+                                                alpha=myalpha)
 
                     ax[1, 0].scatter(self.turn,
                                      self.ySkewness,
@@ -855,16 +889,17 @@ class Statistic:
                                      s=self.marker_size,
                                      linewidth=self.marker_linewidth)
                     ax[1, 0].set_ylabel('y skewness', fontsize=myfontsize)
-                    plot_save_single_figure(ax_single[32],
-                                            self.turn,
-                                            self.ySkewness,
-                                            self.turn_unit,
-                                            'y skewness',
-                                            label=self.bunchLabel,
-                                            ystyle='sci',
-                                            xstyle='sci',
-                                            fontsize=15,
-                                            alpha=myalpha)
+                    if self.isPlotSingle:
+                        plot_save_single_figure(ax_single[32],
+                                                self.turn,
+                                                self.ySkewness,
+                                                self.turn_unit,
+                                                'y skewness',
+                                                label=self.bunchLabel,
+                                                ystyle='sci',
+                                                xstyle='sci',
+                                                fontsize=15,
+                                                alpha=myalpha)
 
                     ax[1, 1].scatter(self.turn,
                                      self.yKurtosis,
@@ -874,15 +909,16 @@ class Statistic:
                                      s=self.marker_size,
                                      linewidth=self.marker_linewidth)
                     ax[1, 1].set_ylabel('y kurtosis', fontsize=myfontsize)
-                    plot_save_single_figure(ax_single[33],
-                                            self.turn,
-                                            self.yKurtosis,
-                                            self.turn_unit,
-                                            'y kurtosis',
-                                            label=self.bunchLabel,
-                                            xstyle='sci',
-                                            fontsize=15,
-                                            alpha=myalpha)
+                    if self.isPlotSingle:
+                        plot_save_single_figure(ax_single[33],
+                                                self.turn,
+                                                self.yKurtosis,
+                                                self.turn_unit,
+                                                'y kurtosis',
+                                                label=self.bunchLabel,
+                                                xstyle='sci',
+                                                fontsize=15,
+                                                alpha=myalpha)
 
                     for i in range(2):
                         for j in range(2):
