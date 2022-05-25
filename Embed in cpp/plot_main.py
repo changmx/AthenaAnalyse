@@ -670,7 +670,7 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
 
 
 if __name__ == '__main__':
-    home = ''
+    home = os.sep.join(['/home', 'changmx', 'bb2022'])
     if socket.gethostname() == 'DESKTOP-T722QRP':
         home = os.sep.join(['D:', 'bb2022'])
     elif socket.gethostname() == 'zts-gpu':
@@ -679,9 +679,10 @@ if __name__ == '__main__':
         home = os.sep.join(['/raid', 'home', 'changmx', 'bb2022'])
     else:
         print(
-            'We do not support current machine now, please add hostname: {0} to home path list.}'
+            'We do not support current machine now, please add hostname: {0} to home path list.'
             .format(socket.gethostname()))
-        os.exit(1)
+        # os.exit(1)
+        print('Try default path: {0}'.format(home))
 
     command = ('all', 'stat', 'lumi', 'tune', 'dist', 'fma', 'fma-fma',
                'fma-dist')
