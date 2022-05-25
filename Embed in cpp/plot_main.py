@@ -579,6 +579,7 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     runningTime.start('total')
     beam1 = Parameter(home, yearMonDay, hourMinSec, 'beam1')
     beam2 = Parameter(home, yearMonDay, hourMinSec, 'beam2')
+    beam2.superiod = beam1.superiod
 
     my_figsize1 = (20, 10)
     my_figsize_tune = (8, 6)
