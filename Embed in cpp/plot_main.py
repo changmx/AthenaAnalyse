@@ -378,7 +378,6 @@ def plot_tune_oneProcess(tune, para, order, myfigsize, myfontsize, cpuid):
                           nuY,
                           order,
                           myalpha=0.8,
-                          mygridsize=200,
                           myfontsize=myfontsize)
 
         ax.scatter(para.nux,
@@ -402,6 +401,7 @@ def plot_tune_main(home,
                    para,
                    myfigsize,
                    myfontsize,
+                   mygridsize,
                    ncpu,
                    timestat,
                    bunchid=[0]):
@@ -417,9 +417,10 @@ def plot_tune_main(home,
                 para.nuy,
                 para.tuneshift_direction,
                 ncpu,
+                mygridsize,
                 xlim=[0, 1],
                 ylim=[0, 1])
-    print(tune.particle, tune.xlim, tune.ylim)
+    # print(tune.particle, tune.xlim, tune.ylim)
     tune.get_phase_limit()
     tune.allocate_phase_file()
 
@@ -532,40 +533,88 @@ def plot_distribution_main(home,
     timestat.end('dist')
 
 
-def plot_fma_oneProcess(bunchid, home, yearMonDay, hourMinSec, para, myfigsize,
-                        myfontsize, myscattersize, mydistTurnStep, isDistZip,
-                        plotkind):
-    myfootprint = FootPrint(home, yearMonDay, hourMinSec, para.particle,
-                            bunchid)
-    myfootprint.load_plot_save(para, myfigsize, myfontsize, myscattersize,
-                               mydistTurnStep, isDistZip, plotkind)
+def plot_fma_oneProcess(myfootprint, para, myfigsize, myfontsize,
+                        myscattersize, mydistTurnStep, isDistZip, plotkind,
+                        cpuid):
+
+    for index in myfootprint.fileIndex[cpuid]:
+
+        myfootprint.load_plot_save(index, para, myfigsize, myfontsize,
+                                   myscattersize, mydistTurnStep, isDistZip,
+                                   plotkind)
 
 
-def plot_fma_main(home, yearMonDay, hourMinSec, para, myfigsize, myfontsize,
-                  myscattersize, mydistTurnStep, isDistZip, plotkind, ncpu,
-                  timestat):
+def plot_fma_main(home,
+                  yearMonDay,
+                  hourMinSec,
+                  para,
+                  myfigsize,
+                  myfontsize,
+                  myscattersize,
+                  mydistTurnStep,
+                  isDistZip,
+                  plotkind,
+                  ncpu,
+                  timestat,
+                  xlim=[0, 1],
+                  ylim=[0, 1],
+                  vmin=None,
+                  vmax=None,
+                  bunchid=[0]):
     timestat.start('fma')
     print('\nStart drawing {0:s} Frequency Map'.format(para.particle))
-    if ncpu == 1:
-        for i in range(para.nbunch):
-            plot_fma_oneProcess(i, home, yearMonDay, hourMinSec, para,
-                                myfigsize, myfontsize, myscattersize,
-                                mydistTurnStep, isDistZip, plotkind)
-    else:
-        ps = []
-        for i in range(para.nbunch):
-            p = Process(target=plot_fma_oneProcess,
-                        args=(i, home, yearMonDay, hourMinSec, para, myfigsize,
-                              myfontsize, myscattersize, mydistTurnStep,
-                              isDistZip, plotkind))
-            ps.append(p)
-        for i in range(para.nbunch):
-            ps[i].start()
-            print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
-                  format(os.cpu_count(), i, para.nbunch))
-            time.sleep(1)
-        for i in range(para.nbunch):
-            ps[i].join()
+
+    myfootprint = FootPrint(home,
+                            yearMonDay,
+                            hourMinSec,
+                            para.particle,
+                            bunchid,
+                            para.nux,
+                            para.nuy,
+                            para.tuneshift_direction,
+                            ncpu,
+                            xlim=xlim,
+                            ylim=ylim,
+                            vmin=vmin,
+                            vmax=vmax,
+                            dist='gaussian')
+    myfootprint.get_phase_limit(para)
+    myfootprint.allocate_phase_file()
+
+    ps = []
+    for cpuid in range(myfootprint.ntask):
+        p = Process(target=plot_fma_oneProcess,
+                    args=(myfootprint, para, myfigsize, myfontsize,
+                          myscattersize, mydistTurnStep, isDistZip, plotkind,
+                          cpuid))
+        ps.append(p)
+    for cpuid in range(myfootprint.ntask):
+        ps[cpuid].start()
+        print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.format(
+            os.cpu_count(), cpuid, myfootprint.ntask))
+        time.sleep(0.01)
+    for cpuid in range(myfootprint.ntask):
+        ps[cpuid].join()
+    # if ncpu == 1:
+    #     for i in range(para.nbunch):
+    #         plot_fma_oneProcess(i, home, yearMonDay, hourMinSec, para,
+    #                             myfigsize, myfontsize, myscattersize,
+    #                             mydistTurnStep, isDistZip, plotkind)
+    # else:
+    #     ps = []
+    #     for i in range(para.nbunch):
+    #         p = Process(target=plot_fma_oneProcess,
+    #                     args=(i, home, yearMonDay, hourMinSec, para, myfigsize,
+    #                           myfontsize, myscattersize, mydistTurnStep,
+    #                           isDistZip, plotkind))
+    #         ps.append(p)
+    #     for i in range(para.nbunch):
+    #         ps[i].start()
+    #         print('Total cpu cores: {0:d}, task {1:d}/{2:d} has been added'.
+    #               format(os.cpu_count(), i, para.nbunch))
+    #         time.sleep(1)
+    #     for i in range(para.nbunch):
+    #         ps[i].join()
     timestat.end('fma')
 
 
@@ -590,6 +639,8 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     my_fontsize_fma = 12
     my_fontsize_dist = 15
 
+    mygridsize_tune = 200
+
     my_fma_scattersize = 1
     my_fma_distTurnStep = 25
     my_fma_dist_isZip = True
@@ -603,6 +654,9 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
 
     dist_beam1_bunchid = [0]
     dist_beam2_bunchid = [0]
+
+    fma_beam1_bunchid = [0]
+    fma_beam2_bunchid = [0]
 
     # beam1.print()
     # beam2.print()
@@ -646,23 +700,49 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
 
         if kind == 'all' or kind == 'tune':
             plot_tune_main(home, yearMonDay, hourMinSec, beam1,
-                           my_figsize_tune, my_fontsize_tune, ncpu,
-                           runningTime, tune_beam1_bunchid)
+                           my_figsize_tune, my_fontsize_tune, mygridsize_tune,
+                           ncpu, runningTime, tune_beam1_bunchid)
 
             plot_tune_main(home, yearMonDay, hourMinSec, beam2,
-                           my_figsize_tune, my_fontsize_tune, ncpu,
-                           runningTime, tune_beam2_bunchid)
+                           my_figsize_tune, my_fontsize_tune, mygridsize_tune,
+                           ncpu, runningTime, tune_beam2_bunchid)
 
         if kind == 'all' or kind == 'fma' or kind == 'fma-fma' or kind == 'fma-dist':
-            plot_fma_main(home, yearMonDay, hourMinSec, beam1, my_figsize_fma,
-                          my_fontsize_fma, my_fma_scattersize,
-                          my_fma_distTurnStep, my_fma_dist_isZip, kind, ncpu,
-                          runningTime)
+            plot_fma_main(home,
+                          yearMonDay,
+                          hourMinSec,
+                          beam1,
+                          my_figsize_fma,
+                          my_fontsize_fma,
+                          my_fma_scattersize,
+                          my_fma_distTurnStep,
+                          my_fma_dist_isZip,
+                          kind,
+                          ncpu,
+                          runningTime,
+                          xlim=[0, 1],
+                          ylim=[0, 1],
+                          vmin=None,
+                          vmax=None,
+                          bunchid=fma_beam1_bunchid)
 
-            plot_fma_main(home, yearMonDay, hourMinSec, beam2, my_figsize_fma,
-                          my_fontsize_fma, my_fma_scattersize,
-                          my_fma_distTurnStep, my_fma_dist_isZip, kind, ncpu,
-                          runningTime)
+            plot_fma_main(home,
+                          yearMonDay,
+                          hourMinSec,
+                          beam2,
+                          my_figsize_fma,
+                          my_fontsize_fma,
+                          my_fma_scattersize,
+                          my_fma_distTurnStep,
+                          my_fma_dist_isZip,
+                          kind,
+                          ncpu,
+                          runningTime,
+                          xlim=[0, 1],
+                          ylim=[0, 1],
+                          vmin=None,
+                          vmax=None,
+                          bunchid=fma_beam2_bunchid)
 
     runningTime.end('total')
     runningTime.printTimeStat()
@@ -698,8 +778,8 @@ if __name__ == '__main__':
             else:
                 print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
 
-    yearMonDay = '2022_0523'
-    hourMinSec = '1528_45'
+    yearMonDay = '2022_0622'
+    hourMinSec = '1652_21'
 
     ncpu = os.cpu_count() - 1
     status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
