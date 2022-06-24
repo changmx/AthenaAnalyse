@@ -368,7 +368,7 @@ class FootPrint:
         xlim = [-6 * para.sigmax, 6 * para.sigmax]
         ylim = [-6 * para.sigmay, 6 * para.sigmay]
         pxlim = [-6 * para.sigmapx, 6 * para.sigmapx]
-        pxlim = [-6 * para.sigmapy, 6 * para.sigmapy]
+        pylim = [-6 * para.sigmapy, 6 * para.sigmapy]
 
         if isZip:
             zip_xpx = zipfile.ZipFile(
