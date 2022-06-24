@@ -8,6 +8,7 @@ import numpy as np
 import os
 import glob
 import re
+import sys
 
 from plot_general import myhexbin
 
@@ -27,8 +28,11 @@ class Tune:
                  nuy,
                  tuneshift_direction,
                  ncpu,
+                 gridsize,
                  xlim=[0, 1],
-                 ylim=[0, 1]):
+                 ylim=[0, 1],
+                 vmin=None,
+                 vmax=None):
         self.home = home
         self.yearMonDay = yearMonDay
         self.hourMinSec = hourMinSec
@@ -40,6 +44,9 @@ class Tune:
         self.ncpu = ncpu
         self.xlim = xlim
         self.ylim = ylim
+        self.vmin = vmin
+        self.vmax = vmax
+        self.gridsize = gridsize
 
         self.filePath = []
         self.savePath_scatter = []
@@ -91,7 +98,9 @@ class Tune:
         print('{0:d} files will be drawn'.format(self.nfile))
 
     def get_phase_limit(self):
-        if self.xlim == [0, 1] or self.ylim == [0, 1]:
+        if self.xlim == [0, 1] or self.ylim == [
+                0, 1
+        ] or self.vmin == None or self.vmax == None:
             if len(self.filePath) > 0:
 
                 print('Cal limit by file: ', self.filePath[0])
@@ -138,29 +147,61 @@ class Tune:
                     axmax = self.nux + xgap * 0.7
                     aymax = self.nuy + ygap * 0.7
 
+                axmin = np.floor(axmin * 1000) / 1000
+                aymin = np.floor(aymin * 1000) / 1000
+                axmax = np.ceil(axmax * 1000) / 1000
+                aymax = np.ceil(aymax * 1000) / 1000
+
                 axmin = 0 if axmin < 0 else axmin
                 aymin = 0 if aymin < 0 else aymin
                 axmax = 1 if axmax > 1 else axmax
                 aymax = 1 if aymax > 1 else aymax
 
+                if isinstance(self.gridsize, int):
+                    nx = self.gridsize + 1
+                    ny = self.gridsize + 1
+                elif isinstance(self.gridsize, tuple):
+                    nx = self.gridsize[0] + 1
+                    ny = self.gridsize[1] + 1
+                else:
+                    print('Error: gridsize type should be int or tuple(nx,ny)')
+                    sys.exit(1)
+
+                x = np.zeros(nx**2)
+                y = np.zeros(ny**2)
+                z = np.zeros((nx, ny))
+
+                dx = (xmax - xmin) / self.gridsize
+                dy = (ymax - ymin) / self.gridsize
+
+                for id in range(np.size(nuX)):
+                    xindex = int((nuX[id] - xmin) / dx)
+                    yindex = int((nuY[id] - ymin) / dy)
+                    z[yindex, xindex] += 1
+
+                avmax = np.ceil(np.amax(z) * 2)
+
                 if self.xlim == [0, 1]:
                     self.xlim = [axmin, axmax]
                 if self.ylim == [0, 1]:
                     self.ylim = [aymin, aymax]
-            else:
-                if self.xlim == [0, 1]:
-                    if self.nux > 0.5:
-                        self.xlim[0] = 0.5
-                    else:
-                        self.xlim[1] = 0.5
-                if self.ylim == [0, 1]:
-                    if self.nuy > 0.5:
-                        self.ylim[0] = 0.5
-                    else:
-                        self.ylim[1] = 0.5
+                if self.vmax == None:
+                    self.vmax = avmax
+        else:
+            if self.xlim == [0, 1]:
+                if self.nux > 0.5:
+                    self.xlim[0] = 0.5
+                else:
+                    self.xlim[1] = 0.5
+            if self.ylim == [0, 1]:
+                if self.nuy > 0.5:
+                    self.ylim[0] = 0.5
+                else:
+                    self.ylim[1] = 0.5
 
         print('xlim: ', self.xlim)
         print('ylim: ', self.ylim)
+        print('vlim: ', self.vmin, self.vmax)
 
     def allocate_phase_file(self):
         self.fileIndex = []
@@ -221,7 +262,6 @@ def plot_phase_hexbin(tune,
                       nuY,
                       resonanceOrder,
                       myalpha,
-                      mygridsize,
                       resonanceKind='all',
                       myfontsize=10):
     # he = ax.hexbin(self.nuX[phaseTime],
@@ -232,10 +272,10 @@ def plot_phase_hexbin(tune,
     he = myhexbin(ax,
                   nuX,
                   nuY,
-                  gridsize=mygridsize,
+                  gridsize=tune.gridsize,
                   alpha=myalpha,
                   scattersize=1,
-                  norm=matplotlib.colors.LogNorm(),
+                  norm=matplotlib.colors.LogNorm(vmax=tune.vmax),
                   cmap='jet')
     cbar = fig.colorbar(he)
     cbar.ax.tick_params(labelsize=myfontsize)
