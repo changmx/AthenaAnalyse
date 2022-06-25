@@ -483,8 +483,6 @@ def plot_distribution_oneProcess(dist, para, myfigsize, myfontsize, cpuid,
                        title,
                        dist.savePath[index],
                        dist.savePath_single[index],
-                       mysize=200,
-                       mybins=300,
                        isPlotSingle=isPlotSingle)
 
         print('File has been drawn: {0}'.format(dist.filePath[index]))
@@ -496,14 +494,22 @@ def plot_distribution_main(home,
                            para,
                            myfigsize,
                            myfontsize,
+                           mygridsize,
+                           nbin,
                            ncpu,
                            timestat,
                            bunchid=[0],
-                           isPlotSingle=False):
+                           isPlotSingle=False,
+                           vmin_hex=None,
+                           vmax_hex=None,
+                           vmin_hist=None,
+                           vmax_hist=None):
     timestat.start('dist')
     print('\nStart drawing {0:s} distribution data'.format(para.particle))
     dist = Distribution(home, yearMonDay, hourMinSec, para.particle, bunchid,
-                        para.dist, ncpu)
+                        para.dist, mygridsize, nbin, ncpu, vmin_hex, vmax_hex,
+                        vmin_hist, vmax_hist)
+    dist.get_limit(para.sigmax)
     dist.allocate_dist_file()
 
     ps = []
@@ -647,6 +653,9 @@ def main(home,
     my_fontsize_dist = 15
 
     mygridsize_tune = 200
+    mygridsize_dist = 200
+
+    mybin_dist = 300
 
     my_fma_scattersize = 1
     my_fma_distTurnStep = 25
@@ -692,7 +701,8 @@ def main(home,
 
         if cmd == 'all' or cmd == 'dist':
             plot_distribution_main(home, yearMonDay, hourMinSec, beam1,
-                                   my_figsize1, my_fontsize_dist, ncpu,
+                                   my_figsize1, my_fontsize_dist,
+                                   mygridsize_dist, mybin_dist, ncpu,
                                    runningTime, dist_beam1_bunchid,
                                    beam1_isPlotSingle_dist)
 
@@ -728,7 +738,8 @@ def main(home,
 
         if cmd == 'all' or cmd == 'dist':
             plot_distribution_main(home, yearMonDay, hourMinSec, beam2,
-                                   my_figsize1, my_fontsize_dist, ncpu,
+                                   my_figsize1, my_fontsize_dist,
+                                   mygridsize_dist, mybin_dist, ncpu,
                                    runningTime, dist_beam2_bunchid,
                                    beam2_isPlotSingle_dist)
 

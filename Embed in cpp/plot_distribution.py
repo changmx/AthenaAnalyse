@@ -4,6 +4,7 @@ import numpy as np
 import os
 import glob
 import re
+import sys
 
 from numpy.lib import delete
 from load_parameter import Parameter
@@ -16,15 +17,33 @@ class Distribution:
     Load and plot particles distribution
     '''
 
-    def __init__(self, home, yearMonDay, hourMinSec, particle, bunchidList,
-                 dist, ncpu) -> None:
+    def __init__(self,
+                 home,
+                 yearMonDay,
+                 hourMinSec,
+                 particle,
+                 bunchidList,
+                 dist,
+                 gridsize,
+                 nbin,
+                 ncpu,
+                 vmin_hex=None,
+                 vmax_hex=None,
+                 vmin_hist=None,
+                 vmax_hist=None) -> None:
         self.home = home
         self.yearMonDay = yearMonDay
         self.hourMinSec = hourMinSec
         self.particle = particle
         self.bunchid = bunchidList
         self.dist = dist
+        self.gridsize = gridsize
+        self.nbin = nbin
         self.ncpu = ncpu
+        self.vmin_hex = vmin_hex
+        self.vmax_hex = vmax_hex
+        self.vmin_hist = vmin_hist
+        self.vmax_hist = vmax_hist
 
         self.bunchLabel = []
 
@@ -99,6 +118,59 @@ class Distribution:
             self.fileIndex[i % self.ntask].append(i)
         # print(self.fileIndex)
 
+    def get_limit(self, sigmax):
+        if self.vmin_hex == None or self.vmax_hex == None or self.vmin_hist == None or self.vmax_hist == None:
+            if len(self.filePath) > 0:
+                print('Cal dist limit by file: ', self.filePath[0])
+
+                xArray, pxArray, yArray, pyArray, zArray, pzArray = load_dist(
+                    self.filePath[0])
+
+                if isinstance(self.gridsize, int):
+                    nx = self.gridsize + 1
+                    ny = self.gridsize + 1
+                elif isinstance(self.gridsize, tuple):
+                    nx = self.gridsize[0] + 1
+                    ny = self.gridsize[1] + 1
+                else:
+                    print('Error: gridsize type should be int or tuple(nx,ny)')
+                    sys.exit(1)
+
+                x = np.zeros(nx**2)
+                y = np.zeros(ny**2)
+                z = np.zeros((nx, ny))
+
+                xmin = np.amin(xArray)
+                ymin = np.amin(yArray)
+                xmax = np.amax(xArray)
+                ymax = np.amax(yArray)
+
+                dx = (xmax - xmin) / self.gridsize
+                dy = (ymax - ymin) / self.gridsize
+
+                for id in range(np.size(xArray)):
+                    xindex = int((xArray[id] - xmin) / dx)
+                    yindex = int((yArray[id] - ymin) / dy)
+                    z[yindex, xindex] += 1
+
+                # histvalue, bins = np.histogram(xArray,
+                #                                density=True,
+                #                                bins=self.nbin,
+                #                                range=(-6 * sigmax, 6 * sigmax))
+
+                avmax_hex = np.ceil(np.amax(z) * 1.2)
+                # total_hist = len(xArray)
+                # avmax_hist = np.ceil(
+                #     np.amax(histvalue) * 1.5 / total_hist * 100) / 100
+
+                if self.vmax_hex == None:
+                    self.vmax_hex = avmax_hex
+                # if self.vmax_hist == None:
+                #     self.vmax_hist = avmax_hist
+
+        print('vlim hex : ', self.vmin_hex, self.vmax_hex)
+        # print('vlim hist: ', self.vmin_hist, self.vmax_hist)
+
 
 def load_dist(filePath):
     x, px, y, py, z, pz, tag = np.loadtxt(filePath,
@@ -122,8 +194,8 @@ def load_dist(filePath):
 
 
 def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
-                   mybunchlabel, title, savePath, savePath_single, mysize,
-                   mybins, isPlotSingle):
+                   mybunchlabel, title, savePath, savePath_single,
+                   isPlotSingle):
     # plt.rcParams.update({'figure.max_open_warning': 0})
     row = 3
     col = 4
@@ -145,7 +217,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
         else:
             fig_tmp = ''
             ax_tmp = ''
-            
+
         fig_single.append(fig_tmp)
         ax_single.append(ax_tmp)
 
@@ -153,129 +225,141 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
                      ax[0, 0],
                      x / para.sigmax,
                      px / para.sigmapx,
-                     mysize,
+                     dist.gridsize,
                      1,
                      1,
                      r'$\rm x/\sigma_x$',
                      r'$\rm x^{\prime}/\sigma_{{x^{\prime}}}$',
                      isPlotSingle,
                      ax_single=ax_single[0],
-                     fig_single=fig_single[0])
+                     fig_single=fig_single[0],
+                     vmax=dist.vmax_hex)
     plot_dist_hexbin(fig,
                      ax[1, 0],
                      y / para.sigmay,
                      py / para.sigmapy,
-                     mysize,
+                     dist.gridsize,
                      1,
                      1,
                      r'$\rm y/\sigma_y$',
                      r'$\rm y^{\prime}/\sigma_{{y^{\prime}}}$',
                      isPlotSingle,
                      ax_single=ax_single[1],
-                     fig_single=fig_single[1])
+                     fig_single=fig_single[1],
+                     vmax=dist.vmax_hex)
     plot_dist_hexbin(fig,
                      ax[2, 0],
                      z / para.sigmaz,
                      pz / para.sigmapz,
-                     mysize,
+                     dist.gridsize,
                      1,
                      1,
                      r'$\rm z/\sigma_z$',
                      r'$\rm \delta_p/\sigma_{{\delta_p}}$',
                      isPlotSingle,
                      ax_single=ax_single[2],
-                     fig_single=fig_single[2])
+                     fig_single=fig_single[2],
+                     vmax=dist.vmax_hex)
 
     plot_dist_hexbin(fig,
                      ax[0, 1],
                      x / para.sigmax,
                      y / para.sigmay,
-                     mysize,
+                     dist.gridsize,
                      1,
                      1,
                      r'$\rm x/\sigma_x$',
                      r'$\rm y/\sigma_y$',
                      isPlotSingle,
                      ax_single=ax_single[3],
-                     fig_single=fig_single[3])
+                     fig_single=fig_single[3],
+                     vmax=dist.vmax_hex)
     plot_dist_hexbin(fig,
                      ax[1, 1],
                      z / para.sigmaz,
                      x / para.sigmax,
-                     mysize,
+                     dist.gridsize,
                      1,
                      1,
                      r'$\rm z/\sigma_z$',
                      r'$\rm x/\sigma_x$',
                      isPlotSingle,
                      ax_single=ax_single[4],
-                     fig_single=fig_single[4])
+                     fig_single=fig_single[4],
+                     vmax=dist.vmax_hex)
     plot_dist_hexbin(fig,
                      ax[2, 1],
                      z / para.sigmaz,
                      y / para.sigmay,
-                     mysize,
+                     dist.gridsize,
                      1,
                      1,
                      r'$\rm z/\sigma_z$',
                      r'$\rm y/\sigma_y$',
                      isPlotSingle,
                      ax_single=ax_single[5],
-                     fig_single=fig_single[5])
+                     fig_single=fig_single[5],
+                     vmax=dist.vmax_hex)
 
     plot_dist_hist(ax[0, 2],
                    x / para.sigmax,
-                   mybins,
+                   dist.nbin,
                    1,
                    mybunchlabel,
                    r'$\rm x/\sigma_x$',
                    'Count',
                    isPlotSingle,
+                   vmax=dist.vmax_hist,
                    ax_single=ax_single[6])
     plot_dist_hist(ax[0, 3],
                    px / para.sigmapx,
-                   mybins,
+                   dist.nbin,
                    1,
                    mybunchlabel,
                    r'$\rm x^{\prime}/\sigma_{{x^{\prime}}}$',
                    'Count',
                    isPlotSingle,
+                   vmax=dist.vmax_hist,
                    ax_single=ax_single[7])
     plot_dist_hist(ax[1, 2],
                    y / para.sigmay,
-                   mybins,
+                   dist.nbin,
                    1,
                    mybunchlabel,
                    r'$\rm y/\sigma_y$',
                    'Count',
                    isPlotSingle,
+                   vmax=dist.vmax_hist,
                    ax_single=ax_single[8])
     plot_dist_hist(ax[1, 3],
                    py / para.sigmapy,
-                   mybins,
+                   dist.nbin,
                    1,
                    mybunchlabel,
                    r'$\rm y^{\prime}/\sigma_{{y^{\prime}}}$',
                    'Count',
                    isPlotSingle,
+                   vmax=dist.vmax_hist,
                    ax_single=ax_single[9])
     plot_dist_hist(ax[2, 2],
                    z / para.sigmaz,
-                   mybins,
+                   dist.nbin,
                    1,
                    mybunchlabel,
                    r'$\rm z/\sigma_z$',
                    'Count',
                    isPlotSingle,
+                   vmax=dist.vmax_hist,
                    ax_single=ax_single[10])
     plot_dist_hist(ax[2, 3],
                    pz / para.sigmapz,
-                   mybins,
+                   dist.nbin,
                    1,
                    mybunchlabel,
                    r'$\rm \delta_p/\sigma_{{\delta_p}}$',
                    'Count',
                    isPlotSingle,
+                   vmax=dist.vmax_hist,
                    ax_single=ax_single[11])
 
     fig.subplots_adjust(left=0.05,
@@ -298,7 +382,7 @@ def plot_dist_save(dist, para, x, px, y, py, z, pz, myfigsize, myfontsize,
 
 
 def plot_dist_hexbin(fig, ax, x, y, mysize, xscale, yscale, myxlabel, myylabel,
-                     isPlotSingle, **kwargs):
+                     isPlotSingle, vmax, **kwargs):
     scale = 6
     xmin = -scale * xscale
     xmax = scale * xscale
@@ -311,7 +395,7 @@ def plot_dist_hexbin(fig, ax, x, y, mysize, xscale, yscale, myxlabel, myylabel,
                   y,
                   gridsize=mysize,
                   scattersize=1,
-                  norm=matplotlib.colors.LogNorm(),
+                  norm=matplotlib.colors.LogNorm(vmax=vmax),
                   cmap='jet',
                   alpha=1)
     # hb = ax.hexbin(x, y, gridsize=mysize, cmap='Blues', bins='log')
@@ -341,7 +425,7 @@ def plot_dist_hexbin(fig, ax, x, y, mysize, xscale, yscale, myxlabel, myylabel,
 
 
 def plot_dist_hist(ax, x, mybins, xscale, mylabel, myxlabel, myylabel,
-                   isPlotSingle, **kwargs):
+                   isPlotSingle, vmax, **kwargs):
     scale = 6
     xmin = -scale * xscale
     xmax = scale * xscale
@@ -357,6 +441,7 @@ def plot_dist_hist(ax, x, mybins, xscale, mylabel, myxlabel, myylabel,
         thispatch.set_facecolor(color)
     # ax.hist(x, bins=mybins, label=mylabel)
     ax.set_xlabel(myxlabel)
+    ax.set_ylim((0, 0.5))
     # ax.set_ylabel(myylabel)
     # ax.ticklabel_format(axis='x', style='sci', scilimits=(0, 0))
     ax.grid()
