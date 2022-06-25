@@ -150,7 +150,7 @@ class FootPrint:
         ] or self.vmax == None or self.vmin == None:
             if len(self.filePath) > 0:
 
-                print('Cal limit by file: ', self.filePath[0])
+                print('Cal fma limit by file: ', self.filePath[0])
 
                 nuxArray = []
                 nuyArray = []
