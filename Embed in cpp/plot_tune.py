@@ -103,7 +103,7 @@ class Tune:
         ] or self.vmin == None or self.vmax == None:
             if len(self.filePath) > 0:
 
-                print('Cal limit by file: ', self.filePath[0])
+                print('Cal tune limit by file: ', self.filePath[0])
                 nuX, nuY, tag = np.loadtxt(self.filePath[0],
                                            delimiter=',',
                                            skiprows=1,
