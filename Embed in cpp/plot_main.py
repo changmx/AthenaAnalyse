@@ -1,3 +1,4 @@
+from ast import arg
 from multiprocessing import Pool
 from multiprocessing import Manager
 from multiprocessing import process
@@ -6,6 +7,7 @@ import os
 import platform
 import sys
 import socket
+import getopt
 
 from matplotlib.pyplot import legend, title
 from plot_distribution import Distribution
@@ -618,7 +620,12 @@ def plot_fma_main(home,
     timestat.end('fma')
 
 
-def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
+def main(home,
+         yearMonDay,
+         hourMinSec,
+         command_beam1=['all'],
+         command_beam2=['all'],
+         ncpu=1):
     # Default contexts and start methods on Windows is spawn.
     # Default contexts and start methods on Unix is fork.
     if platform.system() == 'Linux':
@@ -673,41 +680,28 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
     # print(beam1.statnote)
     # print(beam2.statnote)
 
-    for kind in type:
-        if kind == 'all' or kind == 'stat':
+    if 'all' in command_beam1 or 'lumi' in command_beam1 or 'all' in command_beam2 or 'lumi' in command_beam2:
+        plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
+                             my_figsize1, my_fontsize_lumi, runningTime)
+
+    for cmd in command_beam1:
+        if cmd == 'all' or cmd == 'stat':
             plot_statistic_main(home, yearMonDay, hourMinSec, beam1,
                                 beam2.nbunch, my_figsize1, my_fontsize_stat,
                                 ncpu, runningTime, beam1_isPlotSingle_stat)
 
-            plot_statistic_main(home, yearMonDay, hourMinSec, beam2,
-                                beam1.nbunch, my_figsize1, my_fontsize_stat,
-                                ncpu, runningTime, beam2_isPlotSingle_stat)
-
-        if kind == 'all' or kind == 'lumi':
-            plot_luminosity_main(home, yearMonDay, hourMinSec, beam1, beam2,
-                                 my_figsize1, my_fontsize_lumi, runningTime)
-
-        if kind == 'all' or kind == 'dist':
+        if cmd == 'all' or cmd == 'dist':
             plot_distribution_main(home, yearMonDay, hourMinSec, beam1,
                                    my_figsize1, my_fontsize_dist, ncpu,
                                    runningTime, dist_beam1_bunchid,
                                    beam1_isPlotSingle_dist)
 
-            plot_distribution_main(home, yearMonDay, hourMinSec, beam2,
-                                   my_figsize1, my_fontsize_dist, ncpu,
-                                   runningTime, dist_beam2_bunchid,
-                                   beam2_isPlotSingle_dist)
-
-        if kind == 'all' or kind == 'tune':
+        if cmd == 'all' or cmd == 'tune':
             plot_tune_main(home, yearMonDay, hourMinSec, beam1,
                            my_figsize_tune, my_fontsize_tune, mygridsize_tune,
                            ncpu, runningTime, tune_beam1_bunchid)
 
-            plot_tune_main(home, yearMonDay, hourMinSec, beam2,
-                           my_figsize_tune, my_fontsize_tune, mygridsize_tune,
-                           ncpu, runningTime, tune_beam2_bunchid)
-
-        if kind == 'all' or kind == 'fma' or kind == 'fma-fma' or kind == 'fma-dist':
+        if cmd == 'all' or cmd == 'fma' or cmd == 'fmafma' or cmd == 'fmadist':
             plot_fma_main(home,
                           yearMonDay,
                           hourMinSec,
@@ -717,7 +711,7 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
                           my_fma_scattersize,
                           my_fma_distTurnStep,
                           my_fma_dist_isZip,
-                          kind,
+                          cmd,
                           ncpu,
                           runningTime,
                           xlim=[0, 1],
@@ -726,6 +720,24 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
                           vmax=None,
                           bunchid=fma_beam1_bunchid)
 
+    for cmd in command_beam2:
+        if cmd == 'all' or cmd == 'stat':
+            plot_statistic_main(home, yearMonDay, hourMinSec, beam2,
+                                beam1.nbunch, my_figsize1, my_fontsize_stat,
+                                ncpu, runningTime, beam2_isPlotSingle_stat)
+
+        if cmd == 'all' or cmd == 'dist':
+            plot_distribution_main(home, yearMonDay, hourMinSec, beam2,
+                                   my_figsize1, my_fontsize_dist, ncpu,
+                                   runningTime, dist_beam2_bunchid,
+                                   beam2_isPlotSingle_dist)
+
+        if cmd == 'all' or cmd == 'tune':
+            plot_tune_main(home, yearMonDay, hourMinSec, beam2,
+                           my_figsize_tune, my_fontsize_tune, mygridsize_tune,
+                           ncpu, runningTime, tune_beam2_bunchid)
+
+        if cmd == 'all' or cmd == 'fma' or cmd == 'fmafma' or cmd == 'fmadist':
             plot_fma_main(home,
                           yearMonDay,
                           hourMinSec,
@@ -735,7 +747,7 @@ def main(home, yearMonDay, hourMinSec, ncpu=1, type=['all']):
                           my_fma_scattersize,
                           my_fma_distTurnStep,
                           my_fma_dist_isZip,
-                          kind,
+                          cmd,
                           ncpu,
                           runningTime,
                           xlim=[0, 1],
@@ -765,22 +777,43 @@ if __name__ == '__main__':
         # os.exit(1)
         print('Try default path: {0}'.format(home))
 
-    command = ('all', 'stat', 'lumi', 'tune', 'dist', 'fma', 'fma-fma',
-               'fma-dist')
+    command = ('all', 'stat', 'lumi', 'tune', 'dist', 'fma', 'fmafma',
+               'fmadist')
 
-    type = []
+    command_beam1 = []
+    command_beam2 = []
+
     if len(sys.argv) == 1:
-        type = ['all']
+        command_beam1 = ['all']
+        command_beam2 = ['all']
     else:
-        for iargv in range(1, len(sys.argv)):
-            if sys.argv[iargv] in command:
-                type.append(sys.argv[iargv])
-            else:
-                print('Warning: invalid option "{0}"'.format(sys.argv[iargv]))
+        opts, args = getopt.getopt(sys.argv[1:], 'a:b:', ['beam1=', 'beam2='])
+        for opt, arg in opts:
+            if opt in ('-a', '--beam1'):
+                command_beam1 = arg.split('-')
+            if opt in ('-b', '--beam2'):
+                command_beam2 = arg.split('-')
+
+    print('--beam1: ', command_beam1)
+    print('--beam2: ', command_beam2)
+
+    for iargv in command_beam1:
+        if iargv not in command:
+            print('Warning: invalid option of beam1: {0}'.format(iargv))
+    for iargv in command_beam2:
+        if iargv not in command:
+            print('Warning: invalid option of beam2: {0}'.format(iargv))
 
     yearMonDay = '2022_0622'
     hourMinSec = '1652_21'
 
     ncpu = os.cpu_count() - 1
-    status = main(home, yearMonDay, hourMinSec, ncpu=ncpu, type=type)
+    status = main(
+        home,
+        yearMonDay,
+        hourMinSec,
+        command_beam1,
+        command_beam2,
+        ncpu=ncpu,
+    )
     print(status)
