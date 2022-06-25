@@ -276,11 +276,11 @@ class FootPrint:
                                                     usecols=(0, 1, 2, 3, 4, 5,
                                                              6, 7),
                                                     unpack=True)
-        if plotkind == 'all' or plotkind == 'fma' or plotkind == 'fma-dist':
+        if plotkind == 'all' or plotkind == 'fma' or plotkind == 'fmadist':
             self.plot_fix_distribution_perturn(fileIndex, para, turn, x, px, y,
                                                py, z, pz, tag, myDistTurnStep,
                                                isDistZip)
-        if plotkind == 'all' or plotkind == 'fma' or plotkind == 'fma-fma':
+        if plotkind == 'all' or plotkind == 'fma' or plotkind == 'fmafma':
             self.plot_fma(fileIndex, para, x, y, tag, myfigsize, myfontsize,
                           myscattersize)
 
