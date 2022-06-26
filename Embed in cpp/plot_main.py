@@ -698,19 +698,39 @@ def main(home,
             plot_statistic_main(home, yearMonDay, hourMinSec, beam1,
                                 beam2.nbunch, my_figsize1, my_fontsize_stat,
                                 ncpu, runningTime, beam1_isPlotSingle_stat)
+    for cmd in command_beam2:
+        if cmd == 'all' or cmd == 'stat':
+            plot_statistic_main(home, yearMonDay, hourMinSec, beam2,
+                                beam1.nbunch, my_figsize1, my_fontsize_stat,
+                                ncpu, runningTime, beam2_isPlotSingle_stat)
 
+    for cmd in command_beam1:
         if cmd == 'all' or cmd == 'dist':
             plot_distribution_main(home, yearMonDay, hourMinSec, beam1,
                                    my_figsize1, my_fontsize_dist,
                                    mygridsize_dist, mybin_dist, ncpu,
                                    runningTime, dist_beam1_bunchid,
                                    beam1_isPlotSingle_dist)
-
+    for cmd in command_beam2:
+        if cmd == 'all' or cmd == 'dist':
+            plot_distribution_main(home, yearMonDay, hourMinSec, beam2,
+                                   my_figsize1, my_fontsize_dist,
+                                   mygridsize_dist, mybin_dist, ncpu,
+                                   runningTime, dist_beam2_bunchid,
+                                   beam2_isPlotSingle_dist)
+    
+    for cmd in command_beam1:
         if cmd == 'all' or cmd == 'tune':
             plot_tune_main(home, yearMonDay, hourMinSec, beam1,
                            my_figsize_tune, my_fontsize_tune, mygridsize_tune,
                            ncpu, runningTime, tune_beam1_bunchid)
-
+    for cmd in command_beam2:
+        if cmd == 'all' or cmd == 'tune':
+            plot_tune_main(home, yearMonDay, hourMinSec, beam2,
+                           my_figsize_tune, my_fontsize_tune, mygridsize_tune,
+                           ncpu, runningTime, tune_beam2_bunchid)
+    
+    for cmd in command_beam1:
         if cmd == 'all' or cmd == 'fma' or cmd == 'fmafma' or cmd == 'fmadist':
             plot_fma_main(home,
                           yearMonDay,
@@ -729,25 +749,7 @@ def main(home,
                           vmin=None,
                           vmax=None,
                           bunchid=fma_beam1_bunchid)
-
     for cmd in command_beam2:
-        if cmd == 'all' or cmd == 'stat':
-            plot_statistic_main(home, yearMonDay, hourMinSec, beam2,
-                                beam1.nbunch, my_figsize1, my_fontsize_stat,
-                                ncpu, runningTime, beam2_isPlotSingle_stat)
-
-        if cmd == 'all' or cmd == 'dist':
-            plot_distribution_main(home, yearMonDay, hourMinSec, beam2,
-                                   my_figsize1, my_fontsize_dist,
-                                   mygridsize_dist, mybin_dist, ncpu,
-                                   runningTime, dist_beam2_bunchid,
-                                   beam2_isPlotSingle_dist)
-
-        if cmd == 'all' or cmd == 'tune':
-            plot_tune_main(home, yearMonDay, hourMinSec, beam2,
-                           my_figsize_tune, my_fontsize_tune, mygridsize_tune,
-                           ncpu, runningTime, tune_beam2_bunchid)
-
         if cmd == 'all' or cmd == 'fma' or cmd == 'fmafma' or cmd == 'fmadist':
             plot_fma_main(home,
                           yearMonDay,
