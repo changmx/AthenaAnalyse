@@ -774,6 +774,10 @@ def main(home,
 
 
 if __name__ == '__main__':
+
+    yearMonDay = '2022_0622'
+    hourMinSec = '1652_21'
+
     home = os.sep.join(['/home', 'changmx', 'bb2022'])
     if socket.gethostname() == 'DESKTOP-T722QRP':
         home = os.sep.join(['D:', 'bb2022'])
@@ -794,19 +798,27 @@ if __name__ == '__main__':
     command_beam1 = []
     command_beam2 = []
 
-    if len(sys.argv) == 1:
+    opts, args = getopt.getopt(sys.argv[1:], 'a:b:y:h:',
+                               ['beam1=', 'beam2=', 'ymd=', 'hms='])
+    for opt, arg in opts:
+        if opt in ('-a', '--beam1'):
+            command_beam1 = arg.split('-')
+        if opt in ('-b', '--beam2'):
+            command_beam2 = arg.split('-')
+        if opt in ('-y', '--ymd'):
+            yearMonDay = arg
+        if opt in ('-h', '--hms'):
+            hourMinSec = arg
+
+    if not command_beam1:
+        # command_beam1 is empty
         command_beam1 = ['all']
+    if not command_beam2:
         command_beam2 = ['all']
-    else:
-        opts, args = getopt.getopt(sys.argv[1:], 'a:b:', ['beam1=', 'beam2='])
-        for opt, arg in opts:
-            if opt in ('-a', '--beam1'):
-                command_beam1 = arg.split('-')
-            if opt in ('-b', '--beam2'):
-                command_beam2 = arg.split('-')
 
     print('--beam1: ', command_beam1)
     print('--beam2: ', command_beam2)
+    print(yearMonDay, hourMinSec)
 
     for iargv in command_beam1:
         if iargv not in command:
@@ -814,9 +826,6 @@ if __name__ == '__main__':
     for iargv in command_beam2:
         if iargv not in command:
             print('Warning: invalid option of beam2: {0}'.format(iargv))
-
-    yearMonDay = '2022_0622'
-    hourMinSec = '1652_21'
 
     ncpu = os.cpu_count() - 1
     status = main(
