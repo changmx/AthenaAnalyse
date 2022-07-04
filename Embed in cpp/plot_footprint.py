@@ -280,9 +280,9 @@ class FootPrint:
             self.plot_fix_distribution_perturn(fileIndex, para, turn, x, px, y,
                                                py, z, pz, tag, myDistTurnStep,
                                                isDistZip)
-        if plotkind == 'all' or plotkind == 'fma' or plotkind == 'fmafma':
-            self.plot_fma(fileIndex, para, x, y, tag, myfigsize, myfontsize,
-                          myscattersize)
+        # if plotkind == 'all' or plotkind == 'fma' or plotkind == 'fmafma':
+        #     self.plot_fma(fileIndex, para, x, y, tag, myfigsize, myfontsize,
+        #                   myscattersize)
 
         print('File has been drawn: {0}'.format(self.filePath[fileIndex]))
 
