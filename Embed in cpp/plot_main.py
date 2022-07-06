@@ -718,7 +718,7 @@ def main(home,
                                    mygridsize_dist, mybin_dist, ncpu,
                                    runningTime, dist_beam2_bunchid,
                                    beam2_isPlotSingle_dist)
-    
+
     for cmd in command_beam1:
         if cmd == 'all' or cmd == 'tune':
             plot_tune_main(home, yearMonDay, hourMinSec, beam1,
@@ -729,7 +729,7 @@ def main(home,
             plot_tune_main(home, yearMonDay, hourMinSec, beam2,
                            my_figsize_tune, my_fontsize_tune, mygridsize_tune,
                            ncpu, runningTime, tune_beam2_bunchid)
-    
+
     for cmd in command_beam1:
         if cmd == 'all' or cmd == 'fma' or cmd == 'fmafma' or cmd == 'fmadist':
             plot_fma_main(home,
@@ -783,7 +783,7 @@ if __name__ == '__main__':
     home = os.sep.join(['/home', 'changmx', 'bb2022'])
     if socket.gethostname() == 'DESKTOP-T722QRP':
         home = os.sep.join(['D:', 'bb2022'])
-    elif socket.gethostname() == 'zts-gpu':
+    elif socket.gethostname() == 'gpu01.zts':
         home = os.sep.join(['/home', 'changmx', 'bb2022'])
     elif socket.gethostname() == 'sdgx-server01':
         home = os.sep.join(['/raid', 'home', 'changmx', 'bb2022'])
@@ -795,7 +795,7 @@ if __name__ == '__main__':
         print('Try default path: {0}'.format(home))
 
     command = ('all', 'stat', 'lumi', 'tune', 'dist', 'fma', 'fmafma',
-               'fmadist')
+               'fmadist', 'none')
 
     command_beam1 = []
     command_beam2 = []
