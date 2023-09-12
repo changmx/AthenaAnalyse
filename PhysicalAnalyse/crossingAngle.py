@@ -79,7 +79,7 @@ if __name__ == '__main__':
 	sigma_ez = 0.02
 	sigma_pz = 0.04
 
-	phi = 2*25e-3    # 2*phi is real angles
+	phi = 2*10e-3    # 2*phi is real angles
 
 	sigma_ex = math.sqrt(beta_ex*emit_ex)
 	sigma_ey = math.sqrt(beta_ey*emit_ey)

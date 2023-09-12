@@ -567,7 +567,7 @@ def plot_electron_compare_largeSigam(fig, ax, myfontsize, myfontsize_sub):
     ax[1, 0].tick_params(axis='both', which='both', direction='in', left=False)
     ax[1, 1].tick_params(axis='both', which='both', direction='in', left=False)
     fig.supxlabel(r'Proton turns', fontsize=myfontsize)
-    fig.supylabel(r'Luminosity $(\times 10^{33} \mathrm{cm^{-2}s^{-1}})$',
+    fig.supylabel(r'Luminosity $(10^{33} \mathrm{cm^{-2}s^{-1}})$',
                   fontsize=myfontsize)
     fig.savefig(r'D:\OneDrive\模拟数据2\offset_compare_e_largeSigma.png', dpi=300)
 

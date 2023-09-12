@@ -210,25 +210,25 @@ freq_e.append(
     fft(
         electron, positron, T, Qx_0, Qy_0, x_freq_start, x_freq_end,
         y_freq_start, y_freq_end,
-        r"E:\changmx\bb2021\linux\2021_0428\KEKB yokoya\1456_35_electron_bunch0.csv"
+        r"D:\bb2021\linux\2021_0428\KEKB yokoya\1456_35_electron_bunch0.csv"
     ))
 freq_e.append(
     fft(
         electron, positron, T, Qx_0, Qy_0, x_freq_start, x_freq_end,
         y_freq_start, y_freq_end,
-        r"E:\changmx\bb2021\linux\2021_0428\KEKB yokoya\1457_19_electron_bunch0.csv"
+        r"D:\bb2021\linux\2021_0428\KEKB yokoya\1457_19_electron_bunch0.csv"
     ))
 freq_e.append(
     fft(
         electron, positron, T, Qx_0, Qy_0, x_freq_start, x_freq_end,
         y_freq_start, y_freq_end,
-        r"E:\changmx\bb2021\linux\2021_0428\KEKB yokoya\1459_27_electron_bunch0.csv"
+        r"D:\bb2021\linux\2021_0428\KEKB yokoya\1459_27_electron_bunch0.csv"
     ))
 freq_e.append(
     fft(
         electron, positron, T, Qx_0, Qy_0, x_freq_start, x_freq_end,
         y_freq_start, y_freq_end,
-        r"E:\changmx\bb2021\linux\2021_0428\KEKB yokoya\1500_16_electron_bunch0.csv"
+        r"D:\bb2021\linux\2021_0428\KEKB yokoya\1500_16_electron_bunch0.csv"
     ))
 
 e_direction = "y"
@@ -257,25 +257,25 @@ freq_p.append(
     fft(
         positron, electron, T, Qx_0, Qy_0, x_freq_start, x_freq_end,
         y_freq_start, y_freq_end,
-        r"E:\changmx\bb2021\linux\2021_0428\KEKB yokoya\1456_35_electron_bunch0.csv"
+        r"D:\bb2021\linux\2021_0428\KEKB yokoya\1456_35_electron_bunch0.csv"
     ))
 freq_p.append(
     fft(
         positron, electron, T, Qx_0, Qy_0, x_freq_start, x_freq_end,
         y_freq_start, y_freq_end,
-        r"E:\changmx\bb2021\linux\2021_0428\KEKB yokoya\1457_19_electron_bunch0.csv"
+        r"D:\bb2021\linux\2021_0428\KEKB yokoya\1457_19_electron_bunch0.csv"
     ))
 freq_p.append(
     fft(
         positron, electron, T, Qx_0, Qy_0, x_freq_start, x_freq_end,
         y_freq_start, y_freq_end,
-        r"E:\changmx\bb2021\linux\2021_0428\KEKB yokoya\1459_27_electron_bunch0.csv"
+        r"D:\bb2021\linux\2021_0428\KEKB yokoya\1459_27_electron_bunch0.csv"
     ))
 freq_p.append(
     fft(
         positron, electron, T, Qx_0, Qy_0, x_freq_start, x_freq_end,
         y_freq_start, y_freq_end,
-        r"E:\changmx\bb2021\linux\2021_0428\KEKB yokoya\1500_16_electron_bunch0.csv"
+        r"D:\bb2021\linux\2021_0428\KEKB yokoya\1500_16_electron_bunch0.csv"
     ))
 
 p_direction = "x"

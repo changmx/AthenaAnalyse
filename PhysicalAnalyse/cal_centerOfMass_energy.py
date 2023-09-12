@@ -22,8 +22,8 @@ def cal_2particle_centerOfMass_energy(m1_statistic, E1_total_energy,
 if __name__ == '__main__':
     m1_statistic = 938.27208816e6
     m2_statistic = 0.510998950e6
-    E1_total_energy = 20.02e9
-    E2_total_energy = 3.5e9
+    E1_total_energy = 13e9
+    E2_total_energy = 2.8e9
 
     E_cm = cal_2particle_centerOfMass_energy(m1_statistic, E1_total_energy,
                                              m2_statistic, E2_total_energy)

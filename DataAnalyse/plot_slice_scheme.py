@@ -254,5 +254,5 @@ if __name__ == '__main__':
     ax.grid()
     plt.axis('off')
 
-    plt.savefig(r'D:\OneDrive\模拟数据2\hourglass_scheme.png', dpi=300)
+    # plt.savefig(r'E:\模拟数据2\hourglass_scheme.png', dpi=300)
     plt.show()
